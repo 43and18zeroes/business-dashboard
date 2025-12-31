@@ -1,0 +1,27 @@
+<!-- app.html -->
+<mat-toolbar class="mat-elevation-z3">
+  <button mat-icon-button (click)="collapsed.set(!collapsed())">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    (click)="themeService.toggleTheme()"
+    class="mr-8"
+    aria-label="Toggle theme"
+  >
+    <mat-icon>{{
+      themeService.darkMode() ? "light_mode" : "bedtime"
+    }}</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+    <app-custom-sidenav [(collapsed)]="collapsed"></app-custom-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content
+    [style.margin-left]="contentMarginLeft()"
+    (touchend)="collapseSidenav()"
+  >
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

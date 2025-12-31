@@ -1,0 +1,59 @@
+@use "@angular/material" as mat;
+
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+.darkMode {
+  color-scheme: dark;
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+.lightMode {
+  color-scheme: light;
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+h1 {
+  margin-top: 4px;
+}
+
+h1, h2 {
+  font-weight: 500;
+}
+
+a {
+  color: light-dark(#0000ee, #8ab4f8);
+
+  &:active {
+    color: light-dark(#ff0000, #ff6b6b);
+  }
+
+  &:visited {
+    color: light-dark(#551a8b, #c58af9);
+  }
+}

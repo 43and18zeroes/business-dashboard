@@ -1,0 +1,26 @@
+<!-- custom-sidenav.html -->
+<mat-nav-list>
+  @for (item of menuItems(); track item.route) {
+  <a
+    mat-list-item
+    [routerLink]="item.route"
+    routerLinkActive=""
+    [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
+    (click)="collapsed.set(true)"
+  >
+    <mat-icon
+      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+      matListItemIcon
+      [style.marginLeft]="iconMargin()"
+    >
+      {{ item.icon }}
+    </mat-icon>
+
+    @if (!sideNavCollapsed()) {
+    <span matListItemTitle>{{ item.label }}</span>
+    }
+  </a>
+  }
+</mat-nav-list>

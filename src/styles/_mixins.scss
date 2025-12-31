@@ -1,0 +1,6 @@
+@use 'variables' as var;
+
+@mixin mat-theme-transition(
+) {
+  transition: background-color var.$mat-duration var.$mat-easing, color var.$mat-duration var.$mat-easing;
+}

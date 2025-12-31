@@ -1,0 +1,39 @@
+@use "../styles/mixins" as custom-mixins;
+
+mat-toolbar {
+  @include custom-mixins.mat-theme-transition();
+  display: flex;
+  justify-content: space-between;
+}
+
+mat-sidenav-container {
+  @include custom-mixins.mat-theme-transition();
+  background-color: #303030;
+  height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
+
+  @media (width < 600px) {
+    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
+  }
+
+  mat-sidenav {
+    padding: 16px;
+    transition: background-color 500ms cubic-bezier(0.2, 0, 0, 1),
+      color 500ms cubic-bezier(0.2, 0, 0, 1),
+      width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  mat-sidenav-content {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+}
+
+.android__height {
+  height: calc(100vh - 112px);
+}
+
+.iphone__height {
+  height: calc(100vh - 164px);
+}
