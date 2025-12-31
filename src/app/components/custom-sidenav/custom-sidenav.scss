@@ -2,18 +2,17 @@
 .logo {
   width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   padding-bottom: 12px;
-  // border-bottom: 1px solid #4b545c;
-  padding: 16px 0 14px 0;
+  padding: 16px 16px 14px 24px;
 
   img {
-    width: 33px;
+    width: 32px;
   }
 
   span {
     margin-left: 8px;
+    white-space: nowrap;
   }
 }
 
