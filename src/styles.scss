@@ -45,6 +45,12 @@ body {
   .mat-icon {
     color: rgba(0, 0, 0, .5);
   }
+
+  .mdc-icon-button {
+    &:hover {
+      background-color: red;
+    }
+  }
 }
 
 h1 {
