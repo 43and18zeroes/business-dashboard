@@ -38,6 +38,11 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+body {
+  --mat-sidenav-container-background-color: light-dark(#faf9fd, #343a40);
+  --mat-toolbar-container-background-color: light-dark(#faf9fd, #faf9fd);
+}
+
 h1 {
   margin-top: 4px;
 }
