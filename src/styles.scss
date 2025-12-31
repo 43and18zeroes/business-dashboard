@@ -40,17 +40,17 @@ body {
 
 body {
   --mat-sidenav-container-background-color: light-dark(#faf9fd, #343a40);
-  --mat-toolbar-container-background-color: light-dark(#ffffff, #ffffff);
+  --mat-toolbar-container-background-color: light-dark(#ffffff, #343a40);
 
-  .mat-icon {
-    color: rgba(0, 0, 0, .5);
-  }
+  // .mat-icon {
+  //   color: rgba(0, 0, 0, .5);
+  // }
 
-  .mdc-icon-button {
-    &:hover {
-      background-color: red;
-    }
-  }
+  // .mdc-icon-button {
+  //   &:hover {
+  //     background-color: red;
+  //   }
+  // }
 }
 
 h1 {
