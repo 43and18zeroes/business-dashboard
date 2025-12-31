@@ -1,24 +1,4 @@
 <!-- app.html -->
-<mat-toolbar class="mat-elevation-z3">
-  <div class="header__side" [style.width]="sidenavWidth()">
-    <img src="img/logo/dashboard-logo-512.png" alt="Logo Business Dashboard" />
-  </div>
-  <div class="header__content">
-    <button mat-icon-button (click)="collapsed.set(!collapsed())">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      (click)="themeService.toggleTheme()"
-      class="mr-8"
-      aria-label="Toggle theme"
-    >
-      <mat-icon>{{
-        themeService.darkMode() ? "light_mode" : "bedtime"
-      }}</mat-icon>
-    </button>
-  </div>
-</mat-toolbar>
 <mat-sidenav-container>
   <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
     <app-custom-sidenav [(collapsed)]="collapsed"></app-custom-sidenav>
@@ -27,6 +7,21 @@
     [style.margin-left]="contentMarginLeft()"
     (touchend)="collapseSidenav()"
   >
+    <mat-toolbar class="mat-elevation-z3">
+      <button mat-icon-button (click)="collapsed.set(!collapsed())">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="themeService.toggleTheme()"
+        class="mr-8"
+        aria-label="Toggle theme"
+      >
+        <mat-icon>{{
+          themeService.darkMode() ? "light_mode" : "bedtime"
+        }}</mat-icon>
+      </button>
+    </mat-toolbar>
     <router-outlet />
   </mat-sidenav-content>
 </mat-sidenav-container>

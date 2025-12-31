@@ -1,4 +1,15 @@
 // custom-sidenav.scss
+.logo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  img {
+    width: 40px;
+  }
+}
+
 a {
   margin-bottom: 12px;
 

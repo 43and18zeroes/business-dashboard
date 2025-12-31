@@ -2,21 +2,8 @@
 
 mat-toolbar {
   @include custom-mixins.mat-theme-transition();
-  .header__side {
-    display: flex;
-    align-items: center;
-    padding-left: 8px;
-    
-    img {
-      width: 33px;
-    }
-  }
-
-  .header__content {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
+  display: flex;
+  justify-content: space-between;
 }
 
 mat-sidenav-container {
@@ -32,13 +19,13 @@ mat-sidenav-container {
 
   mat-sidenav {
     padding: 16px;
+    border-top-right-radius: 0;
     transition: background-color 500ms cubic-bezier(0.2, 0, 0, 1),
       color 500ms cubic-bezier(0.2, 0, 0, 1),
       width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   mat-sidenav-content {
-    padding: 16px;
     box-sizing: border-box;
   }
 }
