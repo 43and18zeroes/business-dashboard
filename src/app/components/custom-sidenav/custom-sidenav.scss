@@ -3,10 +3,12 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #4b545c;
+  padding: 16px 0 14px 0;
 
   img {
-    width: 40px;
+    width: 33px;
   }
 }
 

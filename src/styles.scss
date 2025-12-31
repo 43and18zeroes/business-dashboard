@@ -40,7 +40,11 @@ body {
 
 body {
   --mat-sidenav-container-background-color: light-dark(#faf9fd, #343a40);
-  --mat-toolbar-container-background-color: light-dark(#faf9fd, #faf9fd);
+  --mat-toolbar-container-background-color: light-dark(#ffffff, #ffffff);
+
+  .mat-icon {
+    color: rgba(0, 0, 0, .5);
+  }
 }
 
 h1 {
