@@ -5,12 +5,12 @@ mat-toolbar {
   @include custom-mixins.mat-theme-transition();
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #dee2e6;
+  // border-bottom: 1px solid #343a40;
 }
 
 mat-sidenav-container {
   @include custom-mixins.mat-theme-transition();
-  background-color: #ffffff;
+  background-color: #454d55;
   height: 100vh;
   height: 100dvh;
 

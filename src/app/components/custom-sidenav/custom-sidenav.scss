@@ -4,12 +4,16 @@
   display: flex;
   justify-content: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid #4b545c;
+  // border-bottom: 1px solid #4b545c;
   padding: 16px 0 14px 0;
 
   img {
     width: 33px;
   }
+}
+
+mat-nav-list {
+  border-top: 1px solid #4b545c;
 }
 
 a {
