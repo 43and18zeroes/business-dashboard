@@ -8,10 +8,12 @@
 
   img {
     width: 32px;
+    margin-left: 12px;
+    margin-right: 12px;
+    transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   span {
-    margin-left: 8px;
     white-space: nowrap;
   }
 }
