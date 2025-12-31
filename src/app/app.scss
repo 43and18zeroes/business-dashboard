@@ -2,8 +2,21 @@
 
 mat-toolbar {
   @include custom-mixins.mat-theme-transition();
-  display: flex;
-  justify-content: space-between;
+  .header__side {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    
+    img {
+      width: 33px;
+    }
+  }
+
+  .header__content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 mat-sidenav-container {
