@@ -1,6 +1,6 @@
 <!-- custom-sidenav.html -->
 <mat-nav-list>
-  @for (item of menuItems(); track item.route) {
+  @for (item of menuItems(); track item.route; let isFirst = $first) {
   <a
     mat-list-item
     [routerLink]="item.route"
@@ -11,25 +11,26 @@
     (click)="collapsed.set(true)"
   >
     @if (item.image) {
-      <img 
-        matListItemIcon 
-        [src]="item.image" 
-        [style.marginLeft]="iconMargin()" 
-        class="nav-custom-icon"
-        alt="item.label" 
-      />
-    } 
-    @else {
-      <mat-icon
-        [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-        matListItemIcon
-        [style.marginLeft]="iconMargin()"
-      >
-        {{ item.icon }}
-      </mat-icon>
+    <img
+      matListItemIcon
+      [src]="item.image"
+      [style.marginLeft]="iconMargin()"
+      class="nav-custom-icon"
+      alt="item.label"
+    />
+    } @else {
+    <mat-icon
+      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+      matListItemIcon
+      [style.marginLeft]="iconMargin()"
+    >
+      {{ item.icon }}
+    </mat-icon>
     }
 
     <span matListItemTitle>{{ item.label }}</span>
   </a>
-  }
+  @if (isFirst) {
+  <mat-divider></mat-divider>
+  } }
 </mat-nav-list>

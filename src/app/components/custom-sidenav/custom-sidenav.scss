@@ -32,6 +32,12 @@ a {
   }
 }
 
+mat-divider {
+  margin: 8px -16px;
+  border-top-color: grey;
+  opacity: 0.5;
+}
+
 a:last-child {
   margin-bottom: 0;
 }
