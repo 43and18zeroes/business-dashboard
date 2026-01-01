@@ -1,33 +1,37 @@
 @use "@angular/material" as mat;
 
-
 html {
   color-scheme: light dark;
-  @include mat.theme((
-    color: mat.$azure-palette,
-    typography: Roboto,
-    density: 0
-  ));
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
 
 .darkMode {
   color-scheme: dark;
-  @include mat.theme((
-    color: mat.$azure-palette,
-    typography: Roboto,
-    density: 0
-  ));
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
 
 .lightMode {
   color-scheme: light;
-  @include mat.theme((
-    color: mat.$azure-palette,
-    typography: Roboto,
-    density: 0
-  ));
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
-
 
 html,
 body {
@@ -42,22 +46,17 @@ body {
   --mat-sidenav-container-background-color: light-dark(#faf9fd, #343a40);
   --mat-toolbar-container-background-color: light-dark(#ffffff, #343a40);
 
-  // .mat-icon {
-  //   color: rgba(0, 0, 0, .5);
-  // }
-
-  // .mdc-icon-button {
-  //   &:hover {
-  //     background-color: red;
-  //   }
-  // }
+  mat-divider {
+    border-top-color: #454d55, #454d55;
+  }
 }
 
 h1 {
   margin-top: 4px;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: 500;
 }
 
