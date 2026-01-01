@@ -6,6 +6,7 @@ mat-toolbar {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid var(--grid-color);
+  --mat-toolbar-mobile-height: 64px;
 }
 
 mat-sidenav-container {
