@@ -29,7 +29,7 @@ mat-sidenav-container {
     .sidenav__overlay {
       display: block;
 
-      @media (min-width: 600px) {
+      @media (width >= 600px) {
         display: none !important;
       }
 
