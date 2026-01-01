@@ -1,22 +1,6 @@
-// custom-sidenav.scss
-// .logo {
-//   display: flex;
-//   align-items: center;
-//   padding-bottom: 12px;
-//   padding: 16px 16px 15px 12px;
-//   overflow: hidden;
-
-//   img {
-//     width: 32px;
-//     margin-left: 12px;
-//     margin-right: 11px;
-//     transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-//   }
-
-//   span {
-//     white-space: nowrap;
-//   }
-// }
+mat-nav-list {
+  padding-top: 7px;
+}
 
 a {
   margin-bottom: 12px;
@@ -28,9 +12,13 @@ a {
   }
 }
 
+a:first-child {
+  margin-bottom: 7px;
+}
+
 mat-divider {
-  margin: 8px -16px;
-  border-top-color: #454d55;
+  margin: 0 -16px 12px -16px;
+  border-top-color: var(--nav-divider-color);
 }
 
 a:last-child {
