@@ -8,11 +8,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/start/start').then((m) => m.Start),
   },
   {
-    path: 'start',
-    pathMatch: 'full',
-    redirectTo: '',
-  },
-  {
     path: 'info',
     title: 'Info - Business Dashboard',
     loadComponent: () => import('./pages/info/info').then((m) => m.Info),
