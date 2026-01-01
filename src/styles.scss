@@ -44,8 +44,10 @@ body {
 }
 
 body {
-  --mat-sidenav-container-background-color: light-dark(#faf9fd, #343a40);
-  --mat-toolbar-container-background-color: light-dark(#ffffff, #343a40);
+  --dark-bg-color: #343a40;
+  --light-bg-color: #faf9fd;
+  --mat-sidenav-container-background-color: light-dark(var(--light-bg-color), var(--dark-bg-color));
+  --mat-toolbar-container-background-color: light-dark(var(--light-bg-color), var(--dark-bg-color));
   --nav-divider-color: #454d55;
 }
 
