@@ -7,6 +7,12 @@
     [style.margin-left]="contentMarginLeft()"
     (touchend)="collapseSidenav()"
   >
+    <div
+      class="sidenav__overlay"
+      [class.active]="!collapsed()"
+      (touchend)="collapseSidenav()"
+      (click)="collapseSidenav()"
+    ></div>
     <mat-toolbar class="mat-elevation-z3">
       <button mat-icon-button (click)="collapsed.set(!collapsed())">
         <mat-icon>menu</mat-icon>
