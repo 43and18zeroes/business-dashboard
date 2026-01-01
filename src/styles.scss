@@ -44,10 +44,10 @@ body {
 }
 
 body {
-  --bg-color: light-dark(#faf9fd, #343a40);
+  --bg-color: light-dark(#F8F9FA, #343a40);
   --mat-sidenav-container-background-color: var(--bg-color);
   --mat-toolbar-container-background-color: var(--bg-color);
-  --grid-color: #454d55;
+  --grid-color: light-dark(#ADB5BD, #454d55);
 }
 
 h1 {
