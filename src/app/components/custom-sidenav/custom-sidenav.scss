@@ -1,22 +1,22 @@
 // custom-sidenav.scss
-.logo {
-  display: flex;
-  align-items: center;
-  padding-bottom: 12px;
-  padding: 16px 16px 15px 12px;
-  overflow: hidden;
+// .logo {
+//   display: flex;
+//   align-items: center;
+//   padding-bottom: 12px;
+//   padding: 16px 16px 15px 12px;
+//   overflow: hidden;
 
-  img {
-    width: 32px;
-    margin-left: 12px;
-    margin-right: 11px;
-    transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
+//   img {
+//     width: 32px;
+//     margin-left: 12px;
+//     margin-right: 11px;
+//     transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+//   }
 
-  span {
-    white-space: nowrap;
-  }
-}
+//   span {
+//     white-space: nowrap;
+//   }
+// }
 
 mat-nav-list {
   border-top: 1px solid #4b545c;
@@ -25,7 +25,7 @@ mat-nav-list {
 a {
   margin-bottom: 12px;
 
-  mat-icon {
+  mat-icon, img {
     transition: background-color 500ms cubic-bezier(0.2, 0, 0, 1),
       color 500ms cubic-bezier(0.2, 0, 0, 1),
       margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
