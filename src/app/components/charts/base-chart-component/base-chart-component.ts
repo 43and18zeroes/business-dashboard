@@ -1,5 +1,5 @@
 import { Component, effect, ElementRef, input, ViewChild } from '@angular/core';
-import { ChartConfiguration, ChartData } from '../../models/chart.model';
+import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 
 @Component({
   selector: 'app-base-chart-component',

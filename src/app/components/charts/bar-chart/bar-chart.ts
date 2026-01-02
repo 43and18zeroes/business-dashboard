@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseChartComponent } from '../../base-chart-component/base-chart-component';
+import { BaseChartComponent } from '../base-chart-component/base-chart-component';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import Chart from 'chart.js/auto';
 
