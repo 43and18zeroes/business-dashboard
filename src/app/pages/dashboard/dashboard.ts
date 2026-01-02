@@ -4,12 +4,12 @@ import { ChartConfiguration } from '../../models/chart.model';
 import { ChartDataService } from '../../services/chart-data-service';
 
 @Component({
-  selector: 'app-start',
+  selector: 'app-dashboard',
   imports: [BarChart],
-  templateUrl: './start.html',
-  styleUrl: './start.scss',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
 })
-export class Start {
+export class Dashboard {
   protected chartService = inject(ChartDataService);
 
   myChartConfig = new ChartConfiguration({
