@@ -1,1 +1,4 @@
-<p>start works!</p>
+<!-- start.html -->
+@if (chartService.salesChartData(); as data) {
+<app-bar-chart [data]="data" [config]="myChartConfig"> </app-bar-chart>
+}
