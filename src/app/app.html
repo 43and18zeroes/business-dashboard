@@ -1,6 +1,6 @@
 <!-- app.html -->
 <mat-sidenav-container>
-  <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+  <mat-sidenav opened mode="side" [style.width]="sidenavWidth()" [class.expanded]="!collapsed()">
     <app-custom-sidenav [(collapsed)]="collapsed"></app-custom-sidenav>
   </mat-sidenav>
   <mat-sidenav-content

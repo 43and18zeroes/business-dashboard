@@ -31,6 +31,6 @@
     <span matListItemTitle>{{ item.label }}</span>
   </a>
   @if (isFirst) {
-  <mat-divider></mat-divider>
+  <mat-divider [class.expanded]="!collapsed()"></mat-divider>
   } }
 </mat-nav-list>
