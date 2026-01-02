@@ -21,15 +21,25 @@ mat-sidenav-container {
     transition: background-color 500ms cubic-bezier(0.2, 0, 0, 1),
       width 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
 
-    @media (width < 600px) {
+    overflow: visible !important;
+
+    ::ng-deep .mat-drawer-inner-container {
       overflow: visible !important;
+    }
+
+    &.expanded {
+      border-right-color: transparent;
+    }
+
+    @media (width >= 600px) {
+      overflow: hidden !important;
 
       ::ng-deep .mat-drawer-inner-container {
-        overflow: visible !important;
+        overflow: hidden !important;
       }
 
       &.expanded {
-        border-right-color: transparent;
+        border-right: 1px solid var(--grid-color);
       }
     }
   }
