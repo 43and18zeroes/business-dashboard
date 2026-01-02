@@ -11,14 +11,11 @@ import Chart from 'chart.js/auto';
 })
 export class BarChart extends BaseChartComponent {
   
-  // Hier füllen wir die "unbekannte Zutat" aus dem Grundrezept
   protected renderChart(data: ChartData[], config: ChartConfiguration): void {
-    // Falls schon ein Chart existiert (z.B. bei Daten-Update), löschen wir das alte
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
 
-    // Wir greifen auf 'this.canvas' zu, das in der Basisklasse definiert wurde!
     this.chartInstance = new Chart(this.canvas.nativeElement, {
       type: 'bar', 
       data: {

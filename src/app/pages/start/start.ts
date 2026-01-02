@@ -12,7 +12,6 @@ import { ChartDataService } from '../../services/chart-data-service';
 export class Start {
   protected chartService = inject(ChartDataService);
 
-  // Konfiguration über deine Klasse erstellen
   myChartConfig = new ChartConfiguration({
     title: 'Monthly Sales',
     showLegend: true,

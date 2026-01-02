@@ -1,5 +1,3 @@
-// src/app/models/chart.model.ts
-
 export interface ChartData {
   label: string;
   value: number;
