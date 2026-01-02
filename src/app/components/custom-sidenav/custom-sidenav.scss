@@ -24,9 +24,11 @@ mat-divider {
   margin: 0 -16px 12px -16px;
   border-top: 1px solid var(--grid-color);
 
-  @media (width < 600px) {
-    &.expanded {
-      margin-right: -17px !important;
+  &.expanded {
+    margin-right: -17px !important;
+    
+    @media (width >= 600px) {
+      margin-right: -16px !important;
     }
   }
 }
