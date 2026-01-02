@@ -19,9 +19,7 @@ mat-sidenav-container {
     --mat-sidenav-container-shape: 0;
     border-right: 1px solid var(--grid-color);
     transition: background-color 500ms cubic-bezier(0.2, 0, 0, 1),
-      color 500ms cubic-bezier(0.2, 0, 0, 1),
-      width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-      border-right-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      width 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
 
     @media (width < 600px) {
       overflow: visible !important;
