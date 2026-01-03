@@ -1,5 +1,9 @@
 import { Component, effect, ElementRef, input, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
+import { Chart } from 'chart.js';
+
+Chart.defaults.color = 'red';
+Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
 
 @Component({
   selector: 'app-base-chart-component',
