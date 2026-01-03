@@ -1,9 +1,14 @@
-import { Component, effect, ElementRef, input, ViewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  ViewChild,
+} from '@angular/core';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { Chart } from 'chart.js';
-
-Chart.defaults.color = 'red';
-Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
+import { ThemeService } from '../../../services/theme-service';
 
 @Component({
   selector: 'app-base-chart-component',
@@ -12,6 +17,7 @@ Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
   styleUrl: './base-chart-component.scss',
 })
 export abstract class BaseChartComponent {
+  private themeService = inject(ThemeService);
   data = input.required<ChartData[]>();
 
   config = input<ChartConfiguration>(new ChartConfiguration());
@@ -25,11 +31,26 @@ export abstract class BaseChartComponent {
     effect(() => {
       const currentData = this.data();
       const currentConfig = this.config();
-
+      const isDark = this.themeService.darkMode();
+      this.updateGlobalChartDefaults(isDark);
       if (currentData && currentData.length > 0) {
         this.renderChart(currentData, currentConfig);
       }
     });
+  }
+
+  private updateGlobalChartDefaults(isDark: boolean): void {
+    const textColor = isDark ? '#e3e2e6' : '#1a1b1f';
+    const gridColor = isDark
+      ? 'rgba(255, 255, 255, 0.1)'
+      : 'rgba(0, 0, 0, 0.1)';
+
+    Chart.defaults.color = textColor;
+    Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
+
+    // if (Chart.defaults.scale) {
+    //   Chart.defaults.scales.linear.grid.color = gridColor;
+    // }
   }
 
   protected abstract renderChart(
