@@ -41,10 +41,8 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-}
 
-body {
-  --bg-color: light-dark(#F8F9FA, #343a40);
+  --bg-color: light-dark(#f8f9fa, #343a40);
   --mat-sidenav-container-background-color: var(--bg-color);
   --mat-toolbar-container-background-color: var(--bg-color);
   --grid-color: light-dark(#b4b6bb, #62656d);
