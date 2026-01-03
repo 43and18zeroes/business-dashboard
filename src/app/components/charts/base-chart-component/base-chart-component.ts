@@ -42,15 +42,11 @@ export abstract class BaseChartComponent {
   private updateGlobalChartDefaults(isDark: boolean): void {
     const textColor = isDark ? '#e3e2e6' : '#1a1b1f';
     const gridColor = isDark
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(0, 0, 0, 0.1)';
+      ? 'rgba(227, 226, 230, 0.15)'
+      : 'rgba(26, 27, 31, 0.15)';
 
     Chart.defaults.color = textColor;
-    Chart.defaults.font.family = 'Roboto, Arial, sans-serif';
-
-    // if (Chart.defaults.scale) {
-    //   Chart.defaults.scales.linear.grid.color = gridColor;
-    // }
+    Chart.defaults.borderColor = gridColor;
   }
 
   protected abstract renderChart(
