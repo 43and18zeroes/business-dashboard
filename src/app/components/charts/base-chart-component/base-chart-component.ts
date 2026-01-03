@@ -40,13 +40,14 @@ export abstract class BaseChartComponent {
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
-    const textColor = isDark ? '#e3e2e6' : '#1a1b1f';
-    const gridColor = isDark
-      ? 'rgba(227, 226, 230, 0.15)'
-      : 'rgba(26, 27, 31, 0.15)';
-
+    const textColor = isDark ? '#e0e2ec' : '#44474e';
+    const gridColor = isDark ? '#ffffff26' : '#00000026';
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
+    Chart.defaults.set('scales.common.grid', {
+      color: gridColor,
+      drawOnChartArea: true,
+    });
   }
 
   protected abstract renderChart(
