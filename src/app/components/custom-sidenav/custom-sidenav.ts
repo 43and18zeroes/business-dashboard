@@ -26,6 +26,6 @@ export class CustomSidenav {
 
 menuItems = signal<MenuItem[]>([
   { image: 'img/logo/dashboard-logo-24.webp', label: 'Dashboard', route: '/' },
-  { icon: 'info', label: 'Monthy Sales', route: '/monthly-sales' },
+  { icon: 'insert_chart', label: 'Monthy Sales', route: '/monthly-sales' },
 ]);
 }
