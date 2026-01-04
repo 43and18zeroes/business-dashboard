@@ -25,7 +25,7 @@ export class CustomSidenav {
   iconMargin = computed(() => (this.collapsed() ? '12px' : '16px'));
 
 menuItems = signal<MenuItem[]>([
-  { image: 'img/logo/dashboard-logo-512.png', label: 'Dashboard', route: '/' },
+  { image: 'img/logo/dashboard-logo-24.webp', label: 'Dashboard', route: '/' },
   { icon: 'info', label: 'Info', route: '/info' },
 ]);
 }
