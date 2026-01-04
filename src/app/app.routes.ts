@@ -8,9 +8,9 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
   },
   {
-    path: 'info',
-    title: 'Info - Business Dashboard',
-    loadComponent: () => import('./pages/info/info').then((m) => m.Info),
+    path: 'monthly-sales',
+    title: 'Monthly Sales - Business Dashboard',
+    loadComponent: () => import('./pages/monthly-sales-page/monthly-sales-page').then((m) => m.MonthlySalesPage),
   },
   {
     path: '**',
