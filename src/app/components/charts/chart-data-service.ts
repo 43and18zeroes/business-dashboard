@@ -18,15 +18,17 @@ export class ChartDataService {
   private http = inject(HttpClient);
   private apiUrl = 'https://api.deine-seite.de/v1/data';
 
-  private rawSalesData = toSignal(of(SALES_STATS as RawChartEntry[]), { 
-  initialValue: SALES_STATS as RawChartEntry[] 
-});
+  private rawSalesData = toSignal(of(SALES_STATS as RawChartEntry[]), {
+    initialValue: SALES_STATS as RawChartEntry[],
+  });
 
   readonly salesChartData = computed<ChartData[]>(() => {
     return this.rawSalesData().map((item) => ({
       label: item.category,
       value: item.sales,
+      secondaryValue: item.costs,
       color: '#42A5F5',
+      secondaryColor: '#FFA726',
     }));
   });
 }

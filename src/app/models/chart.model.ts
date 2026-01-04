@@ -1,7 +1,9 @@
 export interface ChartData {
   label: string;
   value: number;
+  secondaryValue?: number;
   color?: string;
+  secondaryColor?: string;
 }
 
 export class ChartConfiguration {
