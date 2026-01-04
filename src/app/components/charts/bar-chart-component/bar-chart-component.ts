@@ -10,7 +10,6 @@ import Chart from 'chart.js/auto';
   styleUrl: './bar-chart-component.scss',
 })
 export class BarChartComponent extends BaseChartComponent {
-  // bar-chart-component.ts
   protected renderChart(data: ChartData[], config: ChartConfiguration): void {
     if (this.chartInstance) {
       this.chartInstance.destroy();
@@ -22,13 +21,13 @@ export class BarChartComponent extends BaseChartComponent {
         labels: data.map((d) => d.label),
         datasets: [
           {
-            label: 'Sales', // Oder config.title
+            label: 'Sales',
             data: data.map((d) => d.value),
             backgroundColor: data.map((d) => d.color || '#42A5F5'),
           },
           {
             label: 'Costs',
-            data: data.map((d) => d.secondaryValue || 0), // Den neuen Wert nutzen
+            data: data.map((d) => d.secondaryValue || 0),
             backgroundColor: data.map((d) => d.secondaryColor || '#FFA726'),
           },
         ],

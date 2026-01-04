@@ -27,8 +27,8 @@ export class ChartDataService {
       label: item.category,
       value: item.sales,
       secondaryValue: item.costs,
-      color: '#42A5F5',
-      secondaryColor: '#FFA726',
+      color: '#007BFF',
+      secondaryColor: '#00D4FF',
     }));
   });
 }
