@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CustomSidenav } from './components/custom-sidenav/custom-sidenav';
+import { CustomSidenav } from './components/custom-sidenav-component/custom-sidenav';
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 

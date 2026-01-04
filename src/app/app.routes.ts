@@ -5,7 +5,7 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     title: 'Business Dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
   {
     path: 'monthly-sales',
