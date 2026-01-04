@@ -1,7 +1,7 @@
 <!-- app.html -->
 <mat-sidenav-container>
   <mat-sidenav opened mode="side" [style.width]="sidenavWidth()" [class.expanded]="!collapsed()">
-    <app-custom-sidenav [(collapsed)]="collapsed"></app-custom-sidenav>
+    <app-custom-sidenav-component [(collapsed)]="collapsed"></app-custom-sidenav-component>
   </mat-sidenav>
   <mat-sidenav-content
     [style.margin-left]="contentMarginLeft()"

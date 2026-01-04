@@ -1,5 +1,5 @@
 <!-- dashboard-page.html -->
 <h1>Dashboard</h1>
 @if (chartService.salesChartData(); as data) {
-<app-bar-chart [data]="data" [config]="myChartConfig"> </app-bar-chart>
+<app-bar-chart-component [data]="data" [config]="myChartConfig"> </app-bar-chart-component>
 }

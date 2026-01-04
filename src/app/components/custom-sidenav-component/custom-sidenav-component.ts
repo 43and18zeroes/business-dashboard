@@ -12,12 +12,12 @@ export type MenuItem = {
 };
 
 @Component({
-  selector: 'app-custom-sidenav',
+  selector: 'app-custom-sidenav-component',
   imports: [CommonModule, MatListModule, MatIconModule, RouterModule],
-  templateUrl: './custom-sidenav.html',
-  styleUrl: './custom-sidenav.scss',
+  templateUrl: './custom-sidenav-component.html',
+  styleUrl: './custom-sidenav-component.scss',
 })
-export class CustomSidenav {
+export class CustomSidenavComponent {
   sideNavCollapsed = signal(false);
 
   collapsed = model.required<boolean>();

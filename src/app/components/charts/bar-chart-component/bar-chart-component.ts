@@ -4,7 +4,7 @@ import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import Chart from 'chart.js/auto';
 
 @Component({
-  selector: 'app-bar-chart',
+  selector: 'app-bar-chart-component',
   imports: [],
   templateUrl: './bar-chart-component.html',
   styleUrl: './bar-chart-component.scss',

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomSidenav } from './custom-sidenav';
+import { CustomSidenavComponent } from './custom-sidenav-component';
 
-describe('CustomSidenav', () => {
-  let component: CustomSidenav;
-  let fixture: ComponentFixture<CustomSidenav>;
+describe('CustomSidenavComponent', () => {
+  let component: CustomSidenavComponent;
+  let fixture: ComponentFixture<CustomSidenavComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomSidenav]
+      imports: [CustomSidenavComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CustomSidenav);
+    fixture = TestBed.createComponent(CustomSidenavComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
