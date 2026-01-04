@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { BarChart } from '../../components/charts/bar-chart/bar-chart';
+import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
 import { ChartConfiguration } from '../../models/chart.model';
-import { ChartDataService } from '../../services/chart-data-service';
+import { ChartDataService } from '../../components/charts/chart-data-service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [BarChart],
+  imports: [BarChartComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

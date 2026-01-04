@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { BarChart } from '../../components/charts/bar-chart/bar-chart';
-import { ChartDataService } from '../../services/chart-data-service';
+import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
+import { ChartDataService } from '../../components/charts/chart-data-service';
 import { ChartConfiguration } from '../../models/chart.model';
 
 @Component({
   selector: 'app-monthly-sales-page',
-  imports: [BarChart],
+  imports: [BarChartComponent],
   templateUrl: './monthly-sales-page.html',
   styleUrl: './monthly-sales-page.scss',
 })

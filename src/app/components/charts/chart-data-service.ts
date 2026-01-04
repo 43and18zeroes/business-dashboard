@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { ChartData } from '../models/chart.model';
+import { ChartData } from '../../models/chart.model';
 
 @Injectable({
   providedIn: 'root',

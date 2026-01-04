@@ -6,10 +6,10 @@ import Chart from 'chart.js/auto';
 @Component({
   selector: 'app-bar-chart',
   imports: [],
-  templateUrl: './bar-chart.html',
-  styleUrl: './bar-chart.scss',
+  templateUrl: './bar-chart-component.html',
+  styleUrl: './bar-chart-component.scss',
 })
-export class BarChart extends BaseChartComponent {
+export class BarChartComponent extends BaseChartComponent {
   
   protected renderChart(data: ChartData[], config: ChartConfiguration): void {
     if (this.chartInstance) {
