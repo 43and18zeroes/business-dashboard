@@ -16,6 +16,6 @@ export const routes: Routes = [
     path: '**',
     title: '404 - Page not found - Business Dashboard',
     loadComponent: () =>
-      import('./pages/not-found/not-found').then((m) => m.NotFound),
+      import('./pages/not-found-page/not-found-page').then((m) => m.NotFoundPage),
   },
 ];
