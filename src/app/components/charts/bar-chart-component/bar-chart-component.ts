@@ -23,12 +23,12 @@ export class BarChartComponent extends BaseChartComponent {
           {
             label: 'Sales',
             data: data.map((d) => d.value),
-            backgroundColor: data.map((d) => d.color || '#42A5F5'),
+            backgroundColor: data.map((d) => d.color || '#007BFF'),
           },
           {
             label: 'Costs',
             data: data.map((d) => d.secondaryValue || 0),
-            backgroundColor: data.map((d) => d.secondaryColor || '#FFA726'),
+            backgroundColor: data.map((d) => d.secondaryColor || '#00D4FF'),
           },
         ],
       },
