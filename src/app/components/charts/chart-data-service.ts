@@ -11,6 +11,11 @@ export interface RawChartEntry {
   costs: number;
 }
 
+const CHART_COLORS = {
+  salesPrimary: '#007BFF',
+  salesSecondary: '#00D4FF',
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,8 +32,8 @@ export class ChartDataService {
       label: item.category,
       value: item.sales,
       secondaryValue: item.costs,
-      color: '#007BFF',
-      secondaryColor: '#00D4FF',
+      color: CHART_COLORS.salesPrimary,
+      secondaryColor: CHART_COLORS.salesSecondary,
     }));
   });
 }
