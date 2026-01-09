@@ -1,34 +1,65 @@
-// bar-chart-component.scss
+/* bar-chart-component.scss */
+
 div {
-    position: relative;
-    height: 40vh;
-    width: 80vw;
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.03) 100%);
+  position: relative;
+  height: 40vh;
+  width: 80vw;
 
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow:
-        0 8px 32px 0 rgba(0, 0, 0, 0.37),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  /* Bento card look */
+  padding: clamp(12px, 2vw, 20px);
+  border-radius: 18px;
+  overflow: hidden;
 
-    overflow: hidden;
+  /* Card surface (slightly different from page background) */
+  background: color-mix(
+    in srgb,
+    light-dark(#ffffff, #1f2328) 88%,
+    transparent
+  );
 
-    &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 24px;
-        background: linear-gradient(135deg,
-                rgba(255, 255, 255, 0.1) 0%,
-                transparent 40%,
-                transparent 100%);
-        pointer-events: none;
-    }
+  /* Border tuned for both modes */
+  border: 1px solid color-mix(
+    in srgb,
+    light-dark(#0d0f12, #ffffff) 12%,
+    transparent
+  );
+
+  /* Soft shadow (works in both modes) */
+  box-shadow:
+    0 10px 30px color-mix(in srgb, #000 18%, transparent),
+    0 2px 8px color-mix(in srgb, #000 10%, transparent);
+
+  /* Subtle “bento” highlight */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+      radial-gradient(
+        900px 500px at 20% 10%,
+        color-mix(in srgb, light-dark(#ffffff, #ffffff) 18%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        700px 400px at 85% 90%,
+        color-mix(in srgb, light-dark(#0d6efd, #0d6efd) 10%, transparent),
+        transparent 55%
+      );
+
+    opacity: light-dark(0.8, 0.35);
+  }
+
+  /* Tiny hover lift (optional but nice) */
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+
+  /* Make canvas fill the card nicely */
+  canvas {
+    position: relative; /* keep above ::before */
+    z-index: 1;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
 }
