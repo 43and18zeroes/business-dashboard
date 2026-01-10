@@ -1,35 +1,29 @@
-/* bar-chart-component.scss */
+// bar-chart-component.scss
 
 div {
   position: relative;
   height: 40vh;
   width: 80vw;
-
-  /* Bento card look */
   padding: clamp(12px, 2vw, 20px);
-  border-radius: 18px;
+  border-radius: 12px;
   overflow: hidden;
 
-  /* Card surface (slightly different from page background) */
   background: color-mix(
     in srgb,
     light-dark(#ffffff, #1f2328) 88%,
     transparent
   );
 
-  /* Border tuned for both modes */
   border: 1px solid color-mix(
     in srgb,
     light-dark(#0d0f12, #ffffff) 12%,
     transparent
   );
 
-  /* Soft shadow (works in both modes) */
   box-shadow:
     0 10px 30px color-mix(in srgb, #000 18%, transparent),
     0 2px 8px color-mix(in srgb, #000 10%, transparent);
 
-  /* Subtle “bento” highlight */
   &::before {
     content: "";
     position: absolute;
@@ -39,24 +33,20 @@ div {
     background:
       radial-gradient(
         900px 500px at 20% 10%,
-        color-mix(in srgb, light-dark(#ffffff, #ffffff) 18%, transparent),
+        color-mix(in srgb, light-dark(#777777, #b6b6b6) 18%, transparent),
         transparent 60%
       ),
       radial-gradient(
         700px 400px at 85% 90%,
-        color-mix(in srgb, light-dark(#0d6efd, #0d6efd) 10%, transparent),
+        color-mix(in srgb, light-dark(#000000, #0d6efd) 10%, transparent),
         transparent 55%
       );
 
     opacity: light-dark(0.8, 0.35);
   }
 
-  /* Tiny hover lift (optional but nice) */
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-
-  /* Make canvas fill the card nicely */
   canvas {
-    position: relative; /* keep above ::before */
+    position: relative;
     z-index: 1;
     width: 100% !important;
     height: 100% !important;
