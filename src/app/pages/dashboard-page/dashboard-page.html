@@ -1,6 +1,9 @@
 <!-- dashboard-page.html -->
- 
+
 <h1>Dashboard</h1>
 @if (chartService.salesChartData(); as data) {
 <app-bar-chart-component [data]="data" [config]="myChartConfig"> </app-bar-chart-component>
+}
+@if (chartService.salesChartData(); as data) {
+<app-line-chart-component [data]="data" [config]="myChartConfig"> </app-line-chart-component>
 }
