@@ -4,7 +4,7 @@
   display: block;
 }
 
-:host ::ng-deep .chart-root {
+:host ::ng-deep .dashboard__chart .chart__root {
   position: relative;
   height: 40vh;
   width: 80vw;
@@ -42,7 +42,7 @@
   }
 }
 
-:host ::ng-deep canvas {
+:host ::ng-deep .dashboard-chart .chart__root canvas {
   position: relative;
   z-index: 1;
   width: 100% !important;
