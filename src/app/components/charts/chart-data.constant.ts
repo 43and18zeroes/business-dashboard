@@ -12,14 +12,3 @@ export const SALES_STATS = [
   { category: 'November', sales: 850, costs: 580 },
   { category: 'December', sales: 980, costs: 650 },
 ];
-
-export const CUSTOMER_CHANNELS = [
-  { channel: 'Organic', count: 1200 },
-  { channel: 'Paid', count: 800 },
-  { channel: 'Referral', count: 450 },
-];
-
-export const CONVERSION_STATS = [
-  { date: '2025-01-01', rate: 2.5 },
-  { date: '2025-01-02', rate: 2.8 },
-];

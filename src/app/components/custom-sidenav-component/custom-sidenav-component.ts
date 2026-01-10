@@ -27,7 +27,7 @@ export class CustomSidenavComponent {
 menuItems = signal<MenuItem[]>([
   { image: 'img/logo/dashboard-logo-24.webp', label: 'Dashboard', route: '/' },
   { icon: 'insert_chart', label: 'Monthy Sales', route: '/monthly-sales' },
-  { icon: 'insert_chart', label: 'New Customer', route: '/new-customers' },
+  { icon: 'stacked_line_chart', label: 'New Customers', route: '/new-customers' },
   { icon: 'info', label: 'Info', route: '/info' },
 ]);
 }
