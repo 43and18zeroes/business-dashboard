@@ -18,6 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/new-customers-page/new-customers-page').then((m) => m.NewCustomersPage),
   },
   {
+    path: 'info',
+    title: 'Info - Business Dashboard',
+    loadComponent: () => import('./pages/info-page/info-page').then((m) => m.InfoPage),
+  },
+  {
     path: '**',
     title: '404 - Page not found - Business Dashboard',
     loadComponent: () =>
