@@ -16,7 +16,7 @@ export class LineChartComponent extends BaseChartComponent {
     }
 
     this.chartInstance = new Chart(this.canvas.nativeElement, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: data.map((d) => d.label),
         datasets: [

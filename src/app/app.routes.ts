@@ -13,6 +13,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/monthly-sales-page/monthly-sales-page').then((m) => m.MonthlySalesPage),
   },
   {
+    path: 'new-customers',
+    title: 'New Customers - Business Dashboard',
+    loadComponent: () => import('./pages/new-customers-page/new-customers-page').then((m) => m.NewCustomersPage),
+  },
+  {
     path: '**',
     title: '404 - Page not found - Business Dashboard',
     loadComponent: () =>
