@@ -53,8 +53,8 @@ export class ChartDataService {
     return [
       {
         label: 'Projects',
-        value: overall,              // Gesamt
-        secondaryValue: completed,   // Abgeschlossen
+        value: overall,
+        secondaryValue: completed,
         color: '#007BFF',
         secondaryColor: '#00D4FF',
       },
