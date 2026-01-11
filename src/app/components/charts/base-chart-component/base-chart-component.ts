@@ -1,5 +1,6 @@
 import {
   Component,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -7,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
-import { Chart } from 'chart.js';
+import { Chart, ChartDataset, ChartOptions, ChartType } from 'chart.js';
 import { ThemeService } from '../../../services/theme-service';
 
 @Component({
@@ -16,27 +17,74 @@ import { ThemeService } from '../../../services/theme-service';
   templateUrl: './base-chart-component.html',
   styleUrl: './base-chart-component.scss',
 })
-export abstract class BaseChartComponent {
-  private themeService = inject(ThemeService);
-  data = input.required<ChartData[]>();
+export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
+  private readonly themeService = inject(ThemeService);
+  private readonly destroyRef = inject(DestroyRef);
 
+  data = input.required<ChartData[]>();
   config = input<ChartConfiguration>(new ChartConfiguration());
 
   @ViewChild('chartCanvas', { static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
 
-  protected chartInstance: any;
+  protected chartInstance?: Chart<TType>;
+
+  protected abstract readonly chartType: TType;
+
+  protected abstract buildDatasets(data: ChartData[]): ChartDataset<TType>[];
+
+  protected buildOptions(config: ChartConfiguration): ChartOptions<TType> {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: config.showLegend },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => Number(value).toLocaleString('en-US'),
+          },
+        },
+      },
+    } as ChartOptions<TType>;
+  }
 
   constructor() {
     effect(() => {
-      const currentData = this.data();
-      const currentConfig = this.config();
       const isDark = this.themeService.darkMode();
       this.updateGlobalChartDefaults(isDark);
-      if (currentData && currentData.length > 0) {
-        this.renderChart(currentData, currentConfig);
-      }
     });
+
+    effect((onCleanup) => {
+      const data = this.data();
+      const config = this.config();
+
+      if (!data?.length) return;
+      this.renderChart(data, config);
+      onCleanup(() => this.destroyChart());
+    });
+
+    this.destroyRef.onDestroy(() => this.destroyChart());
+  }
+
+  private renderChart(data: ChartData[], config: ChartConfiguration): void {
+    this.destroyChart();
+
+    this.chartInstance = new Chart(this.canvas.nativeElement, {
+      type: this.chartType,
+      data: {
+        labels: data.map((d) => d.label),
+        datasets: this.buildDatasets(data),
+      },
+      options: this.buildOptions(config),
+    }) as Chart<TType>;
+  }
+
+  protected destroyChart(): void {
+    this.chartInstance?.destroy();
+    this.chartInstance = undefined;
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
@@ -46,6 +94,7 @@ export abstract class BaseChartComponent {
 
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
+
     Chart.defaults.set('scales.common', {
       grid: {
         color: gridColor,
@@ -65,16 +114,5 @@ export abstract class BaseChartComponent {
       padding: 12,
       cornerRadius: 8,
     });
-  }
-
-  protected abstract renderChart(
-    data: ChartData[],
-    config: ChartConfiguration
-  ): void;
-
-  ngOnDestroy(): void {
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-    }
   }
 }

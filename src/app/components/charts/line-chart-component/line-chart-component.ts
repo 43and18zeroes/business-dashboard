@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseChartComponent } from '../base-chart-component/base-chart-component';
-import { ChartConfiguration, ChartData } from '../../../models/chart.model';
-import Chart from 'chart.js/auto';
+import { ChartData } from '../../../models/chart.model';
+import { ChartDataset } from 'chart.js';
 
 @Component({
   selector: 'app-line-chart-component',
@@ -9,47 +9,21 @@ import Chart from 'chart.js/auto';
   templateUrl: './line-chart-component.html',
   styleUrl: './line-chart-component.scss',
 })
-export class LineChartComponent extends BaseChartComponent {
-  protected renderChart(data: ChartData[], config: ChartConfiguration): void {
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-    }
+export class LineChartComponent extends BaseChartComponent<'line'> {
+  protected readonly chartType = 'line' as const;
 
-    this.chartInstance = new Chart(this.canvas.nativeElement, {
-      type: 'line',
-      data: {
-        labels: data.map((d) => d.label),
-        datasets: [
-          {
-            label: 'Current Year',
-            data: data.map((d) => d.value),
-            backgroundColor: data[0]?.color || '#007BFF',
-          },
-          {
-            label: 'Last Year',
-            data: data.map((d) => d.secondaryValue || 0),
-            backgroundColor: data[0]?.secondaryColor || '#00D4FF',
-          },
-        ],
+  protected buildDatasets(data: ChartData[]): ChartDataset<'line'>[] {
+    return [
+      {
+        label: 'Current Year',
+        data: data.map((d) => d.value),
+        backgroundColor: data[0]?.color || '#007BFF',
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: (value) => {
-                return Number(value).toLocaleString('en-US');
-              },
-            },
-          },
-        },
-        plugins: {
-          legend: { display: config.showLegend },
-        },
+      {
+        label: 'Last Year',
+        data: data.map((d) => d.secondaryValue ?? 0),
+        backgroundColor: data[0]?.secondaryColor || '#00D4FF',
       },
-
-    });
+    ];
   }
 }
