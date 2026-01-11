@@ -1,59 +1,55 @@
-import { computed, inject, Injectable } from '@angular/core';
-import { ChartData } from '../../models/chart.model';
-import { HttpClient } from '@angular/common/http';
+import { computed, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable, of } from 'rxjs';
+import { ChartData } from '../../models/chart.model';
 import { NEW_CUSTOMERS_STATS, SALES_STATS } from './chart-data.constant';
-import { of } from 'rxjs';
 
-export interface RawSalesChartEntry {
-  category: string;
-  sales: number;
-  costs: number;
-}
+type CategoryEntry = { category: string };
 
-export interface RawNewCustomersChartEntry {
-  category: string;
-  currentYear: number;
-  lastYear: number;
-}
+const DEFAULT_SERIES = [
+  { key: 'primary', color: '#007BFF' },
+  { key: 'secondary', color: '#00D4FF' },
+] as const;
 
-const CHART_COLORS = {
-  salesPrimary: '#007BFF',
-  salesSecondary: '#00D4FF',
-};
+type SeriesKey = typeof DEFAULT_SERIES[number]['key'];
 
-@Injectable({
-  providedIn: 'root',
-})
+type SeriesSelectors<T> = Record<SeriesKey, (item: T) => number>;
+
+@Injectable({ providedIn: 'root' })
 export class ChartDataService {
-  private http = inject(HttpClient);
-  private apiUrl = 'https://api.deine-seite.de/v1/data';
+  private createChartDataSignal<T extends CategoryEntry>(
+    source$: Observable<T[]>,
+    initialValue: T[],
+    selectors: SeriesSelectors<T>
+  ) {
+    const raw = toSignal(source$, { initialValue });
 
-  private rawSalesData = toSignal(of(SALES_STATS as RawSalesChartEntry[]), {
-    initialValue: SALES_STATS as RawSalesChartEntry[],
-  });
+    return computed<ChartData[]>(() =>
+      raw().map((item) => ({
+        label: item.category,
+        value: selectors.primary(item),
+        secondaryValue: selectors.secondary(item),
+        color: DEFAULT_SERIES[0].color,
+        secondaryColor: DEFAULT_SERIES[1].color,
+      }))
+    );
+  }
 
-  readonly salesChartData = computed<ChartData[]>(() => {
-    return this.rawSalesData().map((item) => ({
-      label: item.category,
-      value: item.sales,
-      secondaryValue: item.costs,
-      color: CHART_COLORS.salesPrimary,
-      secondaryColor: CHART_COLORS.salesSecondary,
-    }));
-  });
+  readonly salesChartData = this.createChartDataSignal(
+    of(SALES_STATS),
+    SALES_STATS,
+    {
+      primary: (x) => x.sales,
+      secondary: (x) => x.costs,
+    }
+  );
 
-  private rawNewCustomersData = toSignal(of(NEW_CUSTOMERS_STATS as RawNewCustomersChartEntry[]), {
-    initialValue: NEW_CUSTOMERS_STATS as RawNewCustomersChartEntry[],
-  });
-
-  readonly newCustomersChartData = computed<ChartData[]>(() => {
-    return this.rawNewCustomersData().map((item) => ({
-      label: item.category,
-      value: item.currentYear,
-      secondaryValue: item.lastYear,
-      color: CHART_COLORS.salesPrimary,
-      secondaryColor: CHART_COLORS.salesSecondary,
-    }));
-  });
+  readonly newCustomersChartData = this.createChartDataSignal(
+    of(NEW_CUSTOMERS_STATS),
+    NEW_CUSTOMERS_STATS,
+    {
+      primary: (x) => x.currentYear,
+      secondary: (x) => x.lastYear,
+    }
+  );
 }

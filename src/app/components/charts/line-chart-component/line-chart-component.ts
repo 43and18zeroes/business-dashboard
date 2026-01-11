@@ -21,12 +21,12 @@ export class LineChartComponent extends BaseChartComponent {
         labels: data.map((d) => d.label),
         datasets: [
           {
-            label: 'Sales',
+            label: 'Current Year',
             data: data.map((d) => d.value),
             backgroundColor: data[0]?.color || '#007BFF',
           },
           {
-            label: 'Costs',
+            label: 'Last Year',
             data: data.map((d) => d.secondaryValue || 0),
             backgroundColor: data[0]?.secondaryColor || '#00D4FF',
           },
@@ -36,12 +36,20 @@ export class LineChartComponent extends BaseChartComponent {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: (value) => {
+                return Number(value).toLocaleString('en-US');
+              },
+            },
+          },
         },
         plugins: {
           legend: { display: config.showLegend },
         },
       },
+
     });
   }
 }

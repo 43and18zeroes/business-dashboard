@@ -36,12 +36,20 @@ export class BarChartComponent extends BaseChartComponent {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: (value) => {
+                return Number(value).toLocaleString('en-US');
+              },
+            },
+          },
         },
         plugins: {
           legend: { display: config.showLegend },
         },
       },
+
     });
   }
 }
