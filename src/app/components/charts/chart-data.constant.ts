@@ -16,16 +16,16 @@ export const SALES_STATS = [
 ];
 
 export const NEW_CUSTOMERS_STATS = [
-  { category: 'January', sales: 4281, costs: 3120 },
-  { category: 'February', sales: 3845, costs: 2915 },
-  { category: 'March', sales: 5190, costs: 3560 },
-  { category: 'April', sales: 4923, costs: 3410 },
-  { category: 'May', sales: 5812, costs: 4050 },
-  { category: 'June', sales: 6245, costs: 4290 },
-  { category: 'July', sales: 5567, costs: 4130 },
-  { category: 'August', sales: 5310, costs: 3985 },
-  { category: 'September', sales: 6942, costs: 4820 },
-  { category: 'October', sales: 7215, costs: 5140 },
-  { category: 'November', sales: 8530, costs: 5895 },
-  { category: 'December', sales: 9876, costs: 6512 },
+  { category: 'January', currentYear: 4172, lastYear: 2689 },
+  { category: 'February', currentYear: 5638, lastYear: 3214 },
+  { category: 'March', currentYear: 4891, lastYear: 3542 },
+  { category: 'April', currentYear: 6427, lastYear: 3875 },
+  { category: 'May', currentYear: 5184, lastYear: 3016 },
+  { category: 'June', currentYear: 7819, lastYear: 4428 },
+  { category: 'July', currentYear: 4693, lastYear: 3321 },
+  { category: 'August', currentYear: 6884, lastYear: 3957 },
+  { category: 'September', currentYear: 5297, lastYear: 3610 },
+  { category: 'October', currentYear: 8421, lastYear: 4873 },
+  { category: 'November', currentYear: 6128, lastYear: 3984 },
+  { category: 'December', currentYear: 9746, lastYear: 5421 },
 ];
