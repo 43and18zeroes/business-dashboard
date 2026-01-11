@@ -12,17 +12,28 @@ import { ChartDataset } from 'chart.js/auto';
 export class BarChartComponent extends BaseChartComponent<'bar'> {
   protected readonly chartType = 'bar' as const;
 
+  private getSeriesColors(data: ChartData[]) {
+    return {
+      primary: data[0]?.color || '#007BFF',
+      secondary: data[0]?.secondaryColor || '#00D4FF',
+    };
+  }
+
   protected buildDatasets(data: ChartData[]): ChartDataset<'bar'>[] {
+    const { primary, secondary } = this.getSeriesColors(data);
+    const primaryValues = data.map((d) => d.value);
+    const secondaryValues = data.map((d) => d.secondaryValue ?? 0);
+
     return [
       {
         label: 'Sales',
-        data: data.map((d) => d.value),
-        backgroundColor: data[0]?.color || '#007BFF',
+        data: primaryValues,
+        backgroundColor: primary,
       },
       {
         label: 'Costs',
-        data: data.map((d) => d.secondaryValue ?? 0),
-        backgroundColor: data[0]?.secondaryColor || '#00D4FF',
+        data: secondaryValues,
+        backgroundColor: secondary,
       },
     ];
   }

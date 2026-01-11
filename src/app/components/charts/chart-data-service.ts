@@ -11,24 +11,28 @@ const DEFAULT_SERIES = [
 
 type SeriesKey = typeof DEFAULT_SERIES[number]['key'];
 type SeriesSelectors<T> = Record<SeriesKey, (item: T) => number>;
+type LabelSelector<T> = (item: T) => string;
 
 @Injectable({ providedIn: 'root' })
 export class ChartDataService {
+  private readonly primaryColor = DEFAULT_SERIES[0].color;
+  private readonly secondaryColor = DEFAULT_SERIES[1].color;
+
   private createChartDataSignal<T>(
-    source$: Observable<T[]>,
-    initialValue: T[],
+    source$: Observable<readonly T[]>,
+    initialValue: readonly T[],
     selectors: SeriesSelectors<T>,
-    labelSelector: (item: T) => string
+    labelSelector: LabelSelector<T>
   ) {
-    const raw = toSignal(source$, { initialValue });
+    const raw = toSignal(source$, { initialValue: [...initialValue] as T[] });
 
     return computed<ChartData[]>(() =>
       raw().map((item) => ({
         label: labelSelector(item),
         value: selectors.primary(item),
         secondaryValue: selectors.secondary(item),
-        color: DEFAULT_SERIES[0].color,
-        secondaryColor: DEFAULT_SERIES[1].color,
+        color: this.primaryColor,
+        secondaryColor: this.secondaryColor,
       }))
     );
   }
@@ -55,8 +59,8 @@ export class ChartDataService {
         label: 'Projects',
         value: overall,
         secondaryValue: completed,
-        color: '#007BFF',
-        secondaryColor: '#00D4FF',
+        color: this.primaryColor,
+        secondaryColor: this.secondaryColor,
       },
     ];
   });

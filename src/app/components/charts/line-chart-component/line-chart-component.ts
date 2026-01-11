@@ -12,17 +12,28 @@ import { ChartDataset } from 'chart.js';
 export class LineChartComponent extends BaseChartComponent<'line'> {
   protected readonly chartType = 'line' as const;
 
+  private getSeriesColors(data: ChartData[]) {
+    return {
+      primary: data[0]?.color || '#007BFF',
+      secondary: data[0]?.secondaryColor || '#00D4FF',
+    };
+  }
+
   protected buildDatasets(data: ChartData[]): ChartDataset<'line'>[] {
+    const { primary, secondary } = this.getSeriesColors(data);
+    const primaryValues = data.map((d) => d.value);
+    const secondaryValues = data.map((d) => d.secondaryValue ?? 0);
+
     return [
       {
         label: 'Current Year',
-        data: data.map((d) => d.value),
-        backgroundColor: data[0]?.color || '#007BFF',
+        data: primaryValues,
+        backgroundColor: primary,
       },
       {
         label: 'Last Year',
-        data: data.map((d) => d.secondaryValue ?? 0),
-        backgroundColor: data[0]?.secondaryColor || '#00D4FF',
+        data: secondaryValues,
+        backgroundColor: secondary,
       },
     ];
   }

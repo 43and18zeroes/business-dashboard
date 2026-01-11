@@ -3,6 +3,11 @@ import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import { BaseChartComponent } from '../base-chart-component/base-chart-component';
 
+type ProjectProgress = {
+  completed: number;
+  inProgress: number;
+};
+
 @Component({
   selector: 'app-ring-chart-component',
   imports: [],
@@ -12,11 +17,18 @@ import { BaseChartComponent } from '../base-chart-component/base-chart-component
 export class RingChartComponent extends BaseChartComponent<'doughnut'> {
   protected override readonly chartType = 'doughnut' as const;
 
-  protected override buildLabels(data: ChartData[]): string[] {
+  private getProgress(data: ChartData[]): ProjectProgress {
     const item = data[0];
-    const overall = item?.value ?? 0;
-    const completed = item?.secondaryValue ?? 0;
+    const overall = Math.max(0, item?.value ?? 0);
+    const completedRaw = Math.max(0, item?.secondaryValue ?? 0);
+    const completed = Math.min(completedRaw, overall);
     const inProgress = Math.max(0, overall - completed);
+
+    return { completed, inProgress };
+  }
+
+  protected override buildLabels(data: ChartData[]): string[] {
+    const { completed, inProgress } = this.getProgress(data);
 
     return [
       `Projects Completed – ${completed}`,
@@ -26,18 +38,12 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
 
   protected override buildDatasets(data: ChartData[]): ChartDataset<'doughnut'>[] {
     const item = data[0];
-
-    const overall = item?.value ?? 0;
-    const completed = item?.secondaryValue ?? 0;
-
-    const safeOverall = Math.max(0, overall);
-    const safeCompleted = Math.min(Math.max(0, completed), safeOverall);
-    const inProgress = Math.max(0, safeOverall - safeCompleted);
+    const { completed, inProgress } = this.getProgress(data);
 
     return [
       {
         label: 'Projects',
-        data: [safeCompleted, inProgress],
+        data: [completed, inProgress],
         backgroundColor: [
           item?.color ?? '#007BFF',
           item?.secondaryColor ?? '#00D4FF',
@@ -58,9 +64,7 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
         legend: { display: config.showLegend },
         tooltip: {
           callbacks: {
-            label: (ctx) => {
-              return ctx.label ?? '';
-            },
+            label: (ctx) => ctx.label ?? '',
           },
         },
       },
