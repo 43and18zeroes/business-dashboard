@@ -52,4 +52,13 @@ export class ChartDataService {
       secondary: (x) => x.lastYear,
     }
   );
+
+  readonly projectsChartData = this.createChartDataSignal(
+    of(NEW_CUSTOMERS_STATS),
+    NEW_CUSTOMERS_STATS,
+    {
+      primary: (x) => x.currentYear,
+      secondary: (x) => x.lastYear,
+    }
+  );
 }

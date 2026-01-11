@@ -7,3 +7,6 @@
 @if (chartService.newCustomersChartData(); as data) {
 <app-line-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-line-chart-component>
 }
+@if (chartService.projectsChartData(); as data) {
+<app-line-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-line-chart-component>
+}
