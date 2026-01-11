@@ -2,9 +2,7 @@ import { computed, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of } from 'rxjs';
 import { ChartData } from '../../models/chart.model';
-import { NEW_CUSTOMERS_STATS, SALES_STATS } from './chart-data.constant';
-
-type CategoryEntry = { category: string };
+import { NEW_CUSTOMERS_STATS, PROJECTS, SALES_STATS } from './chart-data.constant';
 
 const DEFAULT_SERIES = [
   { key: 'primary', color: '#007BFF' },
@@ -12,21 +10,21 @@ const DEFAULT_SERIES = [
 ] as const;
 
 type SeriesKey = typeof DEFAULT_SERIES[number]['key'];
-
 type SeriesSelectors<T> = Record<SeriesKey, (item: T) => number>;
 
 @Injectable({ providedIn: 'root' })
 export class ChartDataService {
-  private createChartDataSignal<T extends CategoryEntry>(
+  private createChartDataSignal<T>(
     source$: Observable<T[]>,
     initialValue: T[],
-    selectors: SeriesSelectors<T>
+    selectors: SeriesSelectors<T>,
+    labelSelector: (item: T) => string
   ) {
     const raw = toSignal(source$, { initialValue });
 
     return computed<ChartData[]>(() =>
       raw().map((item) => ({
-        label: item.category,
+        label: labelSelector(item),
         value: selectors.primary(item),
         secondaryValue: selectors.secondary(item),
         color: DEFAULT_SERIES[0].color,
@@ -38,27 +36,21 @@ export class ChartDataService {
   readonly salesChartData = this.createChartDataSignal(
     of(SALES_STATS),
     SALES_STATS,
-    {
-      primary: (x) => x.sales,
-      secondary: (x) => x.costs,
-    }
+    { primary: (x) => x.sales, secondary: (x) => x.costs },
+    (x) => x.category
   );
 
   readonly newCustomersChartData = this.createChartDataSignal(
     of(NEW_CUSTOMERS_STATS),
     NEW_CUSTOMERS_STATS,
-    {
-      primary: (x) => x.currentYear,
-      secondary: (x) => x.lastYear,
-    }
+    { primary: (x) => x.currentYear, secondary: (x) => x.lastYear },
+    (x) => x.category
   );
 
   readonly projectsChartData = this.createChartDataSignal(
-    of(NEW_CUSTOMERS_STATS),
-    NEW_CUSTOMERS_STATS,
-    {
-      primary: (x) => x.currentYear,
-      secondary: (x) => x.lastYear,
-    }
+    of(PROJECTS),
+    PROJECTS,
+    { primary: (x) => x.overall, secondary: (x) => x.completed },
+    () => 'Projects'
   );
 }

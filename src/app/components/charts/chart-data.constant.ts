@@ -29,3 +29,7 @@ export const NEW_CUSTOMERS_STATS = [
   { category: 'November', currentYear: 6128, lastYear: 3984 },
   { category: 'December', currentYear: 9746, lastYear: 5421 },
 ];
+
+export const PROJECTS = [
+  { overall: 185, completed: 143 },
+];

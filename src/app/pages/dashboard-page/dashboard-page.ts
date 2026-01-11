@@ -3,10 +3,11 @@ import { BarChartComponent } from '../../components/charts/bar-chart-component/b
 import { ChartConfiguration } from '../../models/chart.model';
 import { ChartDataService } from '../../components/charts/chart-data-service';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
+import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent],
+  imports: [BarChartComponent, LineChartComponent, RingChartComponent],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
