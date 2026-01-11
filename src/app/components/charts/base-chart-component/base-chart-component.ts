@@ -33,6 +33,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
 
   protected abstract buildDatasets(data: ChartData[]): ChartDataset<TType>[];
 
+  protected buildLabels(data: ChartData[]): string[] {
+    return data.map((d) => d.label);
+  }
+
   protected buildOptions(config: ChartConfiguration): ChartOptions<TType> {
     return {
       responsive: true,
@@ -75,7 +79,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
     this.chartInstance = new Chart(this.canvas.nativeElement, {
       type: this.chartType,
       data: {
-        labels: data.map((d) => d.label),
+        labels: this.buildLabels(data),
         datasets: this.buildDatasets(data),
       },
       options: this.buildOptions(config),

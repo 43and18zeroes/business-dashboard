@@ -47,10 +47,17 @@ export class ChartDataService {
     (x) => x.category
   );
 
-  readonly projectsChartData = this.createChartDataSignal(
-    of(PROJECTS),
-    PROJECTS,
-    { primary: (x) => x.overall, secondary: (x) => x.completed },
-    () => 'Projects'
-  );
+  readonly projectsChartData = computed<ChartData[]>(() => {
+    const { overall, completed } = PROJECTS[0];
+
+    return [
+      {
+        label: 'Projects',
+        value: overall,              // Gesamt
+        secondaryValue: completed,   // Abgeschlossen
+        color: '#007BFF',
+        secondaryColor: '#00D4FF',
+      },
+    ];
+  });
 }
