@@ -6,7 +6,6 @@
     <app-line-chart-component class="dashboard__chart item item-large" [data]="data" [config]="myChartConfig">
     </app-line-chart-component>
     }
-
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component class="dashboard__chart item item-small" [data]="data" [config]="myChartConfig">
     </app-ring-chart-component>
