@@ -1,12 +1,12 @@
 <!-- dashboard-page.html -->
 
 <h1>Dashboard</h1>
-@if (chartService.salesChartData(); as data) {
-<app-bar-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-bar-chart-component>
-}
 @if (chartService.newCustomersChartData(); as data) {
 <app-line-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-line-chart-component>
 }
 @if (chartService.projectsChartData(); as data) {
 <app-ring-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-ring-chart-component>
+}
+@if (chartService.salesChartData(); as data) {
+<app-bar-chart-component class="dashboard__chart" [data]="data" [config]="myChartConfig"> </app-bar-chart-component>
 }
