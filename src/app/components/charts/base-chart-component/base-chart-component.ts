@@ -1,36 +1,40 @@
 import {
+  AfterViewInit,
   Component,
   DestroyRef,
-  effect,
   ElementRef,
+  effect,
   inject,
   input,
+  signal,
   ViewChild,
 } from '@angular/core';
-import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { Chart, ChartDataset, ChartOptions, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { ThemeService } from '../../../services/theme-service';
 
 @Component({
   selector: 'app-base-chart-component',
-  imports: [],
   templateUrl: './base-chart-component.html',
   styleUrl: './base-chart-component.scss',
 })
-export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
+export abstract class BaseChartComponent<TType extends ChartType = ChartType>
+  implements AfterViewInit
+{
   private readonly themeService = inject(ThemeService);
   private readonly destroyRef = inject(DestroyRef);
+
+  // ✅ Signal: View ist bereit (Canvas existiert sicher)
+  private readonly viewReady = signal(false);
 
   data = input.required<ChartData[]>();
   config = input<ChartConfiguration>(new ChartConfiguration());
 
-  @ViewChild('chartCanvas', { static: true })
+  @ViewChild('chartCanvas', { static: false })
   canvas!: ElementRef<HTMLCanvasElement>;
 
   protected chartInstance?: Chart<TType>;
-
   protected abstract readonly chartType: TType;
-
   protected abstract buildDatasets(data: ChartData[]): ChartDataset<TType>[];
 
   protected buildLabels(data: ChartData[]): string[] {
@@ -41,36 +45,45 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
     return {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: config.showLegend },
-      },
+      plugins: { legend: { display: config.showLegend } },
       scales: {
         y: {
           beginAtZero: true,
-          ticks: {
-            callback: (value) => Number(value).toLocaleString('en-US'),
-          },
+          ticks: { callback: (value) => Number(value).toLocaleString('en-US') },
         },
       },
     } as ChartOptions<TType>;
   }
 
   constructor() {
+    // Theme Defaults + Update bestehender Charts
     effect(() => {
       const isDark = this.themeService.darkMode();
       this.updateGlobalChartDefaults(isDark);
+
+      this.chartInstance?.update();
+      this.chartInstance?.resize();
     });
 
+    // ✅ Render-Effect bleibt im Constructor, wartet aber auf viewReady()
     effect((onCleanup) => {
+      const ready = this.viewReady();
       const data = this.data();
       const config = this.config();
 
+      if (!ready) return;
       if (!data?.length) return;
+
       this.renderChart(data, config);
       onCleanup(() => this.destroyChart());
     });
 
     this.destroyRef.onDestroy(() => this.destroyChart());
+  }
+
+  ngAfterViewInit(): void {
+    // erst jetzt existiert das Canvas sicher
+    this.viewReady.set(true);
   }
 
   private renderChart(data: ChartData[], config: ChartConfiguration): void {
@@ -100,14 +113,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType> {
     Chart.defaults.borderColor = gridColor;
 
     Chart.defaults.set('scales.common', {
-      grid: {
-        color: gridColor,
-        borderColor: axisColor,
-        tickColor: axisColor,
-      },
-      ticks: {
-        color: textColor,
-      },
+      grid: { color: gridColor, borderColor: axisColor, tickColor: axisColor },
+      ticks: { color: textColor },
     });
 
     const tooltipBg = isDark ? '#292a2c' : '#e9e7eb';
