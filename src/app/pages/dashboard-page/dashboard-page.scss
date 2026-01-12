@@ -68,10 +68,14 @@
 
     .dashboard-chart {
       .chart__root {
+        position: relative;
+        height: 100%;
+        width: 100%;
+
         canvas {
-          position: relative;
-          z-index: 1;
           display: block;
+          width: 100% !important;
+          height: 100% !important;
         }
       }
     }
