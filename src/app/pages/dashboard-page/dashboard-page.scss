@@ -1,7 +1,18 @@
 // dashboard-page.scss
 
-:host {
-  display: block;
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+  padding: 10px;
+
+  .item-large {
+    grid-column: span 12;
+  }
+
+  .item-small {
+    grid-column: span 4;
+  }
 
   ::ng-deep {
     .dashboard__chart {
