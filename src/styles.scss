@@ -72,3 +72,11 @@ a {
     color: light-dark(#551a8b, #c58af9);
   }
 }
+
+.no__transition * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
