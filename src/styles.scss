@@ -3,41 +3,33 @@
 
 html {
   color-scheme: light dark;
-  @include mat.theme(
-    (
-      color: mat.$azure-palette,
+  @include mat.theme((color: mat.$azure-palette,
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
 }
 
 .darkMode {
   color-scheme: dark;
-  @include mat.theme(
-    (
-      color: mat.$azure-palette,
+  @include mat.theme((color: mat.$azure-palette,
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
 }
 
 .lightMode {
   color-scheme: light;
-  @include mat.theme(
-    (
-      color: mat.$azure-palette,
+  @include mat.theme((color: mat.$azure-palette,
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
 }
 
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -57,7 +49,15 @@ h2 {
   font-weight: 500;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, li {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+li {
   color: var(--mat-sys-on-surface-variant);
 }
 
