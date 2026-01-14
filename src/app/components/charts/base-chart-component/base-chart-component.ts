@@ -68,26 +68,19 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       const ready = this.viewReady();
       const data = this.data();
       const config = this.config();
+      const _tick = this.refreshTick();
 
       if (!ready) return;
       if (!data?.length) return;
 
-      this.renderChart(data, config);
-      onCleanup(() => this.destroyChart());
-    });
+      const rafId = requestAnimationFrame(() => {
+        this.renderChart(data, config);
+      });
 
-    effect(() => {
-      const ready = this.viewReady();
-      const tick = this.refreshTick();
-      const data = this.data();
-      const config = this.config();
-
-      if (!ready) return;
-      if (!data?.length) return;
-      if (tick === 0) return;
-
-      this.destroyChart();
-      requestAnimationFrame(() => this.renderChart(data, config));
+      onCleanup(() => {
+        cancelAnimationFrame(rafId);
+        this.destroyChart();
+      });
     });
 
     this.destroyRef.onDestroy(() => this.destroyChart());
