@@ -19,16 +19,16 @@ import { ThemeService } from '../../../services/theme-service';
   styleUrl: './base-chart-component.scss',
 })
 export abstract class BaseChartComponent<TType extends ChartType = ChartType>
-  implements AfterViewInit
-{
+  implements AfterViewInit {
   private readonly themeService = inject(ThemeService);
   private readonly destroyRef = inject(DestroyRef);
 
-  // ✅ Signal: View ist bereit (Canvas existiert sicher)
   private readonly viewReady = signal(false);
 
   data = input.required<ChartData[]>();
   config = input<ChartConfiguration>(new ChartConfiguration());
+
+  refreshTick = input<number>(0);
 
   @ViewChild('chartCanvas', { static: false })
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -56,7 +56,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   constructor() {
-    // Theme Defaults + Update bestehender Charts
     effect(() => {
       const isDark = this.themeService.darkMode();
       this.updateGlobalChartDefaults(isDark);
@@ -65,7 +64,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       this.chartInstance?.resize();
     });
 
-    // ✅ Render-Effect bleibt im Constructor, wartet aber auf viewReady()
     effect((onCleanup) => {
       const ready = this.viewReady();
       const data = this.data();
@@ -78,11 +76,24 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       onCleanup(() => this.destroyChart());
     });
 
+    effect(() => {
+      const ready = this.viewReady();
+      const tick = this.refreshTick();
+      const data = this.data();
+      const config = this.config();
+
+      if (!ready) return;
+      if (!data?.length) return;
+      if (tick === 0) return;
+
+      this.destroyChart();
+      requestAnimationFrame(() => this.renderChart(data, config));
+    });
+
     this.destroyRef.onDestroy(() => this.destroyChart());
   }
 
   ngAfterViewInit(): void {
-    // erst jetzt existiert das Canvas sicher
     this.viewReady.set(true);
   }
 
