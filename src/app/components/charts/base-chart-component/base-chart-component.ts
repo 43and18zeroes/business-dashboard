@@ -100,14 +100,11 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       const ok = rect.width > 0 && rect.height > 0;
       this.containerReady.set(ok);
 
-      // 👇 DAS fehlte: wenn Chart existiert und nach Render das erste Resize kommt:
       if (ok && this.chartInstance && !this.didFirstResizeAfterRender) {
         this.didFirstResizeAfterRender = true;
 
-        // 1-2 Frames warten, damit Grid wirklich settled ist
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            // Re-render => Animation wird sichtbar neu gestartet
             this.renderChart(this.data(), this.config());
           });
         });
