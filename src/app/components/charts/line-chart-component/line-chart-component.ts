@@ -29,11 +29,13 @@ export class LineChartComponent extends BaseChartComponent<'line'> {
         label: 'Current Year',
         data: primaryValues,
         backgroundColor: primary,
+        tension: 0.3,
       },
       {
         label: 'Last Year',
         data: secondaryValues,
         backgroundColor: secondary,
+        tension: 0.3,
       },
     ];
   }

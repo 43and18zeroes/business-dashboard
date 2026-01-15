@@ -47,19 +47,15 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   protected buildOptions(config: ChartConfiguration): ChartOptions<TType> {
-    return {
+    const base: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       resizeDelay: 120,
       animation: { duration: 700 },
       plugins: { legend: { display: config.showLegend } },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { callback: (value) => Number(value).toLocaleString('en-US') },
-        },
-      },
-    } as ChartOptions<TType>;
+    };
+
+    return base as ChartOptions<TType>;
   }
 
   constructor() {
@@ -98,7 +94,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       if (!rect) return;
 
       const ok = rect.width > 0 && rect.height > 0;
-      this.containerReady.set(ok);
+      if (this.containerReady() !== ok) this.containerReady.set(ok);
 
       if (ok && this.chartInstance && !this.didFirstResizeAfterRender) {
         this.didFirstResizeAfterRender = true;
@@ -118,7 +114,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
 
   private renderChart(data: ChartData[], config: ChartConfiguration): void {
     this.destroyChart();
-    this.didFirstResizeAfterRender = false;
 
     this.chartInstance = new Chart(this.canvas.nativeElement, {
       type: this.chartType,
@@ -133,6 +128,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   protected destroyChart(): void {
     this.chartInstance?.destroy();
     this.chartInstance = undefined;
+    this.didFirstResizeAfterRender = false;
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
