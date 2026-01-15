@@ -23,15 +23,20 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   private readonly themeService = inject(ThemeService);
   private readonly destroyRef = inject(DestroyRef);
 
+  private readonly containerReady = signal(false);
+  private didFirstResizeAfterRender = false;
   private readonly viewReady = signal(false);
+
+  @ViewChild('chartCanvas', { static: false })
+  canvas!: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('chartRoot', { static: false })
+  root!: ElementRef<HTMLElement>;
 
   data = input.required<ChartData[]>();
   config = input<ChartConfiguration>(new ChartConfiguration());
 
   refreshTick = input<number>(0);
-
-  @ViewChild('chartCanvas', { static: false })
-  canvas!: ElementRef<HTMLCanvasElement>;
 
   protected chartInstance?: Chart<TType>;
   protected abstract readonly chartType: TType;
@@ -45,6 +50,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     return {
       responsive: true,
       maintainAspectRatio: false,
+      resizeDelay: 120,
+      animation: { duration: 700 },
       plugins: { legend: { display: config.showLegend } },
       scales: {
         y: {
@@ -64,34 +71,59 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       this.chartInstance?.resize();
     });
 
-    effect((onCleanup) => {
+    effect(() => {
       const ready = this.viewReady();
+      const hasSize = this.containerReady();
       const data = this.data();
       const config = this.config();
       const _tick = this.refreshTick();
 
-      if (!ready) return;
+      if (!ready || !hasSize) return;
       if (!data?.length) return;
 
-      const rafId = requestAnimationFrame(() => {
-        this.renderChart(data, config);
-      });
-
-      onCleanup(() => {
-        cancelAnimationFrame(rafId);
-        this.destroyChart();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.renderChart(data, config);
+        });
       });
     });
 
     this.destroyRef.onDestroy(() => this.destroyChart());
   }
 
+
   ngAfterViewInit(): void {
     this.viewReady.set(true);
+
+    const ro = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (!rect) return;
+
+      const ok = rect.width > 0 && rect.height > 0;
+      this.containerReady.set(ok);
+
+      // 👇 DAS fehlte: wenn Chart existiert und nach Render das erste Resize kommt:
+      if (ok && this.chartInstance && !this.didFirstResizeAfterRender) {
+        this.didFirstResizeAfterRender = true;
+
+        // 1-2 Frames warten, damit Grid wirklich settled ist
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            // Re-render => Animation wird sichtbar neu gestartet
+            this.renderChart(this.data(), this.config());
+          });
+        });
+      }
+    });
+
+    ro.observe(this.root.nativeElement);
+    this.destroyRef.onDestroy(() => ro.disconnect());
   }
+
 
   private renderChart(data: ChartData[], config: ChartConfiguration): void {
     this.destroyChart();
+    this.didFirstResizeAfterRender = false;
 
     this.chartInstance = new Chart(this.canvas.nativeElement, {
       type: this.chartType,
