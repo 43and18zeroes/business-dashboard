@@ -66,9 +66,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     effect(() => {
       const isDark = this.themeService.darkMode();
       this.updateGlobalChartDefaults(isDark);
-
       this.chartInstance?.update();
-      this.chartInstance?.resize();
     });
 
     effect(() => {

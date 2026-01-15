@@ -59,6 +59,14 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
     return {
       responsive: true,
       maintainAspectRatio: false,
+      resizeDelay: 120,
+
+      animation: {
+        duration: 700,
+        animateRotate: true,
+        animateScale: true,
+      },
+
       cutout: '70%',
       plugins: {
         legend: { display: config.showLegend },
@@ -70,4 +78,4 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
       },
     };
   }
-}
+};
