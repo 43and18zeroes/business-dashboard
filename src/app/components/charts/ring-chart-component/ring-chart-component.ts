@@ -11,7 +11,7 @@ type ProjectProgress = {
 @Component({
   selector: 'app-ring-chart-component',
   imports: [],
-  templateUrl: './ring-chart-component.html',
+  templateUrl: '../base-chart-component/base-chart-component.html',
   styleUrl: './ring-chart-component.scss',
 })
 export class RingChartComponent extends BaseChartComponent<'doughnut'> {

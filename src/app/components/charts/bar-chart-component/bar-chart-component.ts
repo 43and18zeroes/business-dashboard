@@ -6,7 +6,7 @@ import { ChartDataset } from 'chart.js/auto';
 @Component({
   selector: 'app-bar-chart-component',
   imports: [],
-  templateUrl: './bar-chart-component.html',
+  templateUrl: '../base-chart-component/base-chart-component.html',
   styleUrl: './bar-chart-component.scss',
 })
 export class BarChartComponent extends BaseChartComponent<'bar'> {

@@ -6,7 +6,7 @@ import { ChartDataset } from 'chart.js';
 @Component({
   selector: 'app-line-chart-component',
   imports: [],
-  templateUrl: './line-chart-component.html',
+  templateUrl: '../base-chart-component/base-chart-component.html',
   styleUrl: './line-chart-component.scss',
 })
 export class LineChartComponent extends BaseChartComponent<'line'> {
