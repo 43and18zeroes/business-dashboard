@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseChartComponent } from '../base-chart-component/base-chart-component';
-import { ChartData } from '../../../models/chart.model';
-import { ChartDataset } from 'chart.js';
+import { ChartConfiguration, ChartData } from '../../../models/chart.model';
+import { ChartDataset, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-line-chart-component',
@@ -38,5 +38,19 @@ export class LineChartComponent extends BaseChartComponent<'line'> {
         tension: 0.3,
       },
     ];
+  }
+
+  protected override buildOptions(config: ChartConfiguration): ChartOptions<'line'> {
+    return {
+      ...super.buildOptions(config),
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => this.numberFormatter.format(Number(value)),
+          },
+        },
+      },
+    };
   }
 }

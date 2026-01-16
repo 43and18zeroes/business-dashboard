@@ -31,8 +31,8 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
     const { completed, inProgress } = this.getProgress(data);
 
     return [
-      `Projects Completed – ${completed}`,
-      `Projects in Progress – ${inProgress}`,
+      `Projects Completed – ${this.numberFormatter.format(completed)}`,
+      `Projects in Progress – ${this.numberFormatter.format(inProgress)}`,
     ];
   }
 

@@ -43,6 +43,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   protected chartInstance?: Chart<TType>;
   protected abstract readonly chartType: TType;
   protected abstract buildDatasets(data: ChartData[]): ChartDataset<TType>[];
+  protected readonly numberFormatter = new Intl.NumberFormat('en-US');
 
   protected buildLabels(data: ChartData[]): string[] {
     return data.map((d) => d.label);

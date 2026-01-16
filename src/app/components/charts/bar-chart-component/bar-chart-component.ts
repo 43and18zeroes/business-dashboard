@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseChartComponent } from '../base-chart-component/base-chart-component';
-import { ChartData } from '../../../models/chart.model';
-import { ChartDataset } from 'chart.js/auto';
+import { ChartConfiguration, ChartData } from '../../../models/chart.model';
+import { ChartDataset, ChartOptions } from 'chart.js/auto';
 
 @Component({
   selector: 'app-bar-chart-component',
@@ -36,5 +36,19 @@ export class BarChartComponent extends BaseChartComponent<'bar'> {
         backgroundColor: secondary,
       },
     ];
+  }
+
+  protected override buildOptions(config: ChartConfiguration): ChartOptions<'bar'> {
+    return {
+      ...super.buildOptions(config),
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => this.numberFormatter.format(Number(value)),
+          },
+        },
+      },
+    };
   }
 }
