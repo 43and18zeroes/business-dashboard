@@ -27,8 +27,38 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   private didFirstResizeAfterRender = false;
   private readonly viewReady = signal(false);
 
+  private pendingRaf1: number | null = null;
+  private pendingRaf2: number | null = null;
+
+  private initialRenderDone = false;
+
+  private resizeTimeout: number | null = null;
+
+  private scheduleSoftResize(): void {
+    if (this.resizeTimeout !== null) window.clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = window.setTimeout(() => {
+      const inst = this.chartInstance;
+      if (!inst || !inst.canvas || !inst.canvas.isConnected) return;
+      inst.resize();
+      inst.update();
+    }, 80);
+  }
+
+  private cancelStableFrame(): void {
+    if (this.pendingRaf1 !== null) cancelAnimationFrame(this.pendingRaf1);
+    if (this.pendingRaf2 !== null) cancelAnimationFrame(this.pendingRaf2);
+    this.pendingRaf1 = this.pendingRaf2 = null;
+  }
+
   private nextStableFrame(cb: () => void): void {
-    requestAnimationFrame(() => requestAnimationFrame(cb));
+    this.cancelStableFrame();
+
+    this.pendingRaf1 = requestAnimationFrame(() => {
+      this.pendingRaf2 = requestAnimationFrame(() => {
+        this.pendingRaf1 = this.pendingRaf2 = null;
+        cb();
+      });
+    });
   }
 
   @ViewChild('chartCanvas', { static: false })
@@ -65,7 +95,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     effect(() => {
       const isDark = this.themeService.darkMode();
       this.updateGlobalChartDefaults(isDark);
-      this.chartInstance?.update();
+
+      const inst = this.chartInstance;
+      if (!inst || !inst.canvas || !inst.canvas.isConnected) return;
+      inst.update();
     });
 
     effect(() => {
@@ -80,7 +113,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       this.nextStableFrame(() => this.renderChart(data, config));
     });
 
-    this.destroyRef.onDestroy(() => this.destroyChart());
+    this.destroyRef.onDestroy(() => {
+      this.cancelStableFrame();
+      this.destroyChart();
+    });
   }
 
 
@@ -94,13 +130,23 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       const ok = rect.width > 0 && rect.height > 0;
       if (this.containerReady() !== ok) this.containerReady.set(ok);
 
-      if (ok && this.chartInstance && !this.didFirstResizeAfterRender) {
-        this.didFirstResizeAfterRender = true;
+      if (!ok) return;
 
-        this.nextStableFrame(() => {
-          this.renderChart(this.data(), this.config());
-        });
-      }
+      const inst = this.chartInstance;
+
+      if (!ok) return;
+      if (!this.chartInstance) return;
+      if (!this.initialRenderDone) return;
+
+      this.scheduleSoftResize();
+
+      this.nextStableFrame(() => {
+        const i = this.chartInstance;
+        if (!i || !i.canvas || !i.canvas.isConnected) return;
+        i.resize();
+        i.update();
+      });
+
     });
 
     ro.observe(this.root.nativeElement);
@@ -119,12 +165,26 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       },
       options: this.buildOptions(config),
     }) as Chart<TType>;
+
+    this.initialRenderDone = true;
   }
 
+
   protected destroyChart(): void {
-    this.chartInstance?.destroy();
+    this.cancelStableFrame();
+
+    if (this.resizeTimeout !== null) {
+      window.clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = null;
+    }
+
+    const inst = this.chartInstance;
     this.chartInstance = undefined;
     this.didFirstResizeAfterRender = false;
+    this.initialRenderDone = false;
+
+    inst?.stop();
+    inst?.destroy();
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
