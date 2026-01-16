@@ -131,22 +131,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       if (this.containerReady() !== ok) this.containerReady.set(ok);
 
       if (!ok) return;
-
-      const inst = this.chartInstance;
-
-      if (!ok) return;
       if (!this.chartInstance) return;
       if (!this.initialRenderDone) return;
 
       this.scheduleSoftResize();
-
-      this.nextStableFrame(() => {
-        const i = this.chartInstance;
-        if (!i || !i.canvas || !i.canvas.isConnected) return;
-        i.resize();
-        i.update();
-      });
-
     });
 
     ro.observe(this.root.nativeElement);
