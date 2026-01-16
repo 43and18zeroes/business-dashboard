@@ -27,6 +27,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   private didFirstResizeAfterRender = false;
   private readonly viewReady = signal(false);
 
+  private nextStableFrame(cb: () => void): void {
+    requestAnimationFrame(() => requestAnimationFrame(cb));
+  }
+
   @ViewChild('chartCanvas', { static: false })
   canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -75,11 +79,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       if (!ready || !hasSize) return;
       if (!data?.length) return;
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          this.renderChart(data, config);
-        });
-      });
+      this.nextStableFrame(() => this.renderChart(data, config));
     });
 
     this.destroyRef.onDestroy(() => this.destroyChart());
@@ -99,10 +99,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       if (ok && this.chartInstance && !this.didFirstResizeAfterRender) {
         this.didFirstResizeAfterRender = true;
 
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            this.renderChart(this.data(), this.config());
-          });
+        this.nextStableFrame(() => {
+          this.renderChart(this.data(), this.config());
         });
       }
     });
