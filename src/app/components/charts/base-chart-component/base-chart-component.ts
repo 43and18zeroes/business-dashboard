@@ -40,8 +40,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   data = input.required<ChartData[]>();
   config = input<ChartConfiguration>(new ChartConfiguration());
 
-  refreshTick = input<number>(0);
-
   protected chartInstance?: Chart<TType>;
   protected abstract readonly chartType: TType;
   protected abstract buildDatasets(data: ChartData[]): ChartDataset<TType>[];
@@ -74,7 +72,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       const hasSize = this.containerReady();
       const data = this.data();
       const config = this.config();
-      const _tick = this.refreshTick();
 
       if (!ready || !hasSize) return;
       if (!data?.length) return;

@@ -12,10 +12,4 @@ import { RingChartComponent } from "../../components/charts/ring-chart-component
 })
 export class DashboardPage {
   protected chartService = inject(ChartDataService);
-
-  refreshTick = signal(0);
-
-  ngOnInit() {
-    this.refreshTick.update(v => v + 1);
-  }
 }
