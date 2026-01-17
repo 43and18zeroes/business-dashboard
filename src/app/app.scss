@@ -22,18 +22,6 @@ mat-sidenav-container {
     &.expanded {
       border-right-color: transparent;
     }
-
-    @media (width >=600px) {
-      overflow: hidden !important;
-
-      ::ng-deep .mat-drawer-inner-container {
-        overflow: hidden !important;
-      }
-
-      &.expanded {
-        border-right: 1px solid var(--grid-color);
-      }
-    }
   }
 
   mat-sidenav-content {
