@@ -37,7 +37,9 @@ mat-sidenav-container {
   }
 
   mat-sidenav-content {
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     .sidenav__overlay {
       display: block;
@@ -70,12 +72,16 @@ mat-sidenav-container {
       @include custom-mixins.mat-theme-transition();
       display: flex;
       justify-content: space-between;
+      flex: 0 0 auto;
       border-bottom: 1px solid var(--grid-color);
       --mat-toolbar-mobile-height: 64px;
     }
 
-    router-outlet {
+    .content {
+      flex: 1 1 auto;
+      overflow: auto;
       padding: 16px;
+      box-sizing: border-box;
     }
   }
 }

@@ -3,31 +3,21 @@
   <mat-sidenav opened mode="side" [style.width]="sidenavWidth()" [class.expanded]="!collapsed()">
     <app-custom-sidenav-component [(collapsed)]="collapsed"></app-custom-sidenav-component>
   </mat-sidenav>
-  <mat-sidenav-content
-    [style.margin-left]="contentMarginLeft()"
-    (touchend)="collapseSidenav()"
-  >
-    <div
-      class="sidenav__overlay"
-      [class.active]="!collapsed()"
-      (touchend)="collapseSidenav()"
-      (click)="collapseSidenav()"
-    ></div>
+  <mat-sidenav-content [style.margin-left]="contentMarginLeft()" (touchend)="collapseSidenav()">
+    <div class="sidenav__overlay" [class.active]="!collapsed()" (touchend)="collapseSidenav()"
+      (click)="collapseSidenav()"></div>
     <mat-toolbar class="mat-elevation-z3">
       <button mat-icon-button (click)="collapsed.set(!collapsed())">
         <mat-icon>menu</mat-icon>
       </button>
-      <button
-        mat-icon-button
-        (click)="themeService.toggleTheme()"
-        class="mr-8"
-        aria-label="Toggle theme"
-      >
+      <button mat-icon-button (click)="themeService.toggleTheme()" class="mr-8" aria-label="Toggle theme">
         <mat-icon>{{
           themeService.darkMode() ? "light_mode" : "bedtime"
-        }}</mat-icon>
+          }}</mat-icon>
       </button>
     </mat-toolbar>
-    <router-outlet />
+    <div class="content">
+      <router-outlet />
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
