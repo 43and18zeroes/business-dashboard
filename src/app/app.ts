@@ -24,12 +24,11 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('Business Dashboard');
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.themeService.initTheme();
@@ -43,11 +42,7 @@ export class App {
 
   sidenavWidth = computed(() => (this.collapsed() ? '81px' : '250px'));
   contentMarginLeft = computed(() => {
-    const width = this.viewportWidth();
-    if (width < 600) {
-      return '81px';
-    }
-    return this.collapsed() ? '81px' : '250px';
+    return '81px';
   });
 
   collapseSidenav() {
