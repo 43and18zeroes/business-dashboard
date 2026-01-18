@@ -1,6 +1,16 @@
+// _mixins.scss
+
 @use 'variables' as var;
 
-@mixin mat-theme-transition(
-) {
+@mixin mat-theme-transition() {
   transition: background-color var.$mat-duration var.$mat-easing, color var.$mat-duration var.$mat-easing;
+}
+
+@mixin standard-chart-pages-layout {
+  display: block;
+
+  .page-chart {
+    display: block;
+    width: 100px;
+  }
 }
