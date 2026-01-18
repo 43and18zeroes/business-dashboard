@@ -79,38 +79,57 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     return data.map((d) => d.label);
   }
 
-  protected buildOptions(config: ChartConfiguration): ChartOptions<TType> {
+  protected buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<TType> {
+    const { textColor, gridColor, axisColor } = this.getThemeColors(isDark);
+
     const base: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       resizeDelay: 120,
       animation: { duration: 700 },
-      plugins: { legend: { display: config.showLegend } },
+      scales: {
+        x: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        },
+        y: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        }
+      },
+      plugins: {
+        legend: {
+          display: config.showLegend,
+          labels: { color: textColor }
+        }
+      },
     };
 
     return base as ChartOptions<TType>;
   }
 
+  protected getThemeColors(isDark: boolean) {
+    return {
+      textColor: isDark ? '#e0e2ec' : '#44474e',
+      axisColor: isDark ? '#8e9099' : '#74777f',
+      gridColor: isDark ? '#8e90994D' : '#74777f4D',
+      tooltipBg: isDark ? '#292a2c' : '#e9e7eb'
+    };
+  }
+
   constructor() {
     effect(() => {
       const isDark = this.themeService.darkMode();
-      this.updateGlobalChartDefaults(isDark);
-
-      const inst = this.chartInstance;
-      if (!inst || !inst.canvas || !inst.canvas.isConnected) return;
-      inst.update();
-    });
-
-    effect(() => {
-      const ready = this.viewReady();
-      const hasSize = this.containerReady();
       const data = this.data();
       const config = this.config();
+      const ready = this.viewReady();
+      const hasSize = this.containerReady();
 
-      if (!ready || !hasSize) return;
-      if (!data?.length) return;
+      this.updateGlobalChartDefaults(isDark);
 
-      this.nextStableFrame(() => this.renderChart(data, config));
+      if (ready && hasSize && data?.length) {
+        this.nextStableFrame(() => this.renderChart(data, config));
+      }
     });
 
     this.destroyRef.onDestroy(() => {
@@ -141,9 +160,9 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     this.destroyRef.onDestroy(() => ro.disconnect());
   }
 
-
   private renderChart(data: ChartData[], config: ChartConfiguration): void {
     this.destroyChart();
+    const isDark = this.themeService.darkMode();
 
     this.chartInstance = new Chart(this.canvas.nativeElement, {
       type: this.chartType,
@@ -151,12 +170,11 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
         labels: this.buildLabels(data),
         datasets: this.buildDatasets(data),
       },
-      options: this.buildOptions(config),
+      options: this.buildOptions(config, isDark),
     }) as Chart<TType>;
 
     this.initialRenderDone = true;
   }
-
 
   protected destroyChart(): void {
     this.cancelStableFrame();

@@ -40,13 +40,18 @@ export class LineChartComponent extends BaseChartComponent<'line'> {
     ];
   }
 
-  protected override buildOptions(config: ChartConfiguration): ChartOptions<'line'> {
+  protected override buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<'line'> {
+    const baseOptions = super.buildOptions(config, isDark);
+
     return {
-      ...super.buildOptions(config),
+      ...baseOptions,
       scales: {
+        ...baseOptions.scales,
         y: {
+          ...baseOptions.scales?.['y'],
           beginAtZero: true,
           ticks: {
+            ...baseOptions.scales?.['y']?.ticks,
             callback: (value) => this.numberFormatter.format(Number(value)),
           },
         },

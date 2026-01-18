@@ -38,13 +38,18 @@ export class BarChartComponent extends BaseChartComponent<'bar'> {
     ];
   }
 
-  protected override buildOptions(config: ChartConfiguration): ChartOptions<'bar'> {
+  protected override buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<'bar'> {
+    const baseOptions = super.buildOptions(config, isDark);
+
     return {
-      ...super.buildOptions(config),
+      ...baseOptions,
       scales: {
+        ...baseOptions.scales,
         y: {
+          ...baseOptions.scales?.['y'],
           beginAtZero: true,
           ticks: {
+            ...baseOptions.scales?.['y']?.ticks,
             callback: (value) => this.numberFormatter.format(Number(value)),
           },
         },
