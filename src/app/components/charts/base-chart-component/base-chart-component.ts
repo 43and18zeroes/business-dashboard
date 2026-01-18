@@ -196,5 +196,15 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       padding: 12,
       cornerRadius: 8,
     });
+
+    const defaultGenerate = Chart.defaults.plugins.legend.labels.generateLabels;
+    Chart.defaults.plugins.legend.labels.generateLabels = (chart) => {
+      const items = defaultGenerate(chart);
+      for (const item of items) {
+        item.lineWidth = 0;
+        item.strokeStyle = 'transparent';
+      }
+      return items;
+    };
   }
 }
