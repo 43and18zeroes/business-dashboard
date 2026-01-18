@@ -85,7 +85,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     const base: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      resizeDelay: 120,
+      resizeDelay: 1,
       animation: { duration: 700 },
       scales: {
         x: {

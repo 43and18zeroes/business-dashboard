@@ -10,6 +10,10 @@
     <app-ring-chart-component class="dashboard__chart item-small" [data]="data">
     </app-ring-chart-component>
     }
+    @if (chartService.projectsChartData(); as data) {
+    <app-ring-chart-component class="dashboard__chart item-small" [data]="data">
+    </app-ring-chart-component>
+    }
     @if (chartService.salesChartData(); as data) {
     <app-bar-chart-component class="dashboard__chart item-small" [data]="data">
     </app-bar-chart-component>
