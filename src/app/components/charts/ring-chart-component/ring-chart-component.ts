@@ -54,23 +54,27 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
   }
 
   protected override buildOptions(
-    config: ChartConfiguration
+    config: ChartConfiguration,
+    isDark: boolean
   ): ChartOptions<'doughnut'> {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      resizeDelay: 120,
+    const baseOptions = super.buildOptions(config, isDark);
 
+    return {
+      ...baseOptions,
+      scales: {
+        x: { display: false },
+        y: { display: false },
+      },
       animation: {
-        duration: 700,
+        ...baseOptions.animation,
         animateRotate: true,
         animateScale: true,
       },
-
       cutout: '70%',
       plugins: {
-        legend: { display: config.showLegend },
+        ...baseOptions.plugins,
         tooltip: {
+          ...baseOptions.plugins?.tooltip,
           callbacks: {
             label: (ctx) => ctx.label ?? '',
           },
