@@ -1,5 +1,6 @@
 <!-- monthly-sales-page.html -->
+ 
 <h1>Monthly Sales</h1>
 @if (chartService.salesChartData(); as data) {
-<app-line-chart-component [data]="data" [config]="myChartConfig"> </app-line-chart-component>
+<app-line-chart-component class="page-chart" [data]="data" [config]="myChartConfig"> </app-line-chart-component>
 }
