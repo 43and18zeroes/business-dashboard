@@ -26,12 +26,12 @@ export const ELEMENT_DATA: PeriodicElement[] = [
 
 
 @Component({
-  selector: 'app-dragable-table',
+  selector: 'app-dragable-table-component',
   imports: [CdkDropList, CdkDrag, MatTableModule, MatIconModule],
-  templateUrl: './dragable-table.html',
-  styleUrl: './dragable-table.scss',
+  templateUrl: './dragable-table-component.html',
+  styleUrl: './dragable-table-component.scss',
 })
-export class DragableTable {
+export class DragableTableComponent {
   @ViewChild('table', { static: true }) table!: MatTable<PeriodicElement>;
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'quantity'];

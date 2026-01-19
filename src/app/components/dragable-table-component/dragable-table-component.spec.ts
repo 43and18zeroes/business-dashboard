@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DragableTable } from './dragable-table';
+import { DragableTable } from './dragable-table-component';
 
 describe('DragableTable', () => {
   let component: DragableTable;
