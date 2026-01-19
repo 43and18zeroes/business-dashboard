@@ -14,7 +14,7 @@ type SeriesSelectors<T> = Record<SeriesKey, (item: T) => number>;
 type LabelSelector<T> = (item: T) => string;
 
 @Injectable({ providedIn: 'root' })
-export class ChartDataService {
+export class MockDataService {
   private readonly primaryColor = DEFAULT_SERIES[0].color;
   private readonly secondaryColor = DEFAULT_SERIES[1].color;
 

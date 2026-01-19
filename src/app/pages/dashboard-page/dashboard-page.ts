@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
-import { ChartDataService } from '../../services/mock-data-service';
+import { MockDataService } from '../../services/mock-data-service';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 import { DragableTableComponent } from "../../components/dragable-table-component/dragable-table-component";
@@ -12,5 +12,5 @@ import { DragableTableComponent } from "../../components/dragable-table-componen
   styleUrl: './dashboard-page.scss',
 })
 export class DashboardPage {
-  protected chartService = inject(ChartDataService);
+  protected chartService = inject(MockDataService);
 }
