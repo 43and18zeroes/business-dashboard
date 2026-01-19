@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
-import { ChartDataService } from '../../services/mock-data-service';
+import { MockDataService } from '../../services/mock-data-service';
 import { ChartConfiguration } from '../../models/chart.model';
 
 @Component({
@@ -10,7 +10,7 @@ import { ChartConfiguration } from '../../models/chart.model';
   styleUrl: './monthly-sales-page.scss',
 })
 export class MonthlySalesPage {
-  protected chartService = inject(ChartDataService);
+  protected chartService = inject(MockDataService);
 
   myChartConfig = new ChartConfiguration({
     title: 'Monthly Sales',

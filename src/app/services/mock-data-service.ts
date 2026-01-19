@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of } from 'rxjs';
 import { ChartData } from '../models/chart.model';
 import { NEW_CUSTOMERS_STATS, PROJECTS, SALES_STATS, TRANSACTIONS } from './mock-data.constant';
-import { Transaction } from '../components/dragable-table-component/dragable-table-component';
 
 const DEFAULT_SERIES = [
   { key: 'primary', color: '#007BFF' },

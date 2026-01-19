@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { ChartConfiguration } from '../../models/chart.model';
-import { ChartDataService } from '../../services/mock-data-service';
+import { MockDataService } from '../../services/mock-data-service';
 
 @Component({
   selector: 'app-new-customers-page',
@@ -10,7 +10,7 @@ import { ChartDataService } from '../../services/mock-data-service';
   styleUrl: './new-customers-page.scss',
 })
 export class NewCustomersPage {
-  protected chartService = inject(ChartDataService);
+  protected chartService = inject(MockDataService);
 
   myChartConfig = new ChartConfiguration({
     title: 'Monthly Sales',
