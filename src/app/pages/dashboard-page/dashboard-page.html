@@ -7,8 +7,8 @@
     </app-line-chart-component>
     }
     @if (chartService.projectsChartData(); as data) {
-    <app-ring-chart-component class="dashboard__chart item-small" [data]="data">
-    </app-ring-chart-component>
+    <app-dragable-table-component class="dashboard__chart item-small">
+    </app-dragable-table-component>
     }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component class="dashboard__chart item-small" [data]="data">
