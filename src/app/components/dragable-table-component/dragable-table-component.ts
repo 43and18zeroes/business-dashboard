@@ -1,8 +1,7 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
-import { TRANSACTIONS } from '../../services/mock-data.constant';
 
 export interface Transaction {
   txId: string;
@@ -21,7 +20,16 @@ export class DragableTableComponent {
   @ViewChild('table', { static: true }) table!: MatTable<Transaction>;
 
   displayedColumns: string[] = ['txId', 'user', 'date', 'cost'];
-  dataSource: Transaction[] = [...TRANSACTIONS];
+
+  private _data: readonly Transaction[] = [];
+  dataSource: Transaction[] = [];
+
+  @Input()
+  set data(value: readonly Transaction[] | null | undefined) {
+    this._data = value ?? [];
+    this.dataSource = [...this._data]; // wichtig: Kopie für Drag&Drop
+    this.table?.renderRows(); // falls Input später kommt
+  }
 
   drop(event: CdkDragDrop<Transaction[]>) {
     const draggedRow = event.item.data as Transaction;
