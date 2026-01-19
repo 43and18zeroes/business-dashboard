@@ -1,35 +1,33 @@
 <!-- dragable-table-component.html -->
 
-<mat-table #table [dataSource]="dataSource" class="mat-elevation-z8" cdkDropList [cdkDropListData]="dataSource"
-  (cdkDropListDropped)="drop($event)">
+<mat-table
+  #table
+  [dataSource]="dataSource"
+  class="mat-elevation-z8"
+  cdkDropList
+  [cdkDropListData]="dataSource"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (col of displayedColumns; track col) {
+    <ng-container [matColumnDef]="col">
+      <mat-header-cell *matHeaderCellDef>
+        {{ formatHeader(col) }}
+      </mat-header-cell>
 
-  <ng-container matColumnDef="txId">
-    <mat-header-cell *matHeaderCellDef> Transaction ID </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      <mat-icon class="example-drag-cursor">reorder</mat-icon>
-      {{ row.txId }}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="user">
-    <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{ row.user }} </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{ row.date }} </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="cost">
-    <mat-header-cell *matHeaderCellDef> Cost </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      {{ row.cost }} €
-    </mat-cell>
-  </ng-container>
+      <mat-cell *matCellDef="let row">
+        @if (col === displayedColumns[0]) {
+          <mat-icon class="example-drag-cursor">reorder</mat-icon>
+        }
+        {{ formatCell(row[col]) }}
+      </mat-cell>
+    </ng-container>
+  }
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-  <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"></mat-row>
-
+  <mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    cdkDrag
+    [cdkDragData]="row"
+  ></mat-row>
 </mat-table>

@@ -3,12 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
 
-export interface Transaction {
-  txId: string;
-  user: string;
-  date: string;
-  cost: string;
-}
+type RowData = Record<string, unknown>;
 
 @Component({
   selector: 'app-dragable-table-component',
@@ -17,25 +12,53 @@ export interface Transaction {
   styleUrl: './dragable-table-component.scss',
 })
 export class DragableTableComponent {
-  @ViewChild('table', { static: true }) table!: MatTable<Transaction>;
+  @ViewChild('table', { static: true }) table!: MatTable<RowData>;
 
-  displayedColumns: string[] = ['txId', 'user', 'date', 'cost'];
-
-  private _data: readonly Transaction[] = [];
-  dataSource: Transaction[] = [];
+  displayedColumns: string[] = [];
+  dataSource: RowData[] = [];
 
   @Input()
-  set data(value: readonly Transaction[] | null | undefined) {
-    this._data = value ?? [];
-    this.dataSource = [...this._data]; // wichtig: Kopie für Drag&Drop
-    this.table?.renderRows(); // falls Input später kommt
+  set data(value: readonly RowData[] | null | undefined) {
+    const rows = value ?? [];
+    this.dataSource = [...rows];
+    this.displayedColumns = this.computeColumns(this.dataSource);
+    this.table?.renderRows();
   }
 
-  drop(event: CdkDragDrop<Transaction[]>) {
-    const draggedRow = event.item.data as Transaction;
-    const previousIndex = this.dataSource.findIndex(d => d === draggedRow);
+  drop(event: CdkDragDrop<RowData[]>) {
+    const draggedRow = event.item.data as RowData;
+    const previousIndex = this.dataSource.findIndex((d) => d === draggedRow);
 
     moveItemInArray(this.dataSource, previousIndex, event.currentIndex);
     this.table.renderRows();
+  }
+
+  private computeColumns(rows: RowData[]): string[] {
+    const seen = new Set<string>();
+    const cols: string[] = [];
+
+    for (const row of rows) {
+      for (const key of Object.keys(row)) {
+        if (!seen.has(key)) {
+          seen.add(key);
+          cols.push(key);
+        }
+      }
+    }
+
+    return cols;
+  }
+
+  formatHeader(key: string): string {
+    return key
+      .replace(/_/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  formatCell(value: unknown): string {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
   }
 }
