@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
-import { ChartDataService } from '../../components/charts/chart-data-service';
+import { ChartDataService } from '../../services/mock-data-service';
 import { ChartConfiguration } from '../../models/chart.model';
 
 @Component({

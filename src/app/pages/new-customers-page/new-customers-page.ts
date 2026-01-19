@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { ChartConfiguration } from '../../models/chart.model';
-import { ChartDataService } from '../../components/charts/chart-data-service';
+import { ChartDataService } from '../../services/mock-data-service';
 
 @Component({
   selector: 'app-new-customers-page',

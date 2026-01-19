@@ -33,3 +33,14 @@ export const NEW_CUSTOMERS_STATS = [
 export const PROJECTS = [
   { overall: 185, completed: 143 },
 ];
+
+export const TRANSACTIONS = [
+  { txId: '7k92fgh', user: 'eliamiller', date: '2026-01-12', cost: '89.50' },
+  { txId: '3m15pxr', user: 'marclukas', date: '2026-02-28', cost: '210.30' },
+  { txId: '8v44qwe', user: 'sarah_con', date: '2026-03-15', cost: '15.99' },
+  { txId: '2n99zxc', user: 'tom_dev', date: '2026-05-20', cost: '550.00' },
+  { txId: '6b12yut', user: 'clara_v', date: '2026-07-04', cost: '42.75' },
+  { txId: '9p33mkj', user: 'leo_sun', date: '2026-08-11', cost: '120.00' },
+  { txId: '4d88lkh', user: 'nina_tech', date: '2026-10-31', cost: '8.25' },
+  { txId: '1r55asf', user: 'felix_run', date: '2026-12-24', cost: '330.40' },
+];
