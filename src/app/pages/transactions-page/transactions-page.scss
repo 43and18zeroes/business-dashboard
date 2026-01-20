@@ -1,0 +1,7 @@
+// transactions-page.scss
+
+@use "../../../styles/mixins" as m;
+
+:host {
+  @include m.standard-chart-pages-layout;
+}

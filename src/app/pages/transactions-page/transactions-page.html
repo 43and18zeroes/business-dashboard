@@ -1,0 +1,6 @@
+<!-- transactions-page.html -->
+
+<h1>Transactions</h1>
+@if (chartService.transactions(); as data) {
+<app-dragable-table-component class="page-chart" [data]="data"> </app-dragable-table-component>
+}
