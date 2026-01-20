@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
 import { MockDataService } from '../../services/mock-data-service';
+import { transactionCellFormatter } from '../../shared/table-formatters';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 import { DragableTableComponent } from "../../components/dragable-table-component/dragable-table-component";
@@ -16,17 +17,5 @@ type RowData = Record<string, unknown>;
 export class DashboardPage {
   protected chartService = inject(MockDataService);
 
-  formatTransactionCell = (key: string, value: unknown, _row: RowData): string => {
-    if (key === 'cost' && (typeof value === 'string' || typeof value === 'number')) {
-      return `$${value}`;
-    }
-
-    if (key === 'date' && typeof value === 'string') {
-      return value;
-    }
-
-    if (value === null || value === undefined) return '';
-    if (typeof value === 'object') return JSON.stringify(value);
-    return String(value);
-  };
+  transactionCellFormatter = transactionCellFormatter;
 }
