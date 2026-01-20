@@ -18,4 +18,5 @@ export class DashboardPage {
   protected chartService = inject(MockDataService);
 
   transactionCellFormatter = transactionCellFormatter;
+  transactionColumns = ['txId', 'cost'];
 }

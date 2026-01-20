@@ -7,7 +7,7 @@
     </app-line-chart-component>
     }
     @if (chartService.transactions(); as data) {
-    <app-dragable-table-component class="dashboard__chart item-small" [data]="data"
+    <app-dragable-table-component class="dashboard__chart item-small" [data]="data" [columns]="transactionColumns"
         [cellFormatter]="transactionCellFormatter" />
     }
     @if (chartService.projectsChartData(); as data) {

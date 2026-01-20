@@ -19,12 +19,30 @@ export class DragableTableComponent {
 
   @Input() cellFormatter?: (key: string, value: unknown, row: RowData) => string;
 
+  private _data: readonly RowData[] = [];
+  private _columns?: readonly string[];
+
   @Input()
   set data(value: readonly RowData[] | null | undefined) {
-    const rows = value ?? [];
-    this.dataSource = [...rows];
-    this.displayedColumns = this.computeColumns(this.dataSource);
+    this._data = value ?? [];
+    this.dataSource = [...this._data];
+    this.recomputeColumns();
     this.table?.renderRows();
+  }
+
+  @Input()
+  set columns(value: readonly string[] | null | undefined) {
+    this._columns = value ?? undefined;
+    this.recomputeColumns();
+    this.table?.renderRows();
+  }
+
+  private recomputeColumns() {
+    const allColumns = this.computeColumns(this.dataSource);
+
+    this.displayedColumns = this._columns?.length
+      ? this._columns.filter(col => allColumns.includes(col))
+      : allColumns;
   }
 
   drop(event: CdkDragDrop<RowData[]>) {
