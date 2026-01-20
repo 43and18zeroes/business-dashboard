@@ -17,6 +17,8 @@ export class DragableTableComponent {
   displayedColumns: string[] = [];
   dataSource: RowData[] = [];
 
+  @Input() cellFormatter?: (key: string, value: unknown, row: RowData) => string;
+
   @Input()
   set data(value: readonly RowData[] | null | undefined) {
     const rows = value ?? [];
@@ -56,7 +58,11 @@ export class DragableTableComponent {
       .replace(/\b\w/g, (c) => c.toUpperCase());
   }
 
-  formatCell(value: unknown): string {
+  formatCell(key: string, value: unknown, row: RowData): string {
+    if (this.cellFormatter) {
+      return this.cellFormatter(key, value, row);
+    }
+
     if (value === null || value === undefined) return '';
     if (typeof value === 'object') return JSON.stringify(value);
     return String(value);

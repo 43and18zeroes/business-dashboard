@@ -18,7 +18,7 @@
         @if (col === displayedColumns[0]) {
           <mat-icon class="example-drag-cursor">reorder</mat-icon>
         }
-        {{ formatCell(row[col]) }}
+        {{ formatCell(col, row[col], row) }}
       </mat-cell>
     </ng-container>
   }
