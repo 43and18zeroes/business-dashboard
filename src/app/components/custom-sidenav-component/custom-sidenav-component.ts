@@ -28,6 +28,7 @@ menuItems = signal<MenuItem[]>([
   { image: 'img/logo/dashboard-logo-24.webp', label: 'Dashboard', route: '/' },
   { icon: 'insert_chart', label: 'Monthy Sales', route: '/monthly-sales' },
   { icon: 'stacked_line_chart', label: 'New Customers', route: '/new-customers' },
+  { icon: 'account_balance', label: 'Transactions', route: '/transactions' },
   { icon: 'info', label: 'Info', route: '/info' },
 ]);
 }

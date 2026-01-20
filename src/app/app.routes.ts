@@ -18,6 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/new-customers-page/new-customers-page').then((m) => m.NewCustomersPage),
   },
   {
+    path: 'transactions',
+    title: 'Transactions - Business Dashboard',
+    loadComponent: () => import('./pages/transactions-page/transactions-page').then((m) => m.TransactionsPage),
+  },
+  {
     path: 'info',
     title: 'Info - Business Dashboard',
     loadComponent: () => import('./pages/info-page/info-page').then((m) => m.InfoPage),
