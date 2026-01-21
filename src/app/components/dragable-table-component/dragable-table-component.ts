@@ -44,11 +44,9 @@ export class DragableTableComponent implements OnDestroy {
 
   @Input() idKey: string = 'id';
   @Input() entity?: string;
-
-  // ✅ Variante 1: Default AUS, Dashboard schaltet es ein
   @Input() autoScroll = false;
-  @Input() autoScrollEdgePx = 40; // Hot zone oben/unten
-  @Input() autoScrollMaxStep = 18; // max px pro Frame
+  @Input() autoScrollEdgePx = 40;
+  @Input() autoScrollMaxStep = 18;
 
   private dragging = false;
   private lastPointerY = 0;
@@ -128,8 +126,6 @@ export class DragableTableComponent implements OnDestroy {
 
   private recomputeColumns() {
     const allColumns = this.computeColumns(this.dataSource);
-
-    // Wenn columns gesetzt sind -> nur diese anzeigen (in der gewünschten Reihenfolge)
     this.displayedColumns = this._columns?.length
       ? this._columns.filter((col) => allColumns.includes(col))
       : allColumns;
@@ -139,7 +135,6 @@ export class DragableTableComponent implements OnDestroy {
     const fromIndex = event.previousIndex;
     const toIndex = event.currentIndex;
 
-    // ✅ nur loggen/ändern wenn wirklich verschoben
     if (fromIndex === toIndex) return;
 
     const draggedRow = event.item.data as RowData;

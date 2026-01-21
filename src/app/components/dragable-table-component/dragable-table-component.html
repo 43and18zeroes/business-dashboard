@@ -3,14 +3,14 @@
 <div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource" (cdkDropListDropped)="drop($event)">
   <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
     @for (col of displayedColumns; track col) {
-    <ng-container [matColumnDef]="col">
+    <ng-container [matColumnDef]="col"  class="example-drag-cursor">
       <mat-header-cell *matHeaderCellDef>
         {{ formatHeader(col) }}
       </mat-header-cell>
 
-      <mat-cell *matCellDef="let row">
+      <mat-cell *matCellDef="let row"  class="example-drag-cursor">
         @if (col === displayedColumns[0]) {
-        <mat-icon class="example-drag-cursor">reorder</mat-icon>
+        <mat-icon class="reorder-icon">reorder</mat-icon>
         }
         {{ formatCell(col, row[col], row) }}
       </mat-cell>
