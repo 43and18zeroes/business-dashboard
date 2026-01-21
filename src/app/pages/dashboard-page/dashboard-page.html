@@ -8,7 +8,7 @@
     }
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component class="dashboard__chart item-small" [data]="data" [columns]="transactionColumns"
-        [cellFormatter]="transactionCellFormatter" />
+        entity="transactions" idKey="txId" [cellFormatter]="transactionCellFormatter" />
     }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component class="dashboard__chart item-small" [data]="data">
