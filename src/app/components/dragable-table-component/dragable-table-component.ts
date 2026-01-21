@@ -49,20 +49,20 @@ export class DragableTableComponent {
   }
 
   drop(event: CdkDragDrop<RowData[]>) {
-    const draggedRow = event.item.data as RowData;
-
     const fromIndex = event.previousIndex;
     const toIndex = event.currentIndex;
 
-    const orderBefore = this.dataSource.map(
-      row => String(row[this.idKey])
-    );
+    if (fromIndex === toIndex) {
+      return;
+    }
+
+    const draggedRow = event.item.data as RowData;
+
+    const orderBefore = this.dataSource.map(row => String(row[this.idKey]));
 
     moveItemInArray(this.dataSource, fromIndex, toIndex);
 
-    const orderAfter = this.dataSource.map(
-      row => String(row[this.idKey])
-    );
+    const orderAfter = this.dataSource.map(row => String(row[this.idKey]));
 
     const payload = {
       type: 'table.reorder',
@@ -81,7 +81,6 @@ export class DragableTableComponent {
 
     this.table.renderRows();
   }
-
 
   private computeColumns(rows: RowData[]): string[] {
     const seen = new Set<string>();
