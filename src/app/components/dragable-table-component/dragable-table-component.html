@@ -1,14 +1,8 @@
 <!-- dragable-table-component.html -->
 
-<mat-table
-  #table
-  [dataSource]="dataSource"
-  class="mat-elevation-z8"
-  cdkDropList
-  [cdkDropListData]="dataSource"
-  (cdkDropListDropped)="drop($event)"
->
-  @for (col of displayedColumns; track col) {
+<div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource" (cdkDropListDropped)="drop($event)">
+  <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+    @for (col of displayedColumns; track col) {
     <ng-container [matColumnDef]="col">
       <mat-header-cell *matHeaderCellDef>
         {{ formatHeader(col) }}
@@ -16,18 +10,16 @@
 
       <mat-cell *matCellDef="let row">
         @if (col === displayedColumns[0]) {
-          <mat-icon class="example-drag-cursor">reorder</mat-icon>
+        <mat-icon class="example-drag-cursor">reorder</mat-icon>
         }
         {{ formatCell(col, row[col], row) }}
       </mat-cell>
     </ng-container>
-  }
+    }
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-  <mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    cdkDrag
-    [cdkDragData]="row"
-  ></mat-row>
-</mat-table>
+    <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"
+      (cdkDragStarted)="onDragStarted()" (cdkDragEnded)="onDragEnded()"></mat-row>
+  </mat-table>
+</div>

@@ -6,8 +6,6 @@ import { LineChartComponent } from "../../components/charts/line-chart-component
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 import { DragableTableComponent } from "../../components/dragable-table-component/dragable-table-component";
 
-type RowData = Record<string, unknown>;
-
 @Component({
   selector: 'app-dashboard-page',
   imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent],
