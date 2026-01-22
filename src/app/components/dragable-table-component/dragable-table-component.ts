@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
 
 type RowData = Record<string, unknown>;
+type AutoScrollTarget = 'self' | 'window' | 'page';
 
 @Component({
   selector: 'app-dragable-table-component',
@@ -13,8 +14,8 @@ type RowData = Record<string, unknown>;
 })
 export class DragableTableComponent implements OnDestroy {
   @ViewChild('table', { static: true }) table!: MatTable<RowData>;
-  @ViewChild('scrollContainer', { static: true, read: ElementRef })
-  scrollContainer!: ElementRef<HTMLElement>;
+  @ViewChild('scrollContainer', { read: ElementRef })
+  scrollContainer?: ElementRef<HTMLElement>;
 
   private hostEl = inject(ElementRef<HTMLElement>);
   private zone = inject(NgZone);
@@ -47,6 +48,9 @@ export class DragableTableComponent implements OnDestroy {
   @Input() autoScroll = false;
   @Input() autoScrollEdgePx = 40;
   @Input() autoScrollMaxStep = 18;
+  @Input() autoScrollTarget: AutoScrollTarget = 'self';
+
+  private pageScrollEl: HTMLElement | null = null;
 
   private dragging = false;
   private lastPointerY = 0;
@@ -60,6 +64,10 @@ export class DragableTableComponent implements OnDestroy {
 
   onDragStarted() {
     if (!this.autoScroll) return;
+
+    if (this.autoScrollTarget === 'page') {
+      this.pageScrollEl = this.findScrollableParent(this.hostEl.nativeElement) ?? document.documentElement;
+    }
 
     this.dragging = true;
 
@@ -87,11 +95,14 @@ export class DragableTableComponent implements OnDestroy {
   private tickAutoScroll() {
     if (!this.dragging) return;
 
-    const container = this.scrollContainer.nativeElement;
-    const rect = container.getBoundingClientRect();
+    const targetRect = this.getScrollTargetRect();
+    if (!targetRect) {
+      this.rafId = requestAnimationFrame(() => this.tickAutoScroll());
+      return;
+    }
 
-    const topZone = rect.top + this.autoScrollEdgePx;
-    const bottomZone = rect.bottom - this.autoScrollEdgePx;
+    const topZone = targetRect.top + this.autoScrollEdgePx;
+    const bottomZone = targetRect.bottom - this.autoScrollEdgePx;
 
     let delta = 0;
 
@@ -104,11 +115,61 @@ export class DragableTableComponent implements OnDestroy {
     }
 
     if (delta !== 0) {
-      container.scrollTop += delta;
+      this.applyScrollDelta(delta);
     }
 
     this.rafId = requestAnimationFrame(() => this.tickAutoScroll());
   }
+
+  private getScrollTargetRect(): DOMRect | null {
+    if (this.autoScrollTarget === 'window') {
+      return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+
+    if (this.autoScrollTarget === 'page') {
+      const el = this.pageScrollEl ?? document.documentElement;
+      return el.getBoundingClientRect();
+    }
+
+    const el = this.scrollContainer?.nativeElement;
+    return el ? el.getBoundingClientRect() : null;
+  }
+
+  private applyScrollDelta(delta: number) {
+    if (this.autoScrollTarget === 'window') {
+      window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+      return;
+    }
+
+    if (this.autoScrollTarget === 'page') {
+      const el = this.pageScrollEl ?? document.documentElement;
+      el.scrollTop += delta;
+      return;
+    }
+
+    const el = this.scrollContainer?.nativeElement;
+    if (el) el.scrollTop += delta;
+  }
+
+  private findScrollableParent(start: HTMLElement): HTMLElement | null {
+    let el: HTMLElement | null = start;
+
+    while (el) {
+      const style = getComputedStyle(el);
+      const overflowY = style.overflowY;
+
+      const canScroll =
+        (overflowY === 'auto' || overflowY === 'scroll') &&
+        el.scrollHeight > el.clientHeight;
+
+      if (canScroll) return el;
+
+      el = el.parentElement;
+    }
+
+    return null;
+  }
+
 
   private stopAutoScroll() {
     this.dragging = false;
@@ -122,6 +183,8 @@ export class DragableTableComponent implements OnDestroy {
     this.removePointerUp?.();
     this.removePointerMove = undefined;
     this.removePointerUp = undefined;
+
+    this.pageScrollEl = null;
   }
 
   private recomputeColumns() {
