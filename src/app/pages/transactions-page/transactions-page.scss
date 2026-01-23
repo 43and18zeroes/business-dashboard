@@ -4,4 +4,9 @@
 
 :host {
   @include m.standard-chart-pages-layout;
+  
+  app-dragable-table-component {
+    display: block;
+    height: 80vh;
+  }
 }

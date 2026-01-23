@@ -13,4 +13,5 @@ export class TransactionsPage {
   protected chartService = inject(MockDataService);
 
   transactionCellFormatter = transactionCellFormatter;
+  transactionColumns = ['txId', 'cost'];
 }
