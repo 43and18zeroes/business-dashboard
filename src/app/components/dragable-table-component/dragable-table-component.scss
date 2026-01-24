@@ -1,76 +1,78 @@
-// dragable-table-component.scss
+/* =========================
+dragable-table-component.scss
+========================= */
 
 .table-scroll {
-  height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
 
-  &.drag-outside {
-    opacity: 0.95;
+    &.drag-outside {
+        opacity: 0.95;
 
-    .cdk-drag-placeholder,
-    .row-placeholder {
-      height: 0 !important;
-      min-height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
+        .cdk-drag-placeholder,
+        .row-placeholder {
+            height: 0 !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+        }
     }
-  }
 }
 
 .drag-handle {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 16px;
-  cursor: grab;
-  touch-action: none;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 16px;
+    cursor: grab;
+    touch-action: none;
 
-  &:active {
-    cursor: grabbing;
-  }
+    &:active {
+        cursor: grabbing;
+    }
 }
 
 .reorder-icon {
-  margin-right: 16px;
+    margin-right: 16px;
 }
 
 .example-drag-cursor {
-  cursor: move;
+    cursor: move;
 }
 
 .cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  background-color: var(--mat-sys-surface);
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    background-color: var(--mat-sys-surface);
 }
 
 .cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drop-list-dragging .cdk-drag.cdk-drag-dragging {
-  opacity: 0 !important;
+    opacity: 0 !important;
 }
 
 .row-placeholder {
-  height: 48px;
+    height: 48px;
 }
 
 .row-placeholder.hidden {
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
 }
