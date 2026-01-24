@@ -23,6 +23,8 @@ export class DragableTableComponent implements OnDestroy {
   displayedColumns: string[] = [];
   dataSource: RowData[] = [];
 
+  dragOutside = false;
+
   @Input() cellFormatter?: (key: string, value: unknown, row: RowData) => string;
 
   private _data: readonly RowData[] = [];
@@ -70,6 +72,7 @@ export class DragableTableComponent implements OnDestroy {
     }
 
     this.dragging = true;
+    this.dragOutside = false;
 
     this.zone.runOutsideAngular(() => {
       const onMove = (e: PointerEvent) => {
@@ -89,7 +92,17 @@ export class DragableTableComponent implements OnDestroy {
   }
 
   onDragEnded() {
+    this.dragOutside = false;
     this.stopAutoScroll();
+  }
+
+  
+  onListExited() {
+    this.dragOutside = true;
+  }
+
+  onListEntered() {
+    this.dragOutside = false;
   }
 
   private tickAutoScroll() {

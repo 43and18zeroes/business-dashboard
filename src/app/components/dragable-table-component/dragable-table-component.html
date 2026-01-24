@@ -1,7 +1,8 @@
 <!-- dragable-table-component.html -->
 
 <div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource"
-  (cdkDropListDropped)="drop($event)">
+  (cdkDropListDropped)="drop($event)" (cdkDropListEntered)="onListEntered()" (cdkDropListExited)="onListExited()"
+  [class.drag-outside]="dragOutside">
 
   <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
     @for (col of displayedColumns; track col) {
@@ -25,6 +26,9 @@
 
     <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"
       [cdkDragStartDelay]="{ touch: 200, mouse: 0 }" (cdkDragStarted)="onDragStarted()" (cdkDragEnded)="onDragEnded()">
+      <ng-template cdkDragPlaceholder>
+        <div class="row-placeholder" [class.hidden]="dragOutside"></div>
+      </ng-template>
     </mat-row>
   </mat-table>
 </div>
