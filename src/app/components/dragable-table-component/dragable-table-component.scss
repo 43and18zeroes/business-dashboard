@@ -2,6 +2,12 @@
 dragable-table-component.scss
 ========================= */
 
+:host ::ng-deep
+mat-header-row mat-header-cell:first-child,
+mat-row mat-cell:first-child {
+  min-width: 143px;
+}
+
 .table-scroll {
     height: 100%;
     overflow-y: auto;
