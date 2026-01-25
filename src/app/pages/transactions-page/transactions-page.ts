@@ -13,5 +13,25 @@ export class TransactionsPage {
   protected chartService = inject(MockDataService);
 
   transactionCellFormatter = transactionCellFormatter;
-  transactionColumns = ['txId', 'user', 'cost', 'date'];
+
+  transactionColumns: string[] = [];
+
+  private mediaQuery = window.matchMedia('(min-width: 600px)');
+  private mediaListener = (e: MediaQueryListEvent) =>
+    this.updateColumns(e.matches);
+
+  constructor() {
+    this.updateColumns(this.mediaQuery.matches);
+    this.mediaQuery.addEventListener('change', this.mediaListener);
+  }
+
+  ngOnDestroy() {
+    this.mediaQuery.removeEventListener('change', this.mediaListener);
+  }
+
+  private updateColumns(isWide: boolean) {
+    this.transactionColumns = isWide
+      ? ['txId', 'user', 'cost', 'date']
+      : ['txId', 'user'];
+  }
 }
