@@ -8,6 +8,10 @@ mat-row mat-cell:first-child {
   min-width: 143px;
 }
 
+.chart__root {
+    padding: 0 !important;
+}
+
 .table-scroll {
     height: 100%;
     overflow-y: auto;
@@ -56,7 +60,7 @@ mat-row mat-cell:first-child {
         0 5px 5px -3px rgba(0, 0, 0, 0.2),
         0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    background-color: var(--mat-sys-surface);
+    background-color: light-dark(#ffffff, #1f2328);
 }
 
 .cdk-drag-animating {

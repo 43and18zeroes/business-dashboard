@@ -2,37 +2,39 @@
 dragable-table-component.html
 ========================= -->
 
-<div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource"
-  (cdkDropListDropped)="drop($event)" appDragAutoScroll #autoScroller="appDragAutoScroll" [enabled]="autoScroll"
-  [edgePx]="autoScrollEdgePx" [maxStep]="autoScrollMaxStep" [target]="autoScrollTarget"
-  [scrollContainer]="scrollContainer" (cdkDropListEntered)="autoScroller.onListEntered()"
-  (cdkDropListExited)="autoScroller.onListExited()">
-  <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
-    @for (col of displayedColumns; track col) {
-    <ng-container [matColumnDef]="col">
-      <mat-header-cell *matHeaderCellDef>
-        {{ formatHeader(col) }}
-      </mat-header-cell>
+<div class="chart__root">
+  <div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource"
+    (cdkDropListDropped)="drop($event)" appDragAutoScroll #autoScroller="appDragAutoScroll" [enabled]="autoScroll"
+    [edgePx]="autoScrollEdgePx" [maxStep]="autoScrollMaxStep" [target]="autoScrollTarget"
+    [scrollContainer]="scrollContainer" (cdkDropListEntered)="autoScroller.onListEntered()"
+    (cdkDropListExited)="autoScroller.onListExited()">
+    <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+      @for (col of displayedColumns; track col) {
+      <ng-container [matColumnDef]="col">
+        <mat-header-cell *matHeaderCellDef>
+          {{ formatHeader(col) }}
+        </mat-header-cell>
 
-      <mat-cell *matCellDef="let row">
-        @if (col === displayedColumns[0]) {
-        <span class="drag-handle" cdkDragHandle>
-          <mat-icon class="reorder-icon">reorder</mat-icon>
-        </span>
-        }
-        {{ formatCell(col, row[col], row) }}
-      </mat-cell>
-    </ng-container>
-    }
+        <mat-cell *matCellDef="let row">
+          @if (col === displayedColumns[0]) {
+          <span class="drag-handle" cdkDragHandle>
+            <mat-icon class="reorder-icon">reorder</mat-icon>
+          </span>
+          }
+          {{ formatCell(col, row[col], row) }}
+        </mat-cell>
+      </ng-container>
+      }
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-    <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"
-      [cdkDragStartDelay]="{ touch: 200, mouse: 0 }" (cdkDragStarted)="autoScroller.start()"
-      (cdkDragEnded)="autoScroller.stop()">
-      <ng-template cdkDragPlaceholder>
-        <div class="row-placeholder" [class.hidden]="autoScroller.dragOutside"></div>
-      </ng-template>
-    </mat-row>
-  </mat-table>
+      <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"
+        [cdkDragStartDelay]="{ touch: 200, mouse: 0 }" (cdkDragStarted)="autoScroller.start()"
+        (cdkDragEnded)="autoScroller.stop()">
+        <ng-template cdkDragPlaceholder>
+          <div class="row-placeholder" [class.hidden]="autoScroller.dragOutside"></div>
+        </ng-template>
+      </mat-row>
+    </mat-table>
+  </div>
 </div>
