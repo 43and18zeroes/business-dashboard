@@ -1,6 +1,7 @@
-// =========================
-// dragable-table-component.ts
-// =========================
+/* =========================
+ dragable-table-component.ts
+========================= */
+
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';

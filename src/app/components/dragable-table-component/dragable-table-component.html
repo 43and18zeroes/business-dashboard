@@ -1,6 +1,6 @@
 <!-- =========================
 dragable-table-component.html
-========================= -->
+========================== -->
 
 <div #scrollContainer class="table-scroll" cdkDropList [cdkDropListData]="dataSource"
   (cdkDropListDropped)="drop($event)" appDragAutoScroll #autoScroller="appDragAutoScroll" [enabled]="autoScroll"

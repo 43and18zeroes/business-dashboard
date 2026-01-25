@@ -1,6 +1,6 @@
-// =========================
-// drag-autoscroll.directive.ts
-// =========================
+/* =========================
+ drag-autoscroll.directive.ts
+========================= */
 
 import { Directive, ElementRef, HostBinding, Input, NgZone, OnDestroy, inject } from '@angular/core';
 
