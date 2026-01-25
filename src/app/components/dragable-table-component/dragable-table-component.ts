@@ -66,8 +66,30 @@ export class DragableTableComponent {
 
     const orderAfter = this.dataSource.map((row) => String(row[this.idKey]));
 
-    const payload = {
-      type: 'table.reorder',
+    const payload = this.buildReorderPayload({
+      draggedRow,
+      fromIndex,
+      toIndex,
+      orderBefore,
+      orderAfter,
+    });
+
+    console.log('[TABLE REORDER]', payload);
+
+    this.table.renderRows();
+  }
+
+  private buildReorderPayload(args: {
+    draggedRow: RowData;
+    fromIndex: number;
+    toIndex: number;
+    orderBefore: string[];
+    orderAfter: string[];
+  }) {
+    const { draggedRow, fromIndex, toIndex, orderBefore, orderAfter } = args;
+
+    return {
+      type: 'table.reorder' as const,
       entity: this.entity ?? 'unknown',
       moved: { key: this.idKey, value: draggedRow[this.idKey] },
       fromIndex,
@@ -75,10 +97,6 @@ export class DragableTableComponent {
       orderBefore,
       orderAfter,
     };
-
-    console.log('[TABLE REORDER]', payload);
-
-    this.table.renderRows();
   }
 
   private recomputeColumns() {
