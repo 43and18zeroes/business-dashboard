@@ -52,6 +52,10 @@ mat-row mat-cell:first-child {
     cursor: move;
 }
 
+.mat-mdc-table {
+    background-color: transparent !important;
+}
+
 mat-row {
     background-color: rgba($color: #000000, $alpha: 0);
 }
