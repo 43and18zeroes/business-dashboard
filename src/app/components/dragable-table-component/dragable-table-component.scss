@@ -61,7 +61,11 @@ mat-row {
 }
 
 .cdk-drag-preview {
-     background-color: light-dark(#ffffff, #1f2328);
+    background-color: light-dark(#ffffff, #1f2328);
+    box-shadow:
+        0 5px 5px -3px light-dark(#1f2328, #ffffff),
+        0 8px 10px 1px light-dark(#1f2328, #ffffff),
+        0 3px 14px 2px light-dark(#1f2328, #ffffff);
 }
 
 .cdk-drag-animating {
