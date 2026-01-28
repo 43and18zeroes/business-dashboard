@@ -3,20 +3,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of } from 'rxjs';
 import { ChartData } from '../models/chart.model';
 import { NEW_CUSTOMERS_STATS, PROJECTS, SALES_STATS, TRANSACTIONS } from './mock-data.constant';
+import { ColorService } from './color-service';
 
-const DEFAULT_SERIES = [
-  { key: 'primary', color: '#007BFF' },
-  { key: 'secondary', color: '#00D4FF' },
-] as const;
-
-type SeriesKey = typeof DEFAULT_SERIES[number]['key'];
+type SeriesKey = 'primary' | 'secondary';
 type SeriesSelectors<T> = Record<SeriesKey, (item: T) => number>;
 type LabelSelector<T> = (item: T) => string;
 
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
-  private readonly primaryColor = DEFAULT_SERIES[0].color;
-  private readonly secondaryColor = DEFAULT_SERIES[1].color;
+  constructor(private readonly colors: ColorService) { }
+
+  private readonly primaryColor = computed(() => this.colors.tokens().primary);
+  private readonly secondaryColor = computed(() => this.colors.tokens().secondary);
 
   private createChartDataSignal<T>(
     source$: Observable<readonly T[]>,
@@ -26,15 +24,18 @@ export class MockDataService {
   ) {
     const raw = toSignal(source$, { initialValue: [...initialValue] as T[] });
 
-    return computed<ChartData[]>(() =>
-      raw().map((item) => ({
+    return computed<ChartData[]>(() => {
+      const primary = this.primaryColor();
+      const secondary = this.secondaryColor();
+
+      return raw().map((item) => ({
         label: labelSelector(item),
         value: selectors.primary(item),
         secondaryValue: selectors.secondary(item),
-        color: this.primaryColor,
-        secondaryColor: this.secondaryColor,
-      }))
-    );
+        color: primary,
+        secondaryColor: secondary,
+      }));
+    });
   }
 
   readonly salesChartData = this.createChartDataSignal(
@@ -59,8 +60,8 @@ export class MockDataService {
         label: 'Projects',
         value: overall,
         secondaryValue: completed,
-        color: this.primaryColor,
-        secondaryColor: this.secondaryColor,
+        color: this.primaryColor(),
+        secondaryColor: this.secondaryColor(),
       },
     ];
   });
