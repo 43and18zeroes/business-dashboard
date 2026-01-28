@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CustomSidenavComponent } from './components/custom-sidenav-component/custom-sidenav-component';
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
+import { ColorService } from './services/color-service';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,10 @@ export class App {
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor() { }
+  constructor(theme: ColorService) {
+    theme.init();
+  }
+
 
   ngOnInit() {
     this.themeService.initTheme();
