@@ -8,7 +8,7 @@ import { CustomSidenavComponent } from './components/custom-sidenav-component/cu
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
-import { AppColor } from './services/color.tokens';
+import { APP_COLORS, AppColor } from './services/color.tokens';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,34 +21,27 @@ import { CommonModule } from '@angular/common';
     MatSidenavModule,
     MatButtonModule,
     MatSlideToggleModule,
-    CustomSidenavComponent,
-    CommonModule
+    CustomSidenavComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
 
-  appColors: AppColor[] = [
-    'Cobalt Core',
-    'Emerald Edge',
-    'Infra Red',
-    'Sunset Grid',
-    'Neon Orchid',
-  ];
+  readonly appColors = APP_COLORS;
 
-  currentTheme = computed(() => this.color.theme());
+  currentTheme = computed(() => this.color.color());
 
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
   constructor(private readonly color: ColorService) {
-    this.color.init();
+    this.color.initColor();
   }
 
   setColor(color: AppColor) {
-    this.color.setTheme(color);
+    this.color.setColor(color);
   }
 
   ngOnInit() {

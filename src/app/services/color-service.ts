@@ -1,21 +1,20 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { AppColor, COLORS, ColorTokens } from './color.tokens';
-
+import { AppColor, COLORS, ColorTokens } from './color.tokens'
 @Injectable({
   providedIn: 'root',
 })
 export class ColorService {
-  private readonly _theme = signal<AppColor>('Cobalt Core');
+  private readonly _color = signal<AppColor>('Cobalt Core');
 
-  readonly theme = computed(() => this._theme());
-  readonly tokens = computed<ColorTokens>(() => COLORS[this._theme()]);
+  readonly color = computed(() => this._color());
+  readonly tokens = computed<ColorTokens>(() => COLORS[this._color()]);
 
-  setTheme(theme: AppColor) {
-    this._theme.set(theme);
-    this.applyCssVars(COLORS[theme]);
+  setColor(color: AppColor) {
+    this._color.set(color);
+    this.applyCssVars(COLORS[color]);
   }
 
-  init() {
+  initColor() {
     this.applyCssVars(this.tokens());
   }
 
