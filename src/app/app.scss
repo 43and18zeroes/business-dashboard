@@ -23,7 +23,7 @@ mat-sidenav-container {
       border-right-color: transparent;
     }
 
-    @media (width >= 600px) {
+    @media (width >=600px) {
       overflow: hidden !important;
 
       ::ng-deep .mat-drawer-inner-container {
@@ -75,6 +75,16 @@ mat-sidenav-container {
       flex: 0 0 auto;
       border-bottom: 1px solid var(--grid-color);
       --mat-toolbar-mobile-height: 64px;
+
+      .color__selector {
+        background-color: transparent;
+
+        &.active {
+          color: var(--color-primary);
+          border: 2px solid var(--color-primary);
+          font-weight: 600;
+        }
+      }
     }
 
     main {

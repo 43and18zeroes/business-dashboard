@@ -18,19 +18,13 @@
         (click)="collapsed.set(!collapsed())">
         <mat-icon>menu</mat-icon>
       </button>
-      <div class="color-switcher">
-        <button (click)="setColor('Cobalt Core')">Cobalt
-          Core</button>
-        <button (click)="setColor('Emerald Edge')">Emerald
-          Edge</button>
-        <button (click)="setColor('Infra Red')">Infra
-          Red</button>
-        <button (click)="setColor('Sunset Grid')">Sunset
-          Grid</button>
-        <button (click)="setColor('Neon Orchid')">Neon
-          Orchid</button>
-      </div>
-
+      @for (color of appColors; track color) {
+      <button class="color__selector"
+        (click)="setColor(color)"
+        [class.active]="color === currentTheme()">
+        {{ color }}
+      </button>
+      } @empty { <span class="muted">No colors</span> }
       <button mat-icon-button
         (click)="themeService.toggleTheme()" class="mr-8"
         aria-label="Toggle theme">

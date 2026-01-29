@@ -9,6 +9,7 @@ import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
 import { AppColor } from './services/color.tokens';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -21,11 +22,23 @@ import { AppColor } from './services/color.tokens';
     MatButtonModule,
     MatSlideToggleModule,
     CustomSidenavComponent,
+    CommonModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
+
+  appColors: AppColor[] = [
+    'Cobalt Core',
+    'Emerald Edge',
+    'Infra Red',
+    'Sunset Grid',
+    'Neon Orchid',
+  ];
+
+  currentTheme = computed(() => this.color.theme());
+
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
