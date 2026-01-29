@@ -91,5 +91,9 @@ mat-row {
 }
 
 mat-header-cell {
-  color: var(--color-primary);
+    border-bottom: 1px solid var(--color-primary) !important;
+}
+
+.mat-mdc-cell {
+    border-bottom-color: var(--color-primary) !important;
 }
