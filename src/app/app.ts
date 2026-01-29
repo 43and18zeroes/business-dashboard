@@ -8,6 +8,7 @@ import { CustomSidenavComponent } from './components/custom-sidenav-component/cu
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
+import { AppColor } from './services/color.tokens';
 
 @Component({
   selector: 'app-root',
@@ -29,10 +30,13 @@ export class App {
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor(theme: ColorService) {
-    theme.init();
+  constructor(private readonly color: ColorService) {
+    this.color.init();
   }
 
+  setColor(color: AppColor) {
+    this.color.setTheme(color);
+  }
 
   ngOnInit() {
     this.themeService.initTheme();
