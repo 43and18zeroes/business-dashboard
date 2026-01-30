@@ -22,7 +22,6 @@
         @for (color of appColors; track color) {
         <button mat-icon-button (click)="setColor(color)"
           class="color__selector"
-          [class.active]="color === currentTheme()"
           aria-label="Choose color">
           <mat-icon>{{
             themeService.darkMode() ? "palette" :

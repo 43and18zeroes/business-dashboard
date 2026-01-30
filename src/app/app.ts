@@ -30,8 +30,6 @@ export class App {
 
   readonly appColors = APP_COLORS;
 
-  currentTheme = computed(() => this.color.color());
-
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
