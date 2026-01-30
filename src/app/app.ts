@@ -27,18 +27,18 @@ import { AppColor } from './services/color.tokens';
 })
 export class App {
 
+  private readonly colorService = inject(ColorService);
   readonly appColors = inject(ColorService).availableColors;
 
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor(private readonly color: ColorService) {
-    this.color.initColor();
+  constructor() {
   }
 
   setColor(color: AppColor) {
-    this.color.setColor(color);
+    this.colorService.setColor(color);
   }
 
   ngOnInit() {

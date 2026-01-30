@@ -1,5 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { AppColor, COLORS, ColorTokens } from './color.tokens'
+import { computed, effect, Injectable, signal } from '@angular/core';
+import { AppColor, COLORS, ColorTokens } from './color.tokens';
 
 @Injectable({ providedIn: 'root' })
 export class ColorService {
@@ -7,16 +7,16 @@ export class ColorService {
 
   readonly color = computed(() => this._color());
   readonly tokens = computed<ColorTokens>(() => COLORS[this._color()]);
-
   readonly availableColors = Object.keys(COLORS) as AppColor[];
+
+  constructor() {
+    effect(() => {
+      this.applyCssVars(this.tokens());
+    });
+  }
 
   setColor(color: AppColor) {
     this._color.set(color);
-    this.applyCssVars(COLORS[color]);
-  }
-
-  initColor() {
-    this.applyCssVars(this.tokens());
   }
 
   private applyCssVars(tokens: ColorTokens) {
