@@ -8,7 +8,7 @@ import { CustomSidenavComponent } from './components/custom-sidenav-component/cu
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
-import { APP_COLORS, AppColor } from './services/color.tokens';
+import { AppColor } from './services/color.tokens';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +27,7 @@ import { APP_COLORS, AppColor } from './services/color.tokens';
 })
 export class App {
 
-  readonly appColors = APP_COLORS;
+  readonly appColors = inject(ColorService).availableColors;
 
   themeService = inject(ThemeService);
   collapsed = signal(true);
