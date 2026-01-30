@@ -12,7 +12,6 @@ export const COLORS = {
     'Emerald Edge': { primary: '#28A745', secondary: '#34E89E' },
     'Infra Red': { primary: '#DC3545', secondary: '#FF4D6D' },
     'Sunset Grid': { primary: '#FD7E14', secondary: '#FFC107' },
-    'Neon Orchid': { primary: '#6F42C1', secondary: '#E83E8C' },
 } as const; 
 
 export type AppColor = keyof typeof COLORS;

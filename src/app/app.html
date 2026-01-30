@@ -18,20 +18,27 @@
         (click)="collapsed.set(!collapsed())">
         <mat-icon>menu</mat-icon>
       </button>
-      @for (color of appColors; track color) {
-      <button class="color__selector"
-        (click)="setColor(color)"
-        [class.active]="color === currentTheme()">
-        {{ color }}
-      </button>
-      } @empty { <span class="muted">No colors</span> }
-      <button mat-icon-button
-        (click)="themeService.toggleTheme()" class="mr-8"
-        aria-label="Toggle theme">
-        <mat-icon>{{
-          themeService.darkMode() ? "light_mode" : "bedtime"
-          }}</mat-icon>
-      </button>
+      <div class="menu__right">
+        @for (color of appColors; track color) {
+        <button mat-icon-button (click)="setColor(color)"
+          class="color__selector"
+          [class.active]="color === currentTheme()"
+          aria-label="Choose color">
+          <mat-icon>{{
+            themeService.darkMode() ? "palette" :
+            "palette"
+            }}</mat-icon>
+        </button>
+        } @empty { <span class="muted">No colors</span> }
+        <button mat-icon-button
+          (click)="themeService.toggleTheme()" class="mr-8"
+          aria-label="Toggle theme">
+          <mat-icon>{{
+            themeService.darkMode() ? "light_mode" :
+            "bedtime"
+            }}</mat-icon>
+        </button>
+      </div>
     </mat-toolbar>
     <main>
       <router-outlet />
