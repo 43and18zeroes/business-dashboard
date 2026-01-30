@@ -9,7 +9,6 @@ import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
 import { APP_COLORS, AppColor } from './services/color.tokens';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',

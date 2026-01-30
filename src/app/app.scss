@@ -78,10 +78,7 @@ mat-sidenav-container {
 
       .menu__right {
         .color__selector {
-
-          &.active {
-            color: var(--color-primary);
-          }
+          color: var(--color-primary);
         }
       }
     }
