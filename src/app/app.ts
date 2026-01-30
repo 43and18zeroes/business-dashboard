@@ -27,7 +27,7 @@ import { AppColor } from './services/color.tokens';
 })
 export class App {
 
-  private readonly colorService = inject(ColorService);
+  readonly colorService = inject(ColorService);
   readonly appColors = this.colorService.availableColors;
 
   themeService = inject(ThemeService);

@@ -19,6 +19,10 @@ export class ColorService {
     this._color.set(color);
   }
 
+  getTokens(color: AppColor): ColorTokens {
+    return COLORS[color];
+  }
+
   private applyCssVars(tokens: ColorTokens) {
     const root = document.documentElement;
     root.style.setProperty('--color-primary', tokens.primary);

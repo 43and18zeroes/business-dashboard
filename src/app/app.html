@@ -22,13 +22,15 @@
         @for (color of appColors; track color) {
         <button mat-icon-button (click)="setColor(color)"
           class="color__selector"
-          aria-label="Choose color">
-          <mat-icon>{{
-            themeService.darkMode() ? "palette" :
-            "palette"
-            }}</mat-icon>
+          [attr.aria-label]="'Choose color ' + color">
+          <mat-icon
+            [style.color]="colorService.getTokens(color).primary">
+            palette
+          </mat-icon>
         </button>
-        } @empty { <span class="muted">No colors</span> }
+        } @empty {
+        <span class="muted">No colors</span>
+        }
         <button mat-icon-button
           (click)="themeService.toggleTheme()" class="mr-8"
           aria-label="Toggle theme">
