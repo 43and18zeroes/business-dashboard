@@ -28,14 +28,13 @@ import { AppColor } from './services/color.tokens';
 export class App {
 
   private readonly colorService = inject(ColorService);
-  readonly appColors = inject(ColorService).availableColors;
+  readonly appColors = this.colorService.availableColors;
 
   themeService = inject(ThemeService);
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor() {
-  }
+  constructor() {}
 
   setColor(color: AppColor) {
     this.colorService.setColor(color);
