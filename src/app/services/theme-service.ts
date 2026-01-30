@@ -1,9 +1,14 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
+import { StorageService } from './storage-service';
+
+const DARKMODE_KEY = 'darkMode';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
+  private readonly storage = inject(StorageService);
+
   darkMode = signal(false);
 
   initTheme() {
@@ -20,26 +25,20 @@ export class ThemeService {
   }
 
   private loadDarkModeFromStorageOrSystem(): void {
-    const saved = localStorage.getItem('darkMode');
+    const saved = this.storage.getString(DARKMODE_KEY);
     if (saved !== null) {
       this.darkMode.set(saved === 'true');
     } else {
-      const prefersDark = window.matchMedia?.(
-        '(prefers-color-scheme: dark)'
-      ).matches;
+      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
       this.darkMode.set(prefersDark);
     }
   }
 
   private listenToSystemPreferenceChanges(): void {
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (e) => {
-        const saved = localStorage.getItem('darkMode');
-        if (saved === null) {
-          this.darkMode.set(e.matches);
-        }
-      });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      const saved = this.storage.getString(DARKMODE_KEY);
+      if (saved === null) this.darkMode.set(e.matches);
+    });
   }
 
   applyThemeEffect = effect(() => {
@@ -48,13 +47,12 @@ export class ThemeService {
     document.body.classList.toggle('lightMode', !dark);
   });
 
-  saveUserPreference(): void {
-    localStorage.setItem('darkMode', this.darkMode().toString());
+  private saveUserPreference(): void {
+    this.storage.setString(DARKMODE_KEY, this.darkMode().toString());
   }
 
   toggleTheme() {
-    const current = this.darkMode();
-    this.darkMode.set(!current);
+    this.darkMode.update(v => !v);
     this.saveUserPreference();
   }
 }
