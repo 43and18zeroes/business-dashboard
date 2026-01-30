@@ -22,8 +22,11 @@
         @for (color of appColors; track color) {
         <button mat-icon-button (click)="setColor(color)"
           class="color__selector"
+          [class.active]="colorService.color() === color"
           [attr.aria-label]="'Choose color ' + color">
-          <mat-icon
+          <mat-icon [fontSet]="colorService.color() === color
+        ? 'material-icons'
+        : 'material-icons-outlined'"
             [style.color]="colorService.getTokens(color).primary">
             palette
           </mat-icon>

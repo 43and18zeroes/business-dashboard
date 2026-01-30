@@ -79,6 +79,14 @@ mat-sidenav-container {
       .menu__right {
         .color__selector {
           color: var(--color-primary);
+
+          &:not(.active) mat-icon {
+            opacity: 0.7;
+          }
+
+          &.active mat-icon {
+            opacity: 1;
+          }
         }
       }
     }
