@@ -2,6 +2,10 @@
 
 @use "../../../styles/mixins" as m;
 
+:host ::ng-deep app-dragable-table-component .table-scroll {
+  overflow-y: visible;
+}
+
 :host {
   display: flex;
   flex-direction: column;
