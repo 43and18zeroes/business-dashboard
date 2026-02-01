@@ -3,9 +3,9 @@
 <h1>Transactions</h1>
 @if (chartService.transactions(); as data) {
 <app-dragable-table-component
-    class="item-small variant-transactions" [data]="data"
+    class="dashboard__chart item-small" [data]="data"
     [columns]="transactionColumns" entity="transactions"
     idKey="txId" [cellFormatter]="transactionCellFormatter"
-    [autoScroll]="true" autoScrollTarget="page"
+    [autoScroll]="true" autoScrollTarget="self"
     [autoScrollEdgePx]="40" [autoScrollMaxStep]="18" />
 }
