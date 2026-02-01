@@ -19,7 +19,10 @@ app-dragable-table-component {
 
       .table-scroll {
         padding: 0 16px;
-        margin-bottom: 16px;
+
+        mat-table {
+          margin-bottom: 16px;
+        }
       }
     }
   }
