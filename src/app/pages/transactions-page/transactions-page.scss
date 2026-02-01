@@ -4,9 +4,11 @@
 
 app-dragable-table-component {
   display: flex;
-  height: 600px;
+  max-height: calc(100vh - 64px - 63px - 16px);
+  overflow: auto;
   margin-left: -16px;
   margin-right: -16px;
+  margin-bottom: -16px;
 }
 
 ::ng-deep {
