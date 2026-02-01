@@ -74,6 +74,11 @@ mat-row {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+.cdk-drag-placeholder mat-cell,
+.cdk-drag-placeholder mat-header-cell {
+    visibility: hidden;
+}
+
 .cdk-drop-list-dragging .cdk-drag.cdk-drag-dragging {
     opacity: 0 !important;
 }
@@ -91,5 +96,5 @@ mat-row {
 }
 
 .drag-handle {
-  color: var(--color-primary);
+    color: var(--color-primary);
 }
