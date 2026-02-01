@@ -12,10 +12,14 @@ app-dragable-table-component {
 }
 
 ::ng-deep {
-  .dashboard__chart {
+  app-dragable-table-component {
 
     .chart__root {
       flex: 1;
+
+      .table-scroll {
+        padding: 0 16px;
+      }
     }
   }
 }
