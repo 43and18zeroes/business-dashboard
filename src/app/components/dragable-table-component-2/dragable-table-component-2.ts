@@ -1,4 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { Component, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
@@ -66,7 +67,7 @@ export const ELEMENT_DATA: PeriodicElement[] = [
 
 @Component({
   selector: 'app-dragable-table-component-2',
-  imports: [CdkDropList, CdkDrag, MatTableModule, MatIconModule],
+  imports: [CdkDropList, CdkDrag, MatTableModule, MatIconModule, CdkScrollable],
   templateUrl: './dragable-table-component-2.html',
   styleUrl: './dragable-table-component-2.scss',
 })

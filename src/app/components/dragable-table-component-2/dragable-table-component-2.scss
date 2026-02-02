@@ -1,3 +1,21 @@
+/* =========================
+dragable-table-component-2.scss
+========================= */
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.table-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    height: 300px;
+}
+
 table {
     width: 100%;
     font-family: sans-serif;

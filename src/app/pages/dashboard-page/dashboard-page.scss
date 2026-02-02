@@ -1,4 +1,6 @@
-// dashboard-page.scss
+/* =========================
+dashboard-page.scss
+========================= */
 
 .grid-container {
   display: grid;
@@ -66,4 +68,8 @@
       }
     }
   }
+}
+
+app-dragable-table-component-2 {
+  display: block;
 }
