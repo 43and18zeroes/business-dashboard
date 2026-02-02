@@ -9,6 +9,7 @@ import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
 import { ColorService } from './services/color-service';
 import { AppColor } from './services/color.tokens';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ import { AppColor } from './services/color.tokens';
     MatSidenavModule,
     MatButtonModule,
     MatSlideToggleModule,
-    CustomSidenavComponent
+    CdkScrollable,
+    CustomSidenavComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
