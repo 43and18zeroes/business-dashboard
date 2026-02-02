@@ -1,29 +1,29 @@
 // transactions-page.scss
 
-@use "../../../styles/mixins" as m;
+// @use "../../../styles/mixins" as m;
 
-app-dragable-table-component {
-  display: flex;
-  max-height: calc(100vh - 64px - 63px - 16px);
-  overflow: auto;
-  margin-left: -16px;
-  margin-right: -16px;
-  margin-bottom: -16px;
-}
+// app-dragable-table-component {
+//   display: flex;
+//   max-height: calc(100vh - 64px - 63px - 16px);
+//   overflow: auto;
+//   margin-left: -16px;
+//   margin-right: -16px;
+//   margin-bottom: -16px;
+// }
 
-::ng-deep {
-  app-dragable-table-component {
+// ::ng-deep {
+//   app-dragable-table-component {
 
-    .chart__root {
-      flex: 1;
+//     .chart__root {
+//       flex: 1;
 
-      .table-scroll {
-        padding: 0 16px;
+//       .table-scroll {
+//         padding: 0 16px;
 
-        mat-table {
-          margin-bottom: 16px;
-        }
-      }
-    }
-  }
-}
+//         mat-table {
+//           margin-bottom: 16px;
+//         }
+//       }
+//     }
+//   }
+// }

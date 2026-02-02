@@ -1,11 +1,13 @@
 <!-- transactions-page.html -->
 
 <h1>Transactions</h1>
-@if (chartService.transactions(); as data) {
+<!-- @if (chartService.transactions(); as data) {
 <app-dragable-table-component
     class="dashboard__chart" [data]="data"
     [columns]="transactionColumns" entity="transactions"
     idKey="txId" [cellFormatter]="transactionCellFormatter"
     [autoScroll]="true" autoScrollTarget="self"
     [autoScrollEdgePx]="40" [autoScrollMaxStep]="18" />
-}
+} -->
+
+<app-dragable-table-component-2></app-dragable-table-component-2>
