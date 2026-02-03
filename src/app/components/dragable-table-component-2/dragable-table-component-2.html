@@ -3,11 +3,11 @@ dragable-table-component-2.html
 ========================= -->
 
 <div class="chart__root table-container-wrapper">
-    <div class="table-scroll" cdkScrollable>
+    <div class="table-scroll" cdkScrollable cdkDropList
+        [cdkDropListData]="dataSource"
+        (cdkDropListDropped)="drop($event)">
         <mat-table #table [dataSource]="dataSource"
-            class="mat-elevation-z8" cdkDropList
-            (cdkDropListDropped)="drop($event)"
-            cdkDropListData="dataSource">
+            class="mat-elevation-z8">
             <!-- Position Column -->
             <ng-container matColumnDef="position" sticky>
                 <mat-header-cell *matHeaderCellDef> No.

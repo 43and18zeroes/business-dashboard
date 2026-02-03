@@ -77,10 +77,9 @@ export class DragableTableComponent2 {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'quantity'];
   dataSource = ELEMENT_DATA;
 
-  drop(event: CdkDragDrop<string>) {
-    const previousIndex = this.dataSource.findIndex(d => d === event.item.data);
+  drop(event: CdkDragDrop<PeriodicElement[]>) {
+    moveItemInArray(this.dataSource, event.previousIndex, event.currentIndex);
 
-    moveItemInArray(this.dataSource, previousIndex, event.currentIndex);
     this.table.renderRows();
   }
 }
