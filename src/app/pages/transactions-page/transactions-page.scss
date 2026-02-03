@@ -36,8 +36,13 @@ app-dragable-table-component-2 {
 
 ::ng-deep {
     app-dragable-table-component-2 {
-        .mat-mdc-table {
-            background-color: rgba($color: #000, $alpha: 0);
+        .table-scroll {
+            padding-left: 16px;
+            padding-right: 16px;
+
+            .mat-mdc-table {
+                background-color: rgba($color: #000, $alpha: 0);
+            }
         }
     }
 }
