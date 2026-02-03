@@ -30,4 +30,14 @@
 
 app-dragable-table-component-2 {
     height: calc(100% - 63px);
+    margin-left: -16px;
+    margin-right: -16px;
+}
+
+::ng-deep {
+    app-dragable-table-component-2 {
+        .mat-mdc-table {
+            background-color: rgba($color: #000, $alpha: 0);
+        }
+    }
 }
