@@ -71,7 +71,7 @@ dashboard-page.scss
         padding: 0;
 
         .mat-mdc-table {
-          background-color: rgba($color: #000, $alpha: 0);
+          background: transparent;
         }
       }
     }
