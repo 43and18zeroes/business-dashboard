@@ -66,6 +66,14 @@ dashboard-page.scss
           opacity: light-dark(0.8, 0.35);
         }
       }
+
+      .table-scroll {
+        padding: 0;
+
+        .mat-mdc-table {
+          background-color: rgba($color: #000, $alpha: 0);
+        }
+      }
     }
   }
 }

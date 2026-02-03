@@ -12,7 +12,7 @@ dragable-table-component-2.scss
 .table-scroll {
     flex: 1;
     min-height: 0;
-    overflow: auto;
+    overflow: auto !important;
     height: 300px;
 }
 
