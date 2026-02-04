@@ -9,18 +9,17 @@ dashboard-page.html
         class="dashboard__chart item-large" [data]="data">
     </app-line-chart-component>
     }
-    @if (chartService.transactions(); as data) {
-    <!-- <app-dragable-table-component class="dashboard__chart item-small" [data]="data" [columns]="transactionColumns"
-        entity="transactions" idKey="txId" [cellFormatter]="transactionCellFormatter" [autoScroll]="true" autoScrollTarget="self"
-        [autoScrollEdgePx]="40" [autoScrollMaxStep]="18" /> -->
+    <!-- @if (chartService.transactions(); as data) {
+            <app-dragable-table-component class="dashboard__chart item-small" [data]="data" [columns]="transactionColumns"
+            entity="transactions" idKey="txId" [cellFormatter]="transactionCellFormatter" [autoScroll]="true" autoScrollTarget="self"
+            [autoScrollEdgePx]="40" [autoScrollMaxStep]="18" />
+        } -->
     @if (transactions(); as data) {
-  <app-dragable-table-component-2
-    class="dashboard__chart item-small"
-    [data]="data"
-    [displayedColumns]="transactionColumns"
-    idKey="txId"
-  />
-}
+    <app-dragable-table-component-2
+        class="dashboard__chart item-small" [data]="data"
+        [displayedColumns]="transactionColumns"
+        entity="transactions" idKey="txId"
+        (reorder)="onTransactionsReorder($event)" />
     }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component

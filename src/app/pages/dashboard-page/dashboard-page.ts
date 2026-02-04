@@ -4,7 +4,11 @@ import { MockDataService } from '../../services/mock-data-service';
 import { transactionCellFormatter } from '../../shared/table-formatters';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
-import { DragableTableComponent2 } from "../../components/dragable-table-component-2/dragable-table-component-2";
+import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component-2/dragable-table-component-2";
+import { TransactionsPage } from '../transactions-page/transactions-page';
+import { TRANSACTIONS } from '../../services/mock-data.constant';
+
+type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
@@ -15,8 +19,15 @@ import { DragableTableComponent2 } from "../../components/dragable-table-compone
 export class DashboardPage {
   protected chartService = inject(MockDataService);
 
-  transactionCellFormatter = transactionCellFormatter;
   transactionColumns = ['txId', 'cost'] as const;
-
   readonly transactions = computed(() => this.chartService.transactions());
+
+  onTransactionsReorder(ev: ReorderEvent<Transaction>) {
+    console.log('[REORDER] Persist this order in backend:', {
+      entity: 'transactions',
+      idKey: 'txId',
+      moved: { from: ev.previousIndex, to: ev.currentIndex },
+      orderedIds: ev.orderedIds,
+    });
+  }
 }
