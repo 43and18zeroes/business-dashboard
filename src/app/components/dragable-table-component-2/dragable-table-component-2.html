@@ -11,8 +11,9 @@ dragable-table-component-2.html
 
             @for (col of displayedColumns; track col) {
             <ng-container [matColumnDef]="col">
-                <mat-header-cell *matHeaderCellDef>{{ col
-                    }}</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>
+                    {{ formatHeader(col) }}
+                </mat-header-cell>
 
                 <mat-cell *matCellDef="let row">
                     @if (col === displayedColumns[0]) {

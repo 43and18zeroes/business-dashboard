@@ -90,5 +90,10 @@ export class DragableTableComponent2<T extends Record<string, any> = any> {
     this.table.renderRows();
   }
 
-  trackBy = (_: number, row: T) => (this.idKey ? row[this.idKey] : row);
+  formatHeader(col: string): string {
+    return col
+      .replace(/_/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
 }
