@@ -14,7 +14,7 @@ dashboard-page.html
             entity="transactions" idKey="txId" [cellFormatter]="transactionCellFormatter" [autoScroll]="true" autoScrollTarget="self"
             [autoScrollEdgePx]="40" [autoScrollMaxStep]="18" />
         } -->
-    @if (transactions(); as data) {
+    @if (chartService.transactions(); as data) {
     <app-dragable-table-component-2
         class="dashboard__chart item-small" [data]="data"
         [displayedColumns]="transactionColumns"

@@ -20,7 +20,6 @@ export class DashboardPage {
   protected chartService = inject(MockDataService);
 
   transactionColumns = ['txId', 'cost'] as const;
-  readonly transactions = computed(() => this.chartService.transactions());
 
   onTransactionsReorder(ev: ReorderEvent<Transaction>) {
     console.log('[REORDER] Persist this order in backend:', {

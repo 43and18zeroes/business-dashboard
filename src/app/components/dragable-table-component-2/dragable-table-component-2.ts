@@ -8,7 +8,7 @@ export type ReorderEvent<T> = {
   previousIndex: number;
   currentIndex: number;
   items: readonly T[];
-  orderedIds?: readonly unknown[];
+  orderedIds?: readonly (T[keyof T])[];
 };
 
 @Component({
