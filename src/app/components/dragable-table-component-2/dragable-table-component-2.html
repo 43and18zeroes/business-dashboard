@@ -20,7 +20,7 @@ dragable-table-component-2.html
                     <mat-icon
                         class="example-drag-cursor">reorder</mat-icon>
                     }
-                    <span>{{ row[col] }}</span>
+                    <span>{{ formatCell(col, row) }}</span>
                 </mat-cell>
             </ng-container>
             }

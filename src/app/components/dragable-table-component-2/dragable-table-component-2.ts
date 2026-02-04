@@ -23,6 +23,7 @@ export class DragableTableComponent2<T extends Record<string, any> = any> {
   @Input({ required: true }) data: readonly T[] = [];
   @Input() displayedColumns: readonly (keyof T & string)[] = [];
   @Input() idKey?: keyof T & string;
+  @Input() cellFormatter?: (col: string, value: unknown, row: T) => string;
 
   @Output() reorder = new EventEmitter<ReorderEvent<T>>();
 
@@ -50,5 +51,12 @@ export class DragableTableComponent2<T extends Record<string, any> = any> {
       .replace(/_/g, ' ')
       .replace(/([a-z])([A-Z])/g, '$1 $2')
       .replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  formatCell(col: string, row: T): string {
+    const value = row[col as keyof T];
+    return this.cellFormatter
+      ? this.cellFormatter(col, value, row)
+      : String(value ?? '');
   }
 }

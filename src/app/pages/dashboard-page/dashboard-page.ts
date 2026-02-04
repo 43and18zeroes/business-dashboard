@@ -30,4 +30,14 @@ export class DashboardPage {
       orderedIds: ev.orderedIds,
     });
   }
+
+  cellFormatter = (col: string, value: unknown) => {
+    if (col === 'cost' && typeof value === 'number') {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
+    }
+    return String(value ?? '');
+  };
 }

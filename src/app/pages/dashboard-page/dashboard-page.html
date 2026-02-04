@@ -18,7 +18,7 @@ dashboard-page.html
     <app-dragable-table-component-2
         class="dashboard__chart item-small" [data]="data"
         [displayedColumns]="transactionColumns"
-        entity="transactions" idKey="txId"
+        [cellFormatter]="cellFormatter" idKey="txId"
         (reorder)="onTransactionsReorder($event)" />
     }
     @if (chartService.projectsChartData(); as data) {
