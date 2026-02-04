@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
 
@@ -71,15 +71,24 @@ export const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './dragable-table-component-2.html',
   styleUrl: './dragable-table-component-2.scss',
 })
-export class DragableTableComponent2 {
-  @ViewChild('table', { static: true }) table!: MatTable<PeriodicElement>;
+export class DragableTableComponent2<T extends Record<string, any> = any> {
+  @ViewChild('table', { static: true }) table!: MatTable<T>;
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'quantity'];
-  dataSource = ELEMENT_DATA;
+  @Input({ required: true }) data: readonly T[] = [];
+  @Input() displayedColumns: readonly (keyof T & string)[] = [];
+  @Input() idKey?: keyof T & string;
 
-  drop(event: CdkDragDrop<PeriodicElement[]>) {
+  dataSource: T[] = [];
+
+  ngOnChanges() {
+    this.dataSource = [...this.data];
+    this.table?.renderRows();
+  }
+
+  drop(event: CdkDragDrop<T[]>) {
     moveItemInArray(this.dataSource, event.previousIndex, event.currentIndex);
-
     this.table.renderRows();
   }
+
+  trackBy = (_: number, row: T) => (this.idKey ? row[this.idKey] : row);
 }

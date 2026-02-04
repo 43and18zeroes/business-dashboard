@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
 import { MockDataService } from '../../services/mock-data-service';
 import { transactionCellFormatter } from '../../shared/table-formatters';
@@ -16,5 +16,7 @@ export class DashboardPage {
   protected chartService = inject(MockDataService);
 
   transactionCellFormatter = transactionCellFormatter;
-  transactionColumns = ['txId', 'cost'];
+  transactionColumns = ['txId', 'cost'] as const;
+
+  readonly transactions = computed(() => this.chartService.transactions());
 }

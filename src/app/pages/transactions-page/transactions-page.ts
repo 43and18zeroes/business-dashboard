@@ -6,7 +6,7 @@ import { DragableTableComponent2 } from "../../components/dragable-table-compone
 
 @Component({
   selector: 'app-transactions-page',
-  imports: [DragableTableComponent2],
+  // imports: [DragableTableComponent2],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.scss',
 })
