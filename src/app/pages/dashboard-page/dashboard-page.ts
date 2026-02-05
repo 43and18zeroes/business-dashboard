@@ -4,7 +4,7 @@ import { MockDataService } from '../../services/mock-data-service';
 import { transactionCellFormatter } from '../../shared/table-formatters';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
-import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component-2/dragable-table-component-2";
+import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { TransactionsPage } from '../transactions-page/transactions-page';
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 

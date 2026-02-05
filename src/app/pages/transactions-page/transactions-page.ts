@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 // import { DragableTableComponent } from "../../components/dragable-table-component/dragable-table-component";
 // import { MockDataService } from '../../services/mock-data-service';
 // import { transactionCellFormatter } from '../../shared/table-formatters';
-import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component-2/dragable-table-component-2";
+import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { MockDataService } from '../../services/mock-data-service';
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 
