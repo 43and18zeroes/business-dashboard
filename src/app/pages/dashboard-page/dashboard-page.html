@@ -9,13 +9,6 @@ dashboard-page.html
         class="dashboard__chart item-large" [data]="data">
     </app-line-chart-component>
     }
-    @if (chartService.transactions(); as data) {
-    <app-dragable-table-component
-        class="dashboard__chart item-small" [data]="data"
-        [displayedColumns]="transactionColumns"
-        [cellFormatter]="cellFormatter" idKey="txId"
-        (reorder)="onTransactionsReorder($event)" />
-    }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component
         class="dashboard__chart item-small" [data]="data">
@@ -25,5 +18,17 @@ dashboard-page.html
     <app-bar-chart-component
         class="dashboard__chart item-small" [data]="data">
     </app-bar-chart-component>
+    }
+    @if (chartService.salesChartData(); as data) {
+    <app-bar-chart-component
+        class="dashboard__chart item-small" [data]="data">
+    </app-bar-chart-component>
+    }
+    @if (chartService.transactions(); as data) {
+    <app-dragable-table-component
+        class="dashboard__chart item-small" [data]="data"
+        [displayedColumns]="transactionColumns"
+        [cellFormatter]="cellFormatter" idKey="txId"
+        (reorder)="onTransactionsReorder($event)" />
     }
 </div>
