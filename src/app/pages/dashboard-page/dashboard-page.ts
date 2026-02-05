@@ -1,11 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BarChartComponent } from '../../components/charts/bar-chart-component/bar-chart-component';
 import { MockDataService } from '../../services/mock-data-service';
-import { transactionCellFormatter } from '../../shared/table-formatters';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
-import { TransactionsPage } from '../transactions-page/transactions-page';
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 
 type Transaction = (typeof TRANSACTIONS)[number];
