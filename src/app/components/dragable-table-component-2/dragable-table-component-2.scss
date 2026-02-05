@@ -58,3 +58,9 @@ table {
     text-align: right;
     white-space: nowrap;
 }
+
+.mat-column-cost {
+  flex: 0 0 auto;
+  width: max-content;
+  white-space: nowrap;
+}
