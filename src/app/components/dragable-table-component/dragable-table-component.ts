@@ -17,7 +17,7 @@ export type ReorderEvent<T> = {
   templateUrl: './dragable-table-component.html',
   styleUrl: './dragable-table-component.scss',
 })
-export class DragableTableComponent2<T extends Record<string, any> = any> {
+export class DragableTableComponent<T extends Record<string, any> = any> {
   @ViewChild('table', { static: true }) table!: MatTable<T>;
 
   @Input({ required: true }) data: readonly T[] = [];

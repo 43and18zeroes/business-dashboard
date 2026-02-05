@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
+import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { MockDataService } from '../../services/mock-data-service';
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 
@@ -7,7 +7,7 @@ type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-transactions-page',
-  imports: [DragableTableComponent2],
+  imports: [DragableTableComponent],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.scss',
 })

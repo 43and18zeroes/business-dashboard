@@ -3,14 +3,14 @@ import { BarChartComponent } from '../../components/charts/bar-chart-component/b
 import { MockDataService } from '../../services/mock-data-service';
 import { LineChartComponent } from "../../components/charts/line-chart-component/line-chart-component";
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
-import { DragableTableComponent2, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
+import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent2],
+  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
