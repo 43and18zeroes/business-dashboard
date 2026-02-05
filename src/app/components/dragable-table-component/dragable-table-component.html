@@ -20,7 +20,9 @@ dragable-table-component-2.html
                     <mat-icon
                         class="example-drag-cursor">reorder</mat-icon>
                     }
-                    <span [class.is-number]="col === 'cost'">{{ formatCell(col, row) }}</span>
+                    <span
+                        [class.is-number]="col === 'cost'">{{
+                        formatCell(col, row) }}</span>
                 </mat-cell>
             </ng-container>
             }
@@ -30,7 +32,8 @@ dragable-table-component-2.html
 
             <mat-row
                 *matRowDef="let row; columns: displayedColumns;"
-                cdkDrag [cdkDragData]="row"></mat-row>
+                cdkDrag [cdkDragData]="row"
+                [cdkDragStartDelay]="{ touch: 200, mouse: 0 }"></mat-row>
 
         </mat-table>
     </div>
