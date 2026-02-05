@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { MockDataService } from '../../services/mock-data-service';
 import { TRANSACTIONS } from '../../services/mock-data.constant';
+import { TRANSACTION_TABLE_UTILS } from '../../shared/table-utils';
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
@@ -17,23 +18,10 @@ export class TransactionsPage {
 
   transactionColumns = ['txId', 'user', 'date', 'cost'] as const;
 
+  cellFormatter = TRANSACTION_TABLE_UTILS.cellFormatter;
+
   onTransactionsReorder(ev: ReorderEvent<Transaction>) {
-    console.log('[REORDER] Persist this order in backend:', {
-      entity: 'transactions',
-      idKey: 'txId',
-      moved: { from: ev.previousIndex, to: ev.currentIndex },
-      orderedIds: ev.orderedIds,
-    });
+    TRANSACTION_TABLE_UTILS.persistOrder(ev);
   }
 
-  cellFormatter = (col: string, value: unknown) => {
-    if (col === 'cost' && typeof value === 'number') {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(value);
-    }
-    return String(value ?? '');
-  };
-  
 }

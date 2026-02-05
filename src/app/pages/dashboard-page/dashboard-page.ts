@@ -5,6 +5,7 @@ import { LineChartComponent } from "../../components/charts/line-chart-component
 import { RingChartComponent } from "../../components/charts/ring-chart-component/ring-chart-component";
 import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { TRANSACTIONS } from '../../services/mock-data.constant';
+import { TRANSACTION_TABLE_UTILS } from '../../shared/table-utils';
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
@@ -19,22 +20,9 @@ export class DashboardPage {
 
   transactionColumns = ['txId', 'cost'] as const;
 
-  onTransactionsReorder(ev: ReorderEvent<Transaction>) {
-    console.log('[REORDER] Persist this order in backend:', {
-      entity: 'transactions',
-      idKey: 'txId',
-      moved: { from: ev.previousIndex, to: ev.currentIndex },
-      orderedIds: ev.orderedIds,
-    });
-  }
+  cellFormatter = TRANSACTION_TABLE_UTILS.cellFormatter;
 
-  cellFormatter = (col: string, value: unknown) => {
-    if (col === 'cost' && typeof value === 'number') {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(value);
-    }
-    return String(value ?? '');
-  };
+  onTransactionsReorder(ev: ReorderEvent<Transaction>) {
+    TRANSACTION_TABLE_UTILS.persistOrder(ev);
+  }
 }
