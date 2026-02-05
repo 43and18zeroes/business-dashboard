@@ -60,7 +60,6 @@ table {
 }
 
 .mat-column-cost {
-  flex: 0 0 auto;
-  width: max-content;
-  white-space: nowrap;
+  display: flex;
+  justify-content: flex-end;
 }

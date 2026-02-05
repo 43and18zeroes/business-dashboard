@@ -11,3 +11,11 @@
 } -->
 
 <!-- <app-dragable-table-component-2></app-dragable-table-component-2> -->
+
+@if (chartService.transactions(); as data) {
+<app-dragable-table-component-2
+    class="dashboard__chart item-small" [data]="data"
+    [displayedColumns]="transactionColumns"
+    [cellFormatter]="cellFormatter" idKey="txId"
+    (reorder)="onTransactionsReorder($event)" />
+}
