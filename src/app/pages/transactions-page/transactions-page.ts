@@ -25,16 +25,16 @@ export class TransactionsPage {
   private readonly desktopColumns: readonly TransactionColumn[] = ['txId', 'user', 'date', 'cost'];
   private readonly mobileColumns: readonly TransactionColumn[] = ['txId', 'cost'];
 
-  transactionColumns: readonly TransactionColumn[] = this.desktopColumns;
+  transactionColumns: readonly TransactionColumn[] = this.mobileColumns;
 
   cellFormatter = TRANSACTION_TABLE_UTILS.cellFormatter;
 
   constructor() {
     this.breakpointObserver
-      .observe(['(max-width: 991.98px)'])
+      .observe(['(min-width: 992px)'])
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
-        this.transactionColumns = res.matches ? this.mobileColumns : this.desktopColumns;
+        this.transactionColumns = res.matches ? this.desktopColumns : this.mobileColumns;
       });
   }
 
