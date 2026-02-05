@@ -59,7 +59,13 @@ table {
     white-space: nowrap;
 }
 
+.mat-column-txId {
+    white-space: nowrap;
+    width: max-content;
+    min-width: max-content;
+}
+
 .mat-column-cost {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
