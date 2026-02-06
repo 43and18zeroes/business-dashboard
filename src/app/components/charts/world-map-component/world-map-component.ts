@@ -47,9 +47,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
   private worldSeries?: am5map.MapPolygonSeries;
   private countrySeries?: am5map.MapPolygonSeries;
 
-
-
-
   private toRgbInt(hex: number) {
     return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255 };
   }
@@ -80,8 +77,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
   private hexStringToInt(hex: string): number {
     return Number(`0x${hex.replace("#", "")}`);
   }
-
-
 
   constructor(private zone: NgZone) {
     effect(() => {
@@ -116,7 +111,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       this.root = undefined;
     });
   }
-
 
   private applyThemeToChart(primaryInt: number, secondaryInt: number) {
     if (!this.worldSeries) return;
@@ -154,7 +148,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
     const values = this.worldSeries.data.values;
     this.worldSeries.data.setAll(values);
   }
-
 
   private readCssVar(name: string, fallbackHex: string): am5.Color {
     const raw = getComputedStyle(document.documentElement)
