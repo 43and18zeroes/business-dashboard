@@ -14,7 +14,6 @@ import * as am5map from "@amcharts/amcharts5/map";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
-// countries2 enthält je Land u.a. continent_code + verfügbare map-Namen (für Drilldown)
 import am5geodata_data_countries2 from "@amcharts/amcharts5-geodata/data/countries2";
 
 type Countries2Entry = {
@@ -25,7 +24,7 @@ type Countries2Entry = {
 @Component({
   selector: "app-amcharts-drilldown-map",
   standalone: true,
-  template: `<div #chartdiv class="chart"></div>`,
+  templateUrl: './world-map-component.html',
   styles: [
     `
       :host {
@@ -42,10 +41,7 @@ type Countries2Entry = {
 export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
 
-  /** Höhe der Komponente (z.B. "500px", "60vh") */
   @Input() height: string = "500px";
-
-  /** Optional: wenn du statt Mercator eine andere Projektion willst */
   @Input() projection: "mercator" | "naturalEarth1" = "mercator";
 
   private root?: am5.Root;
@@ -53,17 +49,14 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
   constructor(private zone: NgZone) { }
 
   ngAfterViewInit(): void {
-    // Höhe setzen (Input)
     this.chartDiv.nativeElement.style.height = this.height;
 
-    // amCharts unbedingt außerhalb von Angular laufen lassen (Performance + kein CD-Noise)
     this.zone.runOutsideAngular(() => {
       this.root = this.createChart(this.chartDiv.nativeElement);
     });
   }
 
   ngOnDestroy(): void {
-    // Wichtig für mehrfach verwendbare Komponenten (Memory Leaks vermeiden)
     this.zone.runOutsideAngular(() => {
       this.root?.dispose();
       this.root = undefined;
@@ -96,7 +89,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       })
     );
 
-    // --- World series (clickable countries) ---
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow as any,
@@ -115,7 +107,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       fill: colors.getIndex(9),
     });
 
-    // --- Country series (drilldown) ---
     const countrySeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         visible: false,
@@ -132,7 +123,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       fill: colors.getIndex(9),
     });
 
-    // Data für World-Serie vorbereiten: pro Land das passende Drilldown-"map"-File setzen
     const data: Array<{
       id: string;
       map: string;
@@ -158,7 +148,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
 
     worldSeries.data.setAll(data);
 
-    // --- Back button (container) ---
     const backContainer = chart.children.push(
       am5.Container.new(root, {
         x: am5.p100,
@@ -193,14 +182,12 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
         centerY: am5.p50,
         fill: am5.color(0x555555),
         svgPath:
-          "M10 4 L6 8 L10 12 M6 8 L18 8", // simple arrow
+          "M10 4 L6 8 L10 12 M6 8 L18 8",
       })
     );
 
     let currentDataItem: am5.DataItem<am5map.IMapPolygonSeriesDataItem> | undefined;
 
-
-    // --- Drilldown on click ---
     worldSeries.mapPolygons.template.events.on("click", (ev) => {
       const dataItem = ev.target.dataItem;
       if (!dataItem) return;
@@ -243,7 +230,6 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       currentDataItem = undefined;
     });
 
-    // --- Zoom control + Home behaviour ---
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
 
     const homeButton = zoomControl.children.moveValue(
