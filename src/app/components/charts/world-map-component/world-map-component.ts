@@ -208,26 +208,12 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   ): am5.Root {
     const primary = am5.color(tokens.primaryInt);
     const secondary = am5.color(tokens.secondaryInt);
+    const borderColor = am5.color(0xaaaaaa); // Das Grau für die Grenzen
+    const borderHoverColor = am5.color(0x888888); // Etwas dunkler beim Hover
 
     const continents: Record<string, number> = {
-      AF: 0,
-      AN: 1,
-      AS: 2,
-      EU: 3,
-      NA: 4,
-      OC: 5,
-      SA: 6,
+      AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6,
     };
-
-    const tints = [
-      am5.color(this.tintInt(tokens.primaryInt, 0.45)),
-      am5.color(this.tintInt(tokens.primaryInt, 0.30)),
-      am5.color(this.tintInt(tokens.primaryInt, 0.15)),
-      am5.color(tokens.primaryInt),
-      am5.color(this.shadeInt(tokens.primaryInt, 0.10)),
-      am5.color(this.shadeInt(tokens.primaryInt, 0.20)),
-      am5.color(this.shadeInt(tokens.primaryInt, 0.30)),
-    ];
 
     const root = am5.Root.new(container);
     root.setThemes([am5themes_Animated.new(root)]);
@@ -244,6 +230,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     this.chart = chart;
 
+    // --- 1. WORLD SERIES ---
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow as any,
@@ -257,12 +244,16 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       interactive: true,
       fill: primary,
       templateField: "polygonSettings",
+      stroke: borderColor,     // Grau gesetzt
+      strokeWidth: 0.5         // Dünne, saubere Linie
     });
 
     worldSeries.mapPolygons.template.states.create("hover", {
       fill: secondary,
+      stroke: borderHoverColor
     });
 
+    // --- 2. COUNTRY SERIES (Detailansicht) ---
     const countrySeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         visible: false,
@@ -274,24 +265,23 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       tooltipText: "{name}",
       interactive: true,
       fill: primary,
+      stroke: borderColor,     // Grau auch hier für Binnengrenzen
+      strokeWidth: 0.5
     });
 
     countrySeries.mapPolygons.template.states.create("hover", {
       fill: secondary,
+      stroke: borderHoverColor
     });
 
+    // --- DATA PROCESSING ---
     const data: Array<any> = [];
-
-    const countries2 =
-      am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
+    const countries2 = am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
 
     for (const id in countries2) {
       if (!Object.prototype.hasOwnProperty.call(countries2, id)) continue;
-
       const country = countries2[id];
       if (!country?.maps?.length) continue;
-
-      const continentIndex = continents[country.continent_code] ?? 3;
 
       data.push({
         id,
@@ -305,6 +295,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     worldSeries.data.setAll(data);
 
+    // --- UI ELEMENTS (Back Button) ---
     const backContainer = chart.children.push(
       am5.Container.new(root, {
         x: am5.p100,
@@ -343,8 +334,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       })
     );
 
-    this.currentDataItem = undefined;
-
+    // --- EVENTS ---
     worldSeries.mapPolygons.template.events.on("click", (ev) => {
       const dataItem = ev.target.dataItem;
       if (!dataItem) return;
@@ -352,12 +342,9 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       const ctx = dataItem.dataContext as any;
       if (!ctx?.map) return;
 
-      this.currentDataItem =
-        dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
+      this.currentDataItem = dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
 
-      const zoomAnimation = worldSeries.zoomToDataItem(
-        dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>
-      );
+      const zoomAnimation = worldSeries.zoomToDataItem(this.currentDataItem);
 
       Promise.all([
         zoomAnimation?.waitForStop() ?? Promise.resolve(),
@@ -367,13 +354,14 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
         countrySeries.setAll({
           geoJSON: geodata,
-          fill: ctx.polygonSettings?.fill,
         });
+
+        // Hier setzen wir die Farbe des angeklickten Landes als Basis für die Sub-Regionen
+        countrySeries.mapPolygons.template.set("fill", ctx.polygonSettings?.fill || primary);
 
         countrySeries.show();
         worldSeries.hide(100);
         backContainer.show();
-
         chart.set("minZoomLevel", chart.get("zoomLevel"));
       });
     });
@@ -387,6 +375,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       this.currentDataItem = undefined;
     });
 
+    // --- ZOOM CONTROL ---
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
 
     const homeButton = zoomControl.children.moveValue(
@@ -394,8 +383,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         paddingTop: 10,
         paddingBottom: 10,
         icon: am5.Graphics.new(root, {
-          svgPath:
-            "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
+          svgPath: "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
           fill: am5.color(0xffffff),
         }),
       }),
