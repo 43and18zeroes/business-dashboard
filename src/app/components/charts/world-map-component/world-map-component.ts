@@ -78,6 +78,52 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
     return Number(`0x${hex.replace("#", "")}`);
   }
 
+  private clamp01(v: number) {
+    return Math.max(0, Math.min(1, v));
+  }
+
+  // stabiler Hash -> 0..1 (deterministisch pro Länder-ID)
+  private hash01(str: string): number {
+    let h = 2166136261; // FNV-1a
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    // >>> unsigned
+    return (h >>> 0) / 0xffffffff;
+  }
+
+  private countryFill(
+    countryId: string,
+    continentCode: string,
+    primaryInt: number,
+    secondaryInt: number
+  ): am5.Color {
+    // Kontinent bekommt grobe Mischung primary->secondary
+    const continents: Record<string, number> = { AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6 };
+    const idx = continents[continentCode] ?? 3;
+
+    // Basis-Mix pro Kontinent (breitere Streuung als vorher)
+    const baseMixByContinent = [0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.72]; // 0=mehr primary, 1=mehr secondary
+    let mixAmount = baseMixByContinent[idx];
+
+    // pro Land: kleiner zusätzlicher Mix-Offset (macht es weniger “blockig”)
+    const h = this.hash01(countryId);
+    mixAmount = this.clamp01(mixAmount + (h - 0.5) * 0.22); // +-0.11
+
+    // erst primary<->secondary mischen
+    const mixed = this.mixInt(primaryInt, secondaryInt, mixAmount);
+
+    // dann leichte Helligkeitsvariation pro Land (feiner Grain)
+    const lightJitter = (h - 0.5) * 0.28; // +-0.14
+    const finalInt =
+      lightJitter >= 0
+        ? this.tintInt(mixed, lightJitter)
+        : this.shadeInt(mixed, -lightJitter);
+
+    return am5.color(finalInt);
+  }
+
   constructor(private zone: NgZone) {
     effect(() => {
       const tokens = this.colorService.tokens();
@@ -137,11 +183,9 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
     ];
 
     this.worldSeries.data.each((d: any) => {
-      const idx = continents[d.continent_code] ?? 3;
-
       d.polygonSettings = {
         ...(d.polygonSettings ?? {}),
-        fill: tints[idx],
+        fill: this.countryFill(d.id, d.continent_code, primaryInt, secondaryInt),
       };
     });
 
@@ -253,7 +297,9 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
         id,
         map: country.maps[0],
         continent_code: country.continent_code,
-        polygonSettings: { fill: tints[continentIndex] },
+        polygonSettings: {
+          fill: this.countryFill(id, country.continent_code, tokens.primaryInt, tokens.secondaryInt),
+        },
       });
     }
 
