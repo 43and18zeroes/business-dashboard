@@ -25,13 +25,13 @@ type Countries2Entry = {
 };
 
 @Component({
-  selector: "app-amcharts-drilldown-map",
+  selector: "app-world-map",
   standalone: true,
   templateUrl: './world-map-component.html',
   styleUrl: './world-map-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
+export class WorldMapComponent implements AfterViewInit, OnDestroy {
   private readonly colorService = inject(ColorService);
 
   @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
