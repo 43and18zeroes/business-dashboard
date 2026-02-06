@@ -6,12 +6,13 @@ import { RingChartComponent } from "../../components/charts/ring-chart-component
 import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 import { TRANSACTION_TABLE_UTILS } from '../../shared/table-utils';
+import { AmchartsDrilldownMapComponent } from "../../components/charts/world-map-component/world-map-component";
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent],
+  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, AmchartsDrilldownMapComponent],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })

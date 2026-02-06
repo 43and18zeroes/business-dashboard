@@ -19,11 +19,9 @@ dashboard-page.html
         class="dashboard__chart item-small" [data]="data">
     </app-bar-chart-component>
     }
-    @if (chartService.salesChartData(); as data) {
-    <app-bar-chart-component
-        class="dashboard__chart item-small" [data]="data">
-    </app-bar-chart-component>
-    }
+    <app-amcharts-drilldown-map
+        class="dashboard__chart item-small" height="420px"
+        projection="mercator" />
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component
         class="dashboard__chart item-small" [data]="data"

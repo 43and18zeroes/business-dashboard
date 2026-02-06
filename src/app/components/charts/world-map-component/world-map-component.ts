@@ -1,93 +1,121 @@
-import { isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Inject,
   Input,
   NgZone,
-  PLATFORM_ID,
-  ViewChild, } from '@angular/core';
+  OnDestroy,
+  ViewChild,
+} from "@angular/core";
 
-import * as am5 from '@amcharts/amcharts5';
-import * as am5map from '@amcharts/amcharts5/map';
-import am5geodata_worldLow from '@amcharts/amcharts5-geodata/worldLow';
-import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
+import * as am5 from "@amcharts/amcharts5";
+import * as am5map from "@amcharts/amcharts5/map";
+import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+
+import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
+// countries2 enthält je Land u.a. continent_code + verfügbare map-Namen (für Drilldown)
+import am5geodata_data_countries2 from "@amcharts/amcharts5-geodata/data/countries2";
+
+type Countries2Entry = {
+  continent_code: "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA";
+  maps: string[];
+};
 
 @Component({
-  selector: 'app-world-map-component',
-  imports: [],
-  templateUrl: './world-map-component.html',
-  styleUrl: './world-map-component.scss',
+  selector: "app-amcharts-drilldown-map",
+  standalone: true,
+  template: `<div #chartdiv class="chart"></div>`,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      .chart {
+        width: 100%;
+        height: 500px;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorldMapComponent {
-  @ViewChild('chartDiv', { static: true }) chartDiv!: ElementRef<HTMLDivElement>;
+export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
+  @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
 
-  @Input() drilldownMaps: Record<string, string> = {
-    US: 'usaLow.json',
-    CA: 'canadaLow.json',
-    MX: 'mexicoLow.json',
-  };
+  /** Höhe der Komponente (z.B. "500px", "60vh") */
+  @Input() height: string = "500px";
 
-  @Input() height = '420px';
+  /** Optional: wenn du statt Mercator eine andere Projektion willst */
+  @Input() projection: "mercator" | "naturalEarth1" = "mercator";
 
   private root?: am5.Root;
 
-  constructor(
-    private zone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: object
-  ) {}
+  constructor(private zone: NgZone) { }
 
   ngAfterViewInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    // Höhe setzen (Input)
+    this.chartDiv.nativeElement.style.height = this.height;
 
-    this.zone.runOutsideAngular(() => this.createChart());
+    // amCharts unbedingt außerhalb von Angular laufen lassen (Performance + kein CD-Noise)
+    this.zone.runOutsideAngular(() => {
+      this.root = this.createChart(this.chartDiv.nativeElement);
+    });
   }
 
   ngOnDestroy(): void {
-    this.root?.dispose();
-    this.root = undefined;
+    // Wichtig für mehrfach verwendbare Komponenten (Memory Leaks vermeiden)
+    this.zone.runOutsideAngular(() => {
+      this.root?.dispose();
+      this.root = undefined;
+    });
   }
 
-  private createChart(): void {
-    const root = am5.Root.new(this.chartDiv.nativeElement);
-    this.root = root;
+  private createChart(container: HTMLDivElement): am5.Root {
+    const continents: Record<string, number> = {
+      AF: 0,
+      AN: 1,
+      AS: 2,
+      EU: 3,
+      NA: 4,
+      OC: 5,
+      SA: 6,
+    };
 
+    const root = am5.Root.new(container);
+
+    const colors = am5.ColorSet.new(root, {});
     root.setThemes([am5themes_Animated.new(root)]);
 
     const chart = root.container.children.push(
       am5map.MapChart.new(root, {
-        panX: 'translateX',
-        panY: 'translateY',
-        wheelX: 'none',
-        wheelY: 'none',
-        projection: am5map.geoNaturalEarth1(),
+        panX: "rotateX",
+        projection:
+          this.projection === "naturalEarth1"
+            ? am5map.geoNaturalEarth1()
+            : am5map.geoMercator(),
       })
     );
 
+    // --- World series (clickable countries) ---
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow as any,
-        exclude: ['AQ'],
+        exclude: ["AQ"],
       })
     );
 
     worldSeries.mapPolygons.template.setAll({
-      tooltipText: '{name}',
+      tooltipText: "{name}",
       interactive: true,
+      fill: am5.color(0xaaaaaa),
+      templateField: "polygonSettings",
     });
 
-    worldSeries.mapPolygons.template.states.create('hover', {
-      fill: root.interfaceColors.get('primaryButtonActive'),
+    worldSeries.mapPolygons.template.states.create("hover", {
+      fill: colors.getIndex(9),
     });
 
-    worldSeries.mapPolygons.template.adapters.add('fill', (fill, target) => {
-      const id = target.dataItem?.get('id');
-      if (id && this.drilldownMaps[id]) {
-        return root.interfaceColors.get('primaryButtonHover');
-      }
-      return fill;
-    });
-
+    // --- Country series (drilldown) ---
     const countrySeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         visible: false,
@@ -95,57 +123,150 @@ export class WorldMapComponent {
     );
 
     countrySeries.mapPolygons.template.setAll({
-      tooltipText: '{name}',
+      tooltipText: "{name}",
       interactive: true,
+      fill: am5.color(0xaaaaaa),
     });
 
-    countrySeries.mapPolygons.template.states.create('hover', {
-      fill: root.interfaceColors.get('primaryButtonActive'),
+    countrySeries.mapPolygons.template.states.create("hover", {
+      fill: colors.getIndex(9),
     });
 
-    const homeButton = chart.children.push(
-      am5.Button.new(root, {
-        paddingTop: 10,
-        paddingBottom: 10,
-        x: am5.percent(100),
-        centerX: am5.percent(100),
-        opacity: 0,
+    // Data für World-Serie vorbereiten: pro Land das passende Drilldown-"map"-File setzen
+    const data: Array<{
+      id: string;
+      map: string;
+      polygonSettings: { fill: am5.Color };
+    }> = [];
+
+    const countries2 = am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
+
+    for (const id in countries2) {
+      if (!Object.prototype.hasOwnProperty.call(countries2, id)) continue;
+
+      const country = countries2[id];
+      if (!country?.maps?.length) continue;
+
+      data.push({
+        id,
+        map: country.maps[0],
+        polygonSettings: {
+          fill: colors.getIndex(continents[country.continent_code]),
+        },
+      });
+    }
+
+    worldSeries.data.setAll(data);
+
+    // --- Back button (container) ---
+    const backContainer = chart.children.push(
+      am5.Container.new(root, {
+        x: am5.p100,
+        centerX: am5.p100,
+        dx: -10,
+        paddingTop: 5,
+        paddingRight: 10,
+        paddingBottom: 5,
+        y: 30,
         interactiveChildren: false,
-        icon: am5.Graphics.new(root, {
-          svgPath:
-            'M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8',
+        layout: root.horizontalLayout,
+        cursorOverStyle: "pointer",
+        background: am5.RoundedRectangle.new(root, {
           fill: am5.color(0xffffff),
+          fillOpacity: 0.2,
         }),
+        visible: false,
       })
     );
 
-    homeButton.events.on('click', () => {
-      chart.goHome();
-      countrySeries.hide();
-      worldSeries.show();
-      homeButton.hide();
-    });
+    backContainer.children.push(
+      am5.Label.new(root, {
+        text: "Back to world map",
+        centerY: am5.p50,
+      })
+    );
 
-    worldSeries.mapPolygons.template.events.on('click', (ev) => {
-      const countryId = ev.target.dataItem?.get('id') as string | undefined;
-      if (!countryId) return;
+    backContainer.children.push(
+      am5.Graphics.new(root, {
+        width: 32,
+        height: 32,
+        centerY: am5.p50,
+        fill: am5.color(0x555555),
+        svgPath:
+          "M10 4 L6 8 L10 12 M6 8 L18 8", // simple arrow
+      })
+    );
 
-      const mapFile = this.drilldownMaps[countryId];
-      if (!mapFile) return;
+    let currentDataItem: am5.DataItem<am5map.IMapPolygonSeriesDataItem> | undefined;
+
+
+    // --- Drilldown on click ---
+    worldSeries.mapPolygons.template.events.on("click", (ev) => {
+      const dataItem = ev.target.dataItem;
+      if (!dataItem) return;
+
+      const ctx = dataItem.dataContext as any;
+      if (!ctx?.map) return;
+
+      currentDataItem = dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
+
+      const zoomAnimation = worldSeries.zoomToDataItem(
+        dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>
+      );
 
       Promise.all([
-        worldSeries.zoomToDataItem(ev.target.dataItem!).waitForStop(),
-        am5.net.load(`https://cdn.amcharts.com/lib/5/geodata/json/${mapFile}`, chart),
-      ]).then((result) => {
-        const response = result[1].response;
-        const geodata = am5.JSONParser.parse(response);
+        zoomAnimation?.waitForStop() ?? Promise.resolve(),
+        am5.net.load(`https://cdn.amcharts.com/lib/5/geodata/json/${ctx.map}.json`, chart),
+      ]).then((results) => {
+        const geodata = am5.JSONParser.parse((results[1] as any).response);
 
-        countrySeries.setAll({ geoJSON: geodata });
+        countrySeries.setAll({
+          geoJSON: geodata,
+          fill: ctx.polygonSettings?.fill,
+        });
+
         countrySeries.show();
-        worldSeries.hide();
-        homeButton.show();
+        worldSeries.hide(100);
+        backContainer.show();
+
+        chart.set("minZoomLevel", chart.get("zoomLevel"));
       });
     });
+
+
+    backContainer.events.on("click", () => {
+      chart.set("minZoomLevel", 1);
+      chart.goHome();
+      worldSeries.show();
+      countrySeries.hide();
+      backContainer.hide();
+      currentDataItem = undefined;
+    });
+
+    // --- Zoom control + Home behaviour ---
+    const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+
+    const homeButton = zoomControl.children.moveValue(
+      am5.Button.new(root, {
+        paddingTop: 10,
+        paddingBottom: 10,
+        icon: am5.Graphics.new(root, {
+          svgPath:
+            "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
+          fill: am5.color(0xffffff),
+        }),
+      }),
+      0
+    );
+
+    homeButton.events.on("click", () => {
+      if (currentDataItem) {
+        countrySeries.zoomToDataItem(currentDataItem);
+      } else {
+        chart.goHome();
+      }
+    });
+
+    return root;
   }
 }
-
