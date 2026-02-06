@@ -2,7 +2,9 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  effect,
   ElementRef,
+  inject,
   Input,
   NgZone,
   OnDestroy,
@@ -15,6 +17,7 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
 import am5geodata_data_countries2 from "@amcharts/amcharts5-geodata/data/countries2";
+import { ColorService } from "../../../services/color-service";
 
 type Countries2Entry = {
   continent_code: "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA";
@@ -29,20 +32,81 @@ type Countries2Entry = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
+  private readonly colorService = inject(ColorService);
+
   @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
 
   @Input() height: string = "500px";
   @Input() projection: "mercator" | "naturalEarth1" = "mercator";
 
   private root?: am5.Root;
+  private chart?: am5map.MapChart;
+  private backContainer?: am5.Container;
+  private currentDataItem?: am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
 
-  constructor(private zone: NgZone) { }
+  private worldSeries?: am5map.MapPolygonSeries;
+  private countrySeries?: am5map.MapPolygonSeries;
+
+
+
+
+  private toRgbInt(hex: number) {
+    return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255 };
+  }
+
+  private toHexInt(r: number, g: number, b: number) {
+    return (r << 16) | (g << 8) | b;
+  }
+
+  private mixInt(base: number, target: number, amount: number): number {
+    const b = this.toRgbInt(base);
+    const t = this.toRgbInt(target);
+
+    const r = Math.round(b.r + (t.r - b.r) * amount);
+    const g = Math.round(b.g + (t.g - b.g) * amount);
+    const bb = Math.round(b.b + (t.b - b.b) * amount);
+
+    return this.toHexInt(r, g, bb);
+  }
+
+  private tintInt(base: number, amount: number): number {
+    return this.mixInt(base, 0xffffff, amount);
+  }
+
+  private shadeInt(base: number, amount: number): number {
+    return this.mixInt(base, 0x000000, amount);
+  }
+
+  private hexStringToInt(hex: string): number {
+    return Number(`0x${hex.replace("#", "")}`);
+  }
+
+
+
+  constructor(private zone: NgZone) {
+    effect(() => {
+      const tokens = this.colorService.tokens();
+
+      if (!this.root) return;
+
+      const p = this.hexStringToInt(tokens.primary);
+      const s = this.hexStringToInt(tokens.secondary);
+
+      this.zone.runOutsideAngular(() => {
+        this.applyThemeToChart(p, s);
+      });
+    });
+  }
 
   ngAfterViewInit(): void {
     this.chartDiv.nativeElement.style.height = this.height;
 
     this.zone.runOutsideAngular(() => {
-      this.root = this.createChart(this.chartDiv.nativeElement);
+      const t = this.colorService.tokens();
+      const primaryInt = this.hexStringToInt(t.primary);
+      const secondaryInt = this.hexStringToInt(t.secondary);
+
+      this.root = this.createChart(this.chartDiv.nativeElement, { primaryInt, secondaryInt });
     });
   }
 
@@ -53,7 +117,61 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private createChart(container: HTMLDivElement): am5.Root {
+
+  private applyThemeToChart(primaryInt: number, secondaryInt: number) {
+    if (!this.worldSeries) return;
+
+    const primary = am5.color(primaryInt);
+    const secondary = am5.color(secondaryInt);
+
+    this.worldSeries.mapPolygons.template.states.lookup("hover")?.setAll({ fill: secondary });
+    this.countrySeries?.mapPolygons.template.states.lookup("hover")?.setAll({ fill: secondary });
+
+    this.worldSeries.mapPolygons.template.setAll({ fill: primary });
+    this.countrySeries?.mapPolygons.template.setAll({ fill: primary });
+
+    const continents: Record<string, number> = { AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6 };
+
+    const tints = [
+      am5.color(this.tintInt(primaryInt, 0.45)),
+      am5.color(this.tintInt(primaryInt, 0.30)),
+      am5.color(this.tintInt(primaryInt, 0.15)),
+      am5.color(primaryInt),
+      am5.color(this.shadeInt(primaryInt, 0.10)),
+      am5.color(this.shadeInt(primaryInt, 0.20)),
+      am5.color(this.shadeInt(primaryInt, 0.30)),
+    ];
+
+    this.worldSeries.data.each((d: any) => {
+      const idx = continents[d.continent_code] ?? 3;
+
+      d.polygonSettings = {
+        ...(d.polygonSettings ?? {}),
+        fill: tints[idx],
+      };
+    });
+
+    const values = this.worldSeries.data.values;
+    this.worldSeries.data.setAll(values);
+  }
+
+
+  private readCssVar(name: string, fallbackHex: string): am5.Color {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue(name)
+      .trim();
+
+    const hex = raw || fallbackHex;
+    return am5.color(Number(`0x${hex.replace('#', '')}`));
+  }
+
+  private createChart(
+    container: HTMLDivElement,
+    tokens: { primaryInt: number; secondaryInt: number }
+  ): am5.Root {
+    const primary = am5.color(tokens.primaryInt);
+    const secondary = am5.color(tokens.secondaryInt);
+
     const continents: Record<string, number> = {
       AF: 0,
       AN: 1,
@@ -64,9 +182,17 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       SA: 6,
     };
 
-    const root = am5.Root.new(container);
+    const tints = [
+      am5.color(this.tintInt(tokens.primaryInt, 0.45)),
+      am5.color(this.tintInt(tokens.primaryInt, 0.30)),
+      am5.color(this.tintInt(tokens.primaryInt, 0.15)),
+      am5.color(tokens.primaryInt),
+      am5.color(this.shadeInt(tokens.primaryInt, 0.10)),
+      am5.color(this.shadeInt(tokens.primaryInt, 0.20)),
+      am5.color(this.shadeInt(tokens.primaryInt, 0.30)),
+    ];
 
-    const colors = am5.ColorSet.new(root, {});
+    const root = am5.Root.new(container);
     root.setThemes([am5themes_Animated.new(root)]);
 
     const chart = root.container.children.push(
@@ -79,22 +205,25 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       })
     );
 
+    this.chart = chart;
+
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow as any,
         exclude: ["AQ"],
       })
     );
+    this.worldSeries = worldSeries;
 
     worldSeries.mapPolygons.template.setAll({
       tooltipText: "{name}",
       interactive: true,
-      fill: am5.color(0xaaaaaa),
+      fill: primary,
       templateField: "polygonSettings",
     });
 
     worldSeries.mapPolygons.template.states.create("hover", {
-      fill: colors.getIndex(9),
+      fill: secondary,
     });
 
     const countrySeries = chart.series.push(
@@ -102,24 +231,22 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
         visible: false,
       })
     );
+    this.countrySeries = countrySeries;
 
     countrySeries.mapPolygons.template.setAll({
       tooltipText: "{name}",
       interactive: true,
-      fill: am5.color(0xaaaaaa),
+      fill: primary,
     });
 
     countrySeries.mapPolygons.template.states.create("hover", {
-      fill: colors.getIndex(9),
+      fill: secondary,
     });
 
-    const data: Array<{
-      id: string;
-      map: string;
-      polygonSettings: { fill: am5.Color };
-    }> = [];
+    const data: Array<any> = [];
 
-    const countries2 = am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
+    const countries2 =
+      am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
 
     for (const id in countries2) {
       if (!Object.prototype.hasOwnProperty.call(countries2, id)) continue;
@@ -127,12 +254,13 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       const country = countries2[id];
       if (!country?.maps?.length) continue;
 
+      const continentIndex = continents[country.continent_code] ?? 3;
+
       data.push({
         id,
         map: country.maps[0],
-        polygonSettings: {
-          fill: colors.getIndex(continents[country.continent_code]),
-        },
+        continent_code: country.continent_code,
+        polygonSettings: { fill: tints[continentIndex] },
       });
     }
 
@@ -157,6 +285,7 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
         visible: false,
       })
     );
+    this.backContainer = backContainer;
 
     backContainer.children.push(
       am5.Label.new(root, {
@@ -171,12 +300,11 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
         height: 32,
         centerY: am5.p50,
         fill: am5.color(0x555555),
-        svgPath:
-          "M10 4 L6 8 L10 12 M6 8 L18 8",
+        svgPath: "M10 4 L6 8 L10 12 M6 8 L18 8",
       })
     );
 
-    let currentDataItem: am5.DataItem<am5map.IMapPolygonSeriesDataItem> | undefined;
+    this.currentDataItem = undefined;
 
     worldSeries.mapPolygons.template.events.on("click", (ev) => {
       const dataItem = ev.target.dataItem;
@@ -185,7 +313,8 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       const ctx = dataItem.dataContext as any;
       if (!ctx?.map) return;
 
-      currentDataItem = dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
+      this.currentDataItem =
+        dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
 
       const zoomAnimation = worldSeries.zoomToDataItem(
         dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>
@@ -210,14 +339,13 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
       });
     });
 
-
     backContainer.events.on("click", () => {
       chart.set("minZoomLevel", 1);
       chart.goHome();
       worldSeries.show();
       countrySeries.hide();
       backContainer.hide();
-      currentDataItem = undefined;
+      this.currentDataItem = undefined;
     });
 
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
@@ -236,8 +364,8 @@ export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
     );
 
     homeButton.events.on("click", () => {
-      if (currentDataItem) {
-        countrySeries.zoomToDataItem(currentDataItem);
+      if (this.currentDataItem) {
+        countrySeries.zoomToDataItem(this.currentDataItem);
       } else {
         chart.goHome();
       }
