@@ -25,17 +25,7 @@ type Countries2Entry = {
   selector: "app-amcharts-drilldown-map",
   standalone: true,
   templateUrl: './world-map-component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      .chart {
-        width: 100%;
-        height: 500px;
-      }
-    `,
-  ],
+  styleUrl: './world-map-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AmchartsDrilldownMapComponent implements AfterViewInit, OnDestroy {
