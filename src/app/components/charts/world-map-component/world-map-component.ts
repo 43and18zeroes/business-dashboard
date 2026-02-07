@@ -36,7 +36,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
 
-  @Input() height: string = "500px";
+  // @Input() height: string = "500px";
   @Input() projection: "mercator" | "naturalEarth1" = "mercator";
 
   private root?: am5.Root;
@@ -167,7 +167,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.chartDiv.nativeElement.style.height = this.height;
+    // this.chartDiv.nativeElement.style.height = this.height;
 
     this.zone.runOutsideAngular(() => {
       const t = this.colorService.tokens();
