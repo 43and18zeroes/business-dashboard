@@ -27,8 +27,8 @@ type Countries2Entry = {
 @Component({
   selector: "app-world-map",
   standalone: true,
-  templateUrl: './world-map-component.html',
-  styleUrl: './world-map-component.scss',
+  templateUrl: "./world-map-component.html",
+  styleUrl: "./world-map-component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorldMapComponent implements AfterViewInit, OnDestroy {
@@ -46,6 +46,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
   private worldSeries?: am5map.MapPolygonSeries;
   private countrySeries?: am5map.MapPolygonSeries;
+
+  // --- color helpers ---------------------------------------------------------
 
   private toRgbInt(hex: number) {
     return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255 };
@@ -91,6 +93,40 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     return (h >>> 0) / 0xffffffff;
   }
 
+  /**
+   * Higher-contrast borders derived from primary:
+   * - base border is a strong shade of primary (instead of light grey)
+   * - hover border slightly lighter than base border
+   */
+  private getBorderColors(primaryInt: number) {
+    const border = am5.color(this.shadeInt(primaryInt, 0.55)); // darker => more contrast on land
+    const borderHover = am5.color(this.shadeInt(primaryInt, 0.35)); // still dark, but distinct
+    return { border, borderHover };
+  }
+
+  private getZoomLevelSafe(chart?: am5map.MapChart): number {
+    // amCharts kann undefined liefern, gerade beim Start
+    return chart?.get("zoomLevel") ?? 1;
+  }
+
+  /**
+   * Adaptive border width:
+   * - thicker on world view (zoomed out)
+   * - slightly thinner when zoomed in
+   */
+  private updateBorderWidthForZoom(zoomLevel: number) {
+    const w = this.worldSeries?.mapPolygons.template;
+    const c = this.countrySeries?.mapPolygons.template;
+    if (!w) return;
+
+    // Smooth-ish mapping (tweak values to taste)
+    // zoomLevel ~1 => ~1.0px, zoomLevel ~4 => ~0.55px
+    const width = Math.max(0.55, Math.min(1.0, 1.05 - (zoomLevel - 1) * 0.17));
+
+    w.setAll({ strokeWidth: width });
+    c?.setAll({ strokeWidth: width });
+  }
+
   private countryFill(
     countryId: string,
     continentCode: string,
@@ -108,11 +144,10 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     const mixed = this.mixInt(primaryInt, secondaryInt, mixAmount);
 
-    const lightJitter = (h - 0.5) * 0.28;
+    // Slightly reduced jitter -> less “samey”, but also avoids too-light countries
+    const lightJitter = (h - 0.5) * 0.22;
     const finalInt =
-      lightJitter >= 0
-        ? this.tintInt(mixed, lightJitter)
-        : this.shadeInt(mixed, -lightJitter);
+      lightJitter >= 0 ? this.tintInt(mixed, lightJitter) : this.shadeInt(mixed, -lightJitter);
 
     return am5.color(finalInt);
   }
@@ -120,7 +155,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   constructor(private zone: NgZone) {
     effect(() => {
       const tokens = this.colorService.tokens();
-
       if (!this.root) return;
 
       const p = this.hexStringToInt(tokens.primary);
@@ -152,29 +186,38 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private applyThemeToChart(primaryInt: number, secondaryInt: number) {
-    if (!this.worldSeries) return;
+    if (!this.worldSeries || !this.chart) return;
 
     const primary = am5.color(primaryInt);
     const secondary = am5.color(secondaryInt);
 
-    this.worldSeries.mapPolygons.template.states.lookup("hover")?.setAll({ fill: secondary });
-    this.countrySeries?.mapPolygons.template.states.lookup("hover")?.setAll({ fill: secondary });
+    const { border, borderHover } = this.getBorderColors(primaryInt);
 
-    this.worldSeries.mapPolygons.template.setAll({ fill: primary });
-    this.countrySeries?.mapPolygons.template.setAll({ fill: primary });
+    // Keep hover fill but improve border contrast on hover too
+    this.worldSeries.mapPolygons.template.states.lookup("hover")?.setAll({
+      fill: secondary,
+      stroke: borderHover,
+      strokeOpacity: 0.9,
+    });
+    this.countrySeries?.mapPolygons.template.states.lookup("hover")?.setAll({
+      fill: secondary,
+      stroke: borderHover,
+      strokeOpacity: 0.9,
+    });
 
-    const continents: Record<string, number> = { AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6 };
+    // Base styles: darker borders + higher opacity for clear country separation
+    this.worldSeries.mapPolygons.template.setAll({
+      fill: primary,
+      stroke: border,
+      strokeOpacity: 0.75,
+    });
+    this.countrySeries?.mapPolygons.template.setAll({
+      fill: primary,
+      stroke: border,
+      strokeOpacity: 0.75,
+    });
 
-    const tints = [
-      am5.color(this.tintInt(primaryInt, 0.45)),
-      am5.color(this.tintInt(primaryInt, 0.30)),
-      am5.color(this.tintInt(primaryInt, 0.15)),
-      am5.color(primaryInt),
-      am5.color(this.shadeInt(primaryInt, 0.10)),
-      am5.color(this.shadeInt(primaryInt, 0.20)),
-      am5.color(this.shadeInt(primaryInt, 0.30)),
-    ];
-
+    // Re-apply individual country fills (unchanged concept, just via helper)
     this.worldSeries.data.each((d: any) => {
       d.polygonSettings = {
         ...(d.polygonSettings ?? {}),
@@ -182,17 +225,12 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       };
     });
 
+    // Force refresh
     const values = this.worldSeries.data.values;
     this.worldSeries.data.setAll(values);
-  }
 
-  private readCssVar(name: string, fallbackHex: string): am5.Color {
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue(name)
-      .trim();
-
-    const hex = raw || fallbackHex;
-    return am5.color(Number(`0x${hex.replace('#', '')}`));
+    // Update border width based on current zoom for best legibility
+    this.updateBorderWidthForZoom(this.getZoomLevelSafe(this.chart));
   }
 
   private createChart(
@@ -201,12 +239,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   ): am5.Root {
     const primary = am5.color(tokens.primaryInt);
     const secondary = am5.color(tokens.secondaryInt);
-    const borderColor = am5.color(0xaaaaaa);
-    const borderHoverColor = am5.color(0x888888);
-
-    const continents: Record<string, number> = {
-      AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6,
-    };
+    const { border: borderColor, borderHover: borderHoverColor } = this.getBorderColors(tokens.primaryInt);
 
     const root = am5.Root.new(container);
     root.setThemes([am5themes_Animated.new(root)]);
@@ -214,14 +247,14 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     const chart = root.container.children.push(
       am5map.MapChart.new(root, {
         panX: "rotateX",
-        projection:
-          this.projection === "naturalEarth1"
-            ? am5map.geoNaturalEarth1()
-            : am5map.geoMercator(),
+        projection: this.projection === "naturalEarth1" ? am5map.geoNaturalEarth1() : am5map.geoMercator(),
       })
     );
-
     this.chart = chart;
+
+    chart.on("zoomLevel", (zl) => {
+      this.updateBorderWidthForZoom(zl ?? 1);
+    });
 
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
@@ -236,13 +269,17 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       interactive: true,
       fill: primary,
       templateField: "polygonSettings",
+
+      // CONTRAST FIX: darker borders + higher opacity + slightly thicker base
       stroke: borderColor,
-      strokeWidth: 0.5
+      strokeOpacity: 0.75,
+      strokeWidth: 1.0,
     });
 
     worldSeries.mapPolygons.template.states.create("hover", {
       fill: secondary,
-      stroke: borderHoverColor
+      stroke: borderHoverColor,
+      strokeOpacity: 0.9,
     });
 
     const countrySeries = chart.series.push(
@@ -257,12 +294,14 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       interactive: true,
       fill: primary,
       stroke: borderColor,
-      strokeWidth: 0.5
+      strokeOpacity: 0.75,
+      strokeWidth: 1.0,
     });
 
     countrySeries.mapPolygons.template.states.create("hover", {
       fill: secondary,
-      stroke: borderHoverColor
+      stroke: borderHoverColor,
+      strokeOpacity: 0.9,
     });
 
     const data: Array<any> = [];
@@ -340,16 +379,22 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       ]).then((results) => {
         const geodata = am5.JSONParser.parse((results[1] as any).response);
 
-        countrySeries.setAll({
-          geoJSON: geodata,
-        });
+        countrySeries.setAll({ geoJSON: geodata });
 
-        countrySeries.mapPolygons.template.set("fill", ctx.polygonSettings?.fill || primary);
+        // Preserve per-country fill when zoomed into a country map,
+        // but keep high-contrast strokes
+        countrySeries.mapPolygons.template.setAll({
+          fill: ctx.polygonSettings?.fill || primary,
+          stroke: borderColor,
+          strokeOpacity: 0.75,
+        });
 
         countrySeries.show();
         worldSeries.hide(100);
         backContainer.show();
-        chart.set("minZoomLevel", chart.get("zoomLevel"));
+        chart.set("minZoomLevel", this.getZoomLevelSafe(chart));
+
+        this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
       });
     });
 
@@ -360,6 +405,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       countrySeries.hide();
       backContainer.hide();
       this.currentDataItem = undefined;
+
+      this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
     });
 
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
@@ -369,7 +416,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         paddingTop: 10,
         paddingBottom: 10,
         icon: am5.Graphics.new(root, {
-          svgPath: "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
+          svgPath:
+            "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
           fill: am5.color(0xffffff),
         }),
       }),
@@ -383,6 +431,9 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         chart.goHome();
       }
     });
+
+    // Ensure initial adaptive width
+    this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
 
     return root;
   }
