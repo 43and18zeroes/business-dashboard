@@ -82,14 +82,12 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     return Math.max(0, Math.min(1, v));
   }
 
-  // stabiler Hash -> 0..1 (deterministisch pro Länder-ID)
   private hash01(str: string): number {
     let h = 2166136261; // FNV-1a
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
       h = Math.imul(h, 16777619);
     }
-    // >>> unsigned
     return (h >>> 0) / 0xffffffff;
   }
 
@@ -99,23 +97,18 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     primaryInt: number,
     secondaryInt: number
   ): am5.Color {
-    // Kontinent bekommt grobe Mischung primary->secondary
     const continents: Record<string, number> = { AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6 };
     const idx = continents[continentCode] ?? 3;
 
-    // Basis-Mix pro Kontinent (breitere Streuung als vorher)
-    const baseMixByContinent = [0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.72]; // 0=mehr primary, 1=mehr secondary
+    const baseMixByContinent = [0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.72];
     let mixAmount = baseMixByContinent[idx];
 
-    // pro Land: kleiner zusätzlicher Mix-Offset (macht es weniger “blockig”)
     const h = this.hash01(countryId);
-    mixAmount = this.clamp01(mixAmount + (h - 0.5) * 0.22); // +-0.11
+    mixAmount = this.clamp01(mixAmount + (h - 0.5) * 0.22);
 
-    // erst primary<->secondary mischen
     const mixed = this.mixInt(primaryInt, secondaryInt, mixAmount);
 
-    // dann leichte Helligkeitsvariation pro Land (feiner Grain)
-    const lightJitter = (h - 0.5) * 0.28; // +-0.14
+    const lightJitter = (h - 0.5) * 0.28;
     const finalInt =
       lightJitter >= 0
         ? this.tintInt(mixed, lightJitter)
@@ -208,8 +201,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   ): am5.Root {
     const primary = am5.color(tokens.primaryInt);
     const secondary = am5.color(tokens.secondaryInt);
-    const borderColor = am5.color(0xaaaaaa); // Das Grau für die Grenzen
-    const borderHoverColor = am5.color(0x888888); // Etwas dunkler beim Hover
+    const borderColor = am5.color(0xaaaaaa);
+    const borderHoverColor = am5.color(0x888888);
 
     const continents: Record<string, number> = {
       AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6,
@@ -230,7 +223,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     this.chart = chart;
 
-    // --- 1. WORLD SERIES ---
     const worldSeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         geoJSON: am5geodata_worldLow as any,
@@ -244,8 +236,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       interactive: true,
       fill: primary,
       templateField: "polygonSettings",
-      stroke: borderColor,     // Grau gesetzt
-      strokeWidth: 0.5         // Dünne, saubere Linie
+      stroke: borderColor,
+      strokeWidth: 0.5
     });
 
     worldSeries.mapPolygons.template.states.create("hover", {
@@ -253,7 +245,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       stroke: borderHoverColor
     });
 
-    // --- 2. COUNTRY SERIES (Detailansicht) ---
     const countrySeries = chart.series.push(
       am5map.MapPolygonSeries.new(root, {
         visible: false,
@@ -265,7 +256,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       tooltipText: "{name}",
       interactive: true,
       fill: primary,
-      stroke: borderColor,     // Grau auch hier für Binnengrenzen
+      stroke: borderColor,
       strokeWidth: 0.5
     });
 
@@ -274,7 +265,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       stroke: borderHoverColor
     });
 
-    // --- DATA PROCESSING ---
     const data: Array<any> = [];
     const countries2 = am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
 
@@ -295,7 +285,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     worldSeries.data.setAll(data);
 
-    // --- UI ELEMENTS (Back Button) ---
     const backContainer = chart.children.push(
       am5.Container.new(root, {
         x: am5.p100,
@@ -334,7 +323,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       })
     );
 
-    // --- EVENTS ---
     worldSeries.mapPolygons.template.events.on("click", (ev) => {
       const dataItem = ev.target.dataItem;
       if (!dataItem) return;
@@ -356,7 +344,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
           geoJSON: geodata,
         });
 
-        // Hier setzen wir die Farbe des angeklickten Landes als Basis für die Sub-Regionen
         countrySeries.mapPolygons.template.set("fill", ctx.polygonSettings?.fill || primary);
 
         countrySeries.show();
@@ -375,7 +362,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       this.currentDataItem = undefined;
     });
 
-    // --- ZOOM CONTROL ---
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
 
     const homeButton = zoomControl.children.moveValue(
