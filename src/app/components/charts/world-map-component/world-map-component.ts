@@ -99,8 +99,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
    * - hover border slightly lighter than base border
    */
   private getBorderColors(primaryInt: number) {
-    const border = am5.color(this.shadeInt(primaryInt, 0.55)); // darker => more contrast on land
-    const borderHover = am5.color(this.shadeInt(primaryInt, 0.35)); // still dark, but distinct
+    const border = am5.color(this.shadeInt(primaryInt, 0.1)); // darker => more contrast on land
+    const borderHover = am5.color(this.shadeInt(primaryInt, 0.2)); // still dark, but distinct
     return { border, borderHover };
   }
 
