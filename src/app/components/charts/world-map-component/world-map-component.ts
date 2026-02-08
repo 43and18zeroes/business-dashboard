@@ -3,11 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  EffectRef,
   ElementRef,
+  EnvironmentInjector,
   inject,
   Input,
   NgZone,
   OnDestroy,
+  signal,
   ViewChild,
 } from "@angular/core";
 
@@ -155,10 +158,17 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   private zoomControl?: am5map.ZoomControl;
   private homeButton?: am5.Button;
 
+  private readonly chartReady = signal(false);
+  private themeEffect?: EffectRef;
+
   constructor(private zone: NgZone) {
-    effect(() => {
+    this.themeEffect = effect(() => {
+      // Tokens bleiben reaktiv
       const tokens = this.colorService.tokens();
-      if (!this.root) return;
+      // Chart-Init wird als Dependency aufgenommen
+      const ready = this.chartReady();
+
+      if (!ready || !this.root) return;
 
       const p = this.hexStringToInt(tokens.primary);
       const s = this.hexStringToInt(tokens.secondary);
@@ -170,8 +180,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // this.chartDiv.nativeElement.style.height = this.height;
-
     this.zone.runOutsideAngular(() => {
       const t = this.colorService.tokens();
       const primaryInt = this.hexStringToInt(t.primary);
@@ -179,10 +187,15 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
       this.root = this.createChart(this.chartDiv.nativeElement, { primaryInt, secondaryInt });
     });
+
+    this.chartReady.set(true);
   }
 
   ngOnDestroy(): void {
     this.zone.runOutsideAngular(() => {
+      this.themeEffect?.destroy();
+      this.themeEffect = undefined;
+
       this.root?.dispose();
       this.root = undefined;
     });
@@ -523,7 +536,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.applyThemeToChart(tokens.primaryInt, tokens.secondaryInt);
     this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
 
     return root;
