@@ -254,6 +254,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Zoom Control & Home Button
+    // Zoom Control & Home Button
     if (this.zoomControl) {
       const buttons: Array<am5.Button | undefined> = [
         this.zoomControl.plusButton,
@@ -268,40 +269,27 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         bg?.setAll({
           fill: primary,
           fillOpacity: 1,
-
-          // ✅ weiße Border wieder herstellen
           stroke: am5.color(0xffffff),
           strokeOpacity: 1,
           strokeWidth: 1.5,
         });
 
-        // Icon weiß
         btn.get("icon")?.setAll({ fill: am5.color(0xffffff) });
 
-        // ✅ KEIN create() bei jedem Themewechsel -> lookup() verwenden
-        bg?.states.lookup("hover")?.setAll({
+        // ✅ hover/down IMMER sicher anlegen
+        bg?.states.create("hover", {
           fill: secondary,
           fillOpacity: 1,
           stroke: am5.color(0xffffff),
           strokeOpacity: 1,
         });
 
-        bg?.states.lookup("down")?.setAll({
+        bg?.states.create("down", {
           fill: am5.color(this.shadeInt(secondaryInt, 0.15)),
           fillOpacity: 1,
           stroke: am5.color(0xffffff),
           strokeOpacity: 1,
         });
-      });
-    }
-
-    if (this.homeButton) {
-      this.homeButton.get("background")?.setAll({
-        fill: primary,
-        fillOpacity: 1
-      });
-      this.homeButton.get("background")?.states.create("hover", {
-        fill: secondary
       });
     }
 
