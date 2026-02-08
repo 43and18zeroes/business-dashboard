@@ -302,7 +302,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         panX: "rotateX",
         projection: this.projection === "naturalEarth1" ? am5map.geoNaturalEarth1() : am5map.geoMercator(),
         homeZoomLevel: 2,
-        homeGeoPoint: { latitude: 20, longitude: 0 }
+        homeGeoPoint: { latitude: 20, longitude: 0 },
+        minZoomLevel: 2,
       })
     );
     this.chart = chart;
