@@ -275,21 +275,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         });
 
         btn.get("icon")?.setAll({ fill: am5.color(0xffffff) });
-
-        // ✅ hover/down IMMER sicher anlegen
-        bg?.states.create("hover", {
-          fill: secondary,
-          fillOpacity: 1,
-          stroke: am5.color(0xffffff),
-          strokeOpacity: 1,
-        });
-
-        bg?.states.create("down", {
-          fill: am5.color(this.shadeInt(secondaryInt, 0.15)),
-          fillOpacity: 1,
-          stroke: am5.color(0xffffff),
-          strokeOpacity: 1,
-        });
       });
     }
 
