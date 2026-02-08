@@ -242,23 +242,43 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
     // Zoom Control & Home Button
     if (this.zoomControl) {
-      // amCharts 5 ZoomControl hat spezifische Referenzen für Plus/Minus
-      const zoomButtons = [
+      const buttons: Array<am5.Button | undefined> = [
         this.zoomControl.plusButton,
-        this.zoomControl.minusButton
+        this.zoomControl.minusButton,
+        this.homeButton,
       ];
 
-      zoomButtons.forEach((button) => {
-        if (button) {
-          button.get("background")?.setAll({
-            fill: primary,
-            fillOpacity: 1
-          });
-          // Hover-State aktualisieren oder erstellen
-          button.get("background")?.states.create("hover", {
-            fill: secondary
-          });
-        }
+      buttons.forEach((btn) => {
+        if (!btn) return;
+
+        const bg = btn.get("background");
+        bg?.setAll({
+          fill: primary,
+          fillOpacity: 1,
+
+          // ✅ weiße Border wieder herstellen
+          stroke: am5.color(0xffffff),
+          strokeOpacity: 1,
+          strokeWidth: 1.5,
+        });
+
+        // Icon weiß
+        btn.get("icon")?.setAll({ fill: am5.color(0xffffff) });
+
+        // ✅ KEIN create() bei jedem Themewechsel -> lookup() verwenden
+        bg?.states.lookup("hover")?.setAll({
+          fill: secondary,
+          fillOpacity: 1,
+          stroke: am5.color(0xffffff),
+          strokeOpacity: 1,
+        });
+
+        bg?.states.lookup("down")?.setAll({
+          fill: am5.color(this.shadeInt(secondaryInt, 0.15)),
+          fillOpacity: 1,
+          stroke: am5.color(0xffffff),
+          strokeOpacity: 1,
+        });
       });
     }
 
@@ -465,15 +485,34 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
     this.zoomControl = zoomControl;
 
+    zoomControl.plusButton.setAll({
+      background: am5.RoundedRectangle.new(root, {
+        fill: primary,
+        fillOpacity: 1
+      })
+    });
+
+    zoomControl.minusButton.setAll({
+      background: am5.RoundedRectangle.new(root, {
+        fill: primary,
+        fillOpacity: 1
+      })
+    });
+
     const homeButton = am5.Button.new(root, {
       paddingTop: 10,
       paddingBottom: 10,
+      // Hintergrund direkt hier setzen
+      background: am5.RoundedRectangle.new(root, {
+        fill: primary,
+        fillOpacity: 1
+      }),
       icon: am5.Graphics.new(root, {
         svgPath: "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z",
         fill: am5.color(0xffffff),
       }),
     });
-    this.homeButton = homeButton; // Referenz speichern
+    this.homeButton = homeButton;
     zoomControl.children.moveValue(homeButton, 0);
 
     homeButton.events.on("click", () => {
@@ -484,7 +523,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    // Ensure initial adaptive width
+    this.applyThemeToChart(tokens.primaryInt, tokens.secondaryInt);
     this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
 
     return root;
