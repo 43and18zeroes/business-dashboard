@@ -409,7 +409,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         y: 30,
         interactiveChildren: false,
         layout: root.horizontalLayout,
-        cursorOverStyle: "pointer",
         background: am5.RoundedRectangle.new(root, {
           fill: primary, // Nutzt initiales primary
           fillOpacity: 0.8,
@@ -516,6 +515,34 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     this.homeButton = homeButton;
     zoomControl.children.moveValue(homeButton, 0);
 
+    // ---------- Cursor handling (WICHTIG: nur hier, nicht im Theme) ----------
+    const setCursor = (c: string) => {
+      root.dom.style.cursor = c; // "" = CSS default
+    };
+
+    const wirePointerCursor = (btn?: am5.Button) => {
+      if (!btn) return;
+
+      btn.events.on("pointerover", () => setCursor("pointer"));
+      btn.events.on("pointerout", () => setCursor(""));
+
+      // Absicherung für Touch / Drag / Lost pointerout
+      btn.events.on("pointerdown", () => setCursor("pointer"));
+      btn.events.on("pointerup", () => setCursor(""));
+      btn.events.on("click", () => setCursor(""));
+    };
+
+    // Chart komplett verlassen → Cursor reset
+    root.dom.addEventListener("mouseleave", () => setCursor(""));
+    root.dom.addEventListener("pointerleave", () => setCursor(""));
+
+    // Buttons anschließen
+    wirePointerCursor(zoomControl.plusButton);
+    wirePointerCursor(zoomControl.minusButton);
+    wirePointerCursor(homeButton);
+    // ------------------------------------------------------------------------
+
+
     homeButton.events.on("click", () => {
       if (this.currentDataItem) {
         countrySeries.zoomToDataItem(this.currentDataItem);
@@ -523,6 +550,29 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         chart.goHome();
       }
     });
+
+    const makePointer = (btn?: am5.Button) => {
+      if (!btn) return;
+
+      // Button selbst
+      btn.setAll({
+        interactive: true,
+      });
+
+      // Background (oft das eigentliche Hover-Ziel)
+      btn.get("background")?.setAll({
+        interactive: true,
+      });
+
+      // Icon (optional, je nach Hit-Test)
+      btn.get("icon")?.setAll({
+        interactive: true,
+      });
+    };
+
+    makePointer(zoomControl.plusButton);
+    makePointer(zoomControl.minusButton);
+    makePointer(homeButton);
 
     this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
 
