@@ -152,6 +152,9 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     return am5.color(finalInt);
   }
 
+  private zoomControl?: am5map.ZoomControl;
+  private homeButton?: am5.Button;
+
   constructor(private zone: NgZone) {
     effect(() => {
       const tokens = this.colorService.tokens();
@@ -224,6 +227,50 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         fill: this.countryFill(d.id, d.continent_code, primaryInt, secondaryInt),
       };
     });
+
+    if (this.backContainer) {
+      this.backContainer.get("background")?.setAll({
+        fill: primary,
+        fillOpacity: 0.8
+      });
+      // Das Label im Container weiß machen
+      this.backContainer.children.each(child => {
+        if (child instanceof am5.Label) child.set("fill", am5.color(0xffffff));
+        if (child instanceof am5.Graphics) child.set("fill", am5.color(0xffffff));
+      });
+    }
+
+    // Zoom Control & Home Button
+    if (this.zoomControl) {
+      // amCharts 5 ZoomControl hat spezifische Referenzen für Plus/Minus
+      const zoomButtons = [
+        this.zoomControl.plusButton,
+        this.zoomControl.minusButton
+      ];
+
+      zoomButtons.forEach((button) => {
+        if (button) {
+          button.get("background")?.setAll({
+            fill: primary,
+            fillOpacity: 1
+          });
+          // Hover-State aktualisieren oder erstellen
+          button.get("background")?.states.create("hover", {
+            fill: secondary
+          });
+        }
+      });
+    }
+
+    if (this.homeButton) {
+      this.homeButton.get("background")?.setAll({
+        fill: primary,
+        fillOpacity: 1
+      });
+      this.homeButton.get("background")?.states.create("hover", {
+        fill: secondary
+      });
+    }
 
     // Force refresh
     const values = this.worldSeries.data.values;
@@ -343,8 +390,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         layout: root.horizontalLayout,
         cursorOverStyle: "pointer",
         background: am5.RoundedRectangle.new(root, {
-          fill: am5.color(0xffffff),
-          fillOpacity: 0.2,
+          fill: primary, // Nutzt initiales primary
+          fillOpacity: 0.8,
         }),
         visible: false,
       })
@@ -416,19 +463,18 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     });
 
     const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+    this.zoomControl = zoomControl;
 
-    const homeButton = zoomControl.children.moveValue(
-      am5.Button.new(root, {
-        paddingTop: 10,
-        paddingBottom: 10,
-        icon: am5.Graphics.new(root, {
-          svgPath:
-            "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8",
-          fill: am5.color(0xffffff),
-        }),
+    const homeButton = am5.Button.new(root, {
+      paddingTop: 10,
+      paddingBottom: 10,
+      icon: am5.Graphics.new(root, {
+        svgPath: "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z",
+        fill: am5.color(0xffffff),
       }),
-      0
-    );
+    });
+    this.homeButton = homeButton; // Referenz speichern
+    zoomControl.children.moveValue(homeButton, 0);
 
     homeButton.events.on("click", () => {
       if (this.currentDataItem) {
