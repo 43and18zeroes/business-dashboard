@@ -248,6 +248,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       am5map.MapChart.new(root, {
         panX: "rotateX",
         projection: this.projection === "naturalEarth1" ? am5map.geoNaturalEarth1() : am5map.geoMercator(),
+        homeZoomLevel: 2,
+        homeGeoPoint: { latitude: 20, longitude: 0 }
       })
     );
     this.chart = chart;
@@ -323,6 +325,10 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     }
 
     worldSeries.data.setAll(data);
+
+    worldSeries.events.once("datavalidated", () => {
+      chart.goHome();
+    });
 
     const backContainer = chart.children.push(
       am5.Container.new(root, {
