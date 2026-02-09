@@ -26,18 +26,23 @@ export class WorldMapComponent2 {
         homeZoomLevel: 2,
         minZoomLevel: 2,
         maxZoomLevel: 32,
-        zoomStep: 1.5,
+        zoomStep: 2,
+        animationDuration: 600,
+        animationEasing: am5.ease.out(am5.ease.cubic),
+        centerMapOnZoomOut: true
       })
     );
 
-    chart.goHome();
-
-    chart.series.push(
+    const polygonSeries = chart.series.push(
       am5map.MapPolygonSeries.new(this.root, {
         geoJSON: am5geodata_worldLow,
         exclude: ["AQ"]
       })
     );
+
+    polygonSeries.events.on("datavalidated", () => {
+      chart.goHome();
+    });
   }
 
   ngOnDestroy(): void {
