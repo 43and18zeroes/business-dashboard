@@ -40,6 +40,17 @@ export class WorldMapComponent2 {
       })
     );
 
+    polygonSeries.mapPolygons.template.setAll({
+      tooltipText: "{name}",
+      interactive: true,
+      fill: am5.color(0xaaaaaa),
+      templateField: "polygonSettings"
+    });
+
+    polygonSeries.mapPolygons.template.states.create("hover", {
+      fill: am5.color(0x6794dc)
+    });
+
     polygonSeries.events.on("datavalidated", () => {
       chart.goHome();
     });
