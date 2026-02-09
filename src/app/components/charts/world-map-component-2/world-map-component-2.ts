@@ -18,18 +18,23 @@ export class WorldMapComponent2 {
 
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
-        panX: "rotateX",
-        panY: "rotateY",
-        projection: am5map.geoMercator()
+        projection: am5map.geoMercator(),
+
+        // ✅ Google Maps Verhalten
+        panX: "translateX",
+        panY: "translateY",
+        wheelY: "zoom",
+        pinchZoom: true
       })
     );
 
-    const polygonSeries = chart.series.push(
+    chart.series.push(
       am5map.MapPolygonSeries.new(this.root, {
-        geoJSON: am5geodata_worldLow
+        geoJSON: am5geodata_worldLow,
       })
     );
   }
+
 
   ngOnDestroy(): void {
     if (this.root) {
