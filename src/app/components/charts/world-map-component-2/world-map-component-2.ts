@@ -19,14 +19,17 @@ export class WorldMapComponent2 {
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
         projection: am5map.geoMercator(),
-
-        // ✅ Google Maps Verhalten
         panX: "translateX",
         panY: "translateY",
         wheelY: "zoom",
-        pinchZoom: true
+        pinchZoom: true,
+        homeZoomLevel: 2,
+        minZoomLevel: 2,
+        maxZoomLevel: 32
       })
     );
+
+    chart.goHome();
 
     chart.series.push(
       am5map.MapPolygonSeries.new(this.root, {
