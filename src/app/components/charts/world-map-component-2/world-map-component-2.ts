@@ -19,7 +19,7 @@ export class WorldMapComponent2 {
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
         projection: am5map.geoMercator(),
-        panX: "translateX",
+        panX: "rotateX",
         panY: "translateY",
         wheelY: "zoom",
         pinchZoom: true,
@@ -34,6 +34,7 @@ export class WorldMapComponent2 {
     chart.series.push(
       am5map.MapPolygonSeries.new(this.root, {
         geoJSON: am5geodata_worldLow,
+        exclude: ["AQ"]
       })
     );
   }
