@@ -25,7 +25,8 @@ export class WorldMapComponent2 {
         pinchZoom: true,
         homeZoomLevel: 2,
         minZoomLevel: 2,
-        maxZoomLevel: 32
+        maxZoomLevel: 32,
+        zoomStep: 1.5,
       })
     );
 
@@ -39,10 +40,7 @@ export class WorldMapComponent2 {
     );
   }
 
-
   ngOnDestroy(): void {
-    if (this.root) {
-      this.root.dispose();
-    }
+    this.root?.dispose();
   }
 }
