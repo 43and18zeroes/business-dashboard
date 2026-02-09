@@ -19,7 +19,9 @@ dashboard-page.html
         class="dashboard__chart item-small" [data]="data">
     </app-bar-chart-component>
     }
-    <app-world-map
+    <!-- <app-world-map
+        class="dashboard__chart item-small" /> -->
+    <app-world-map-component-2
         class="dashboard__chart item-small" />
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component
