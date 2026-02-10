@@ -6,7 +6,6 @@ const COLOR_KEY = 'appColor';
 const DEFAULT_COLOR: AppColor = 'Cobalt Core';
 
 @Injectable({ providedIn: 'root' })
-@Injectable({ providedIn: 'root' })
 
 export class ColorService {
   private readonly storage = inject(StorageService);
