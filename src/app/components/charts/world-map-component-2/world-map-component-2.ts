@@ -33,6 +33,9 @@ export class WorldMapComponent2 {
         wheelY: "zoom",
         pinchZoom: true,
         homeZoomLevel: 2,
+        minZoomLevel: 2,
+        maxZoomLevel: 32,
+        zoomStep: 2,
         animationDuration: 600,
         animationEasing: am5.ease.out(am5.ease.cubic),
         centerMapOnZoomOut: true
@@ -67,7 +70,7 @@ export class WorldMapComponent2 {
     const secondaryColor = am5.color(secondary);
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
-    
+
     if (hoverTemplate) {
       hoverTemplate.set("fill", secondaryColor);
     }
@@ -75,13 +78,13 @@ export class WorldMapComponent2 {
     this.polygonSeries.mapPolygons.each((polygon) => {
       polygon.set("fill", primaryColor);
       const hoverState = polygon.states.lookup("hover");
-      
+
       if (hoverState) {
         hoverState.set("fill", secondaryColor);
       }
 
       const defaultState = polygon.states.lookup("default");
-      
+
       if (defaultState) {
         defaultState.set("fill", primaryColor);
       } else {
