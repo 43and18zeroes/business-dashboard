@@ -50,8 +50,8 @@ export class WorldMapComponent2 {
     );
 
     this.polygonSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}",
-      interactive: true,
+      // tooltipText: "{name}",
+      // interactive: true,
       templateField: "polygonSettings"
     });
 
