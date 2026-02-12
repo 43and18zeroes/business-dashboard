@@ -49,19 +49,43 @@ export class WorldMapComponent2 {
       })
     );
 
+    const tooltip = am5.Tooltip.new(this.root, {
+      labelText: "{name}",
+      pointerOrientation: "horizontal",
+      animationDuration: 160,
+      animationEasing: am5.ease.out(am5.ease.cubic),
+    });
+
+    tooltip.set("background", am5.RoundedRectangle.new(this.root, {
+      cornerRadiusTL: 8,
+      fillOpacity: 0.95,
+      stroke: am5.color("#B0B0B0"),
+      strokeWidth: 1,
+      strokeOpacity: 0.9,
+      shadowColor: am5.color(0x000000),
+      shadowBlur: 8,
+      shadowOffsetX: 0,
+      shadowOffsetY: 2,
+    }));
+
+    tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
+    tooltip.states.create("default", { opacity: 1, scale: 1 });
+
     this.polygonSeries.mapPolygons.template.setAll({
+      tooltip,
       tooltipText: "{name}",
       interactive: true,
-      templateField: "polygonSettings"
+      templateField: "polygonSettings",
+      stateAnimationDuration: 200,
+      stateAnimationEasing: am5.ease.out(am5.ease.cubic),
     });
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
     const initialTokens = this.colorService.tokens();
     this.updateMapColors(initialTokens.primary, initialTokens.secondary);
-    this.polygonSeries.events.on("datavalidated", () => {
-      chart.goHome();
-    });
+    this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
+
 
   private updateMapColors(primary: string, secondary: string) {
     if (!this.polygonSeries) return;
