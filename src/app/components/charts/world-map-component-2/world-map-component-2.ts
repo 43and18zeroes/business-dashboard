@@ -56,6 +56,24 @@ export class WorldMapComponent2 {
       animationEasing: am5.ease.out(am5.ease.cubic),
     });
 
+    this.root.container.events.on("pointerdown", () => {
+      tooltip.set("forceHidden", true);
+      tooltip.hide(0);
+    });
+
+    this.root.container.events.on("globalpointerup", () => {
+      tooltip.set("forceHidden", false);
+    });
+
+    chart.events.on("dragstart", () => {
+      tooltip.set("forceHidden", true);
+      tooltip.hide(0);
+    });
+
+    chart.events.on("dragstop", () => {
+      tooltip.set("forceHidden", false);
+    });
+
     tooltip.set("background", am5.RoundedRectangle.new(this.root, {
       cornerRadiusTL: 8,
       fillOpacity: 0.95,
