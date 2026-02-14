@@ -1,567 +1,139 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  EffectRef,
-  ElementRef,
-  EnvironmentInjector,
-  inject,
-  Input,
-  NgZone,
-  OnDestroy,
-  signal,
-  ViewChild,
-} from "@angular/core";
-
+import { Component, effect, inject } from '@angular/core';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
-import am5geodata_data_countries2 from "@amcharts/amcharts5-geodata/data/countries2";
-import { ColorService } from "../../../services/color-service";
-
-type Countries2Entry = {
-  continent_code: "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA";
-  maps: string[];
-};
+import { ColorService } from '../../../services/color-service';
 
 @Component({
-  selector: "app-world-map",
-  standalone: true,
-  templateUrl: "./world-map-component.html",
-  styleUrl: "./world-map-component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-world-map-component',
+  imports: [],
+  templateUrl: './world-map-component.html',
+  styleUrl: './world-map-component.scss',
 })
-export class WorldMapComponent implements AfterViewInit, OnDestroy {
+export class WorldMapComponent {
   private readonly colorService = inject(ColorService);
+  private root!: am5.Root;
+  private polygonSeries!: am5map.MapPolygonSeries;
 
-  @ViewChild("chartdiv", { static: true }) private chartDiv!: ElementRef<HTMLDivElement>;
-
-  // @Input() height: string = "500px";
-  @Input() projection: "mercator" | "naturalEarth1" = "mercator";
-
-  private root?: am5.Root;
-  private chart?: am5map.MapChart;
-  private backContainer?: am5.Container;
-  private currentDataItem?: am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
-
-  private worldSeries?: am5map.MapPolygonSeries;
-  private countrySeries?: am5map.MapPolygonSeries;
-
-  // --- color helpers ---------------------------------------------------------
-
-  private toRgbInt(hex: number) {
-    return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255 };
-  }
-
-  private toHexInt(r: number, g: number, b: number) {
-    return (r << 16) | (g << 8) | b;
-  }
-
-  private mixInt(base: number, target: number, amount: number): number {
-    const b = this.toRgbInt(base);
-    const t = this.toRgbInt(target);
-
-    const r = Math.round(b.r + (t.r - b.r) * amount);
-    const g = Math.round(b.g + (t.g - b.g) * amount);
-    const bb = Math.round(b.b + (t.b - b.b) * amount);
-
-    return this.toHexInt(r, g, bb);
-  }
-
-  private tintInt(base: number, amount: number): number {
-    return this.mixInt(base, 0xffffff, amount);
-  }
-
-  private shadeInt(base: number, amount: number): number {
-    return this.mixInt(base, 0x000000, amount);
-  }
-
-  private hexStringToInt(hex: string): number {
-    return Number(`0x${hex.replace("#", "")}`);
-  }
-
-  private clamp01(v: number) {
-    return Math.max(0, Math.min(1, v));
-  }
-
-  private hash01(str: string): number {
-    let h = 2166136261; // FNV-1a
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0) / 0xffffffff;
-  }
-
-  /**
-   * Higher-contrast borders derived from primary:
-   * - base border is a strong shade of primary (instead of light grey)
-   * - hover border slightly lighter than base border
-   */
-  private getBorderColors(primaryInt: number) {
-    const border = am5.color(this.shadeInt(primaryInt, 0.1)); // darker => more contrast on land
-    const borderHover = am5.color(this.shadeInt(primaryInt, 0.2)); // still dark, but distinct
-    return { border, borderHover };
-  }
-
-  private getZoomLevelSafe(chart?: am5map.MapChart): number {
-    // amCharts kann undefined liefern, gerade beim Start
-    return chart?.get("zoomLevel") ?? 1;
-  }
-
-  /**
-   * Adaptive border width:
-   * - thicker on world view (zoomed out)
-   * - slightly thinner when zoomed in
-   */
-  private updateBorderWidthForZoom(zoomLevel: number) {
-    const w = this.worldSeries?.mapPolygons.template;
-    const c = this.countrySeries?.mapPolygons.template;
-    if (!w) return;
-
-    // Smooth-ish mapping (tweak values to taste)
-    // zoomLevel ~1 => ~1.0px, zoomLevel ~4 => ~0.55px
-    const width = Math.max(0.55, Math.min(1.0, 1.05 - (zoomLevel - 1) * 0.17));
-
-    w.setAll({ strokeWidth: width });
-    c?.setAll({ strokeWidth: width });
-  }
-
-  private countryFill(
-    countryId: string,
-    continentCode: string,
-    primaryInt: number,
-    secondaryInt: number
-  ): am5.Color {
-    const continents: Record<string, number> = { AF: 0, AN: 1, AS: 2, EU: 3, NA: 4, OC: 5, SA: 6 };
-    const idx = continents[continentCode] ?? 3;
-
-    const baseMixByContinent = [0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.72];
-    let mixAmount = baseMixByContinent[idx];
-
-    const h = this.hash01(countryId);
-    mixAmount = this.clamp01(mixAmount + (h - 0.5) * 0.22);
-
-    const mixed = this.mixInt(primaryInt, secondaryInt, mixAmount);
-
-    // Slightly reduced jitter -> less “samey”, but also avoids too-light countries
-    const lightJitter = (h - 0.5) * 0.22;
-    const finalInt =
-      lightJitter >= 0 ? this.tintInt(mixed, lightJitter) : this.shadeInt(mixed, -lightJitter);
-
-    return am5.color(finalInt);
-  }
-
-  private zoomControl?: am5map.ZoomControl;
-  private homeButton?: am5.Button;
-
-  private readonly chartReady = signal(false);
-  private themeEffect?: EffectRef;
-
-  constructor(private zone: NgZone) {
-    this.themeEffect = effect(() => {
-      // Tokens bleiben reaktiv
+  constructor() {
+    effect(() => {
       const tokens = this.colorService.tokens();
-      // Chart-Init wird als Dependency aufgenommen
-      const ready = this.chartReady();
-
-      if (!ready || !this.root) return;
-
-      const p = this.hexStringToInt(tokens.primary);
-      const s = this.hexStringToInt(tokens.secondary);
-
-      this.zone.runOutsideAngular(() => {
-        this.applyThemeToChart(p, s);
-      });
+      this.updateMapColors(tokens.primary, tokens.secondary);
     });
   }
 
   ngAfterViewInit(): void {
-    this.zone.runOutsideAngular(() => {
-      const t = this.colorService.tokens();
-      const primaryInt = this.hexStringToInt(t.primary);
-      const secondaryInt = this.hexStringToInt(t.secondary);
+    this.root = am5.Root.new("chartdiv");
 
-      this.root = this.createChart(this.chartDiv.nativeElement, { primaryInt, secondaryInt });
+    const chart = this.root.container.children.push(
+      am5map.MapChart.new(this.root, {
+        projection: am5map.geoMercator(),
+        panX: "translateX",
+        panY: "translateY",
+        maxPanOut: 0.25,
+        wheelY: "zoom",
+        pinchZoom: true,
+        homeZoomLevel: 2,
+        minZoomLevel: 2,
+        maxZoomLevel: 32,
+        zoomStep: 2,
+        animationDuration: 600,
+        animationEasing: am5.ease.out(am5.ease.cubic),
+        centerMapOnZoomOut: true
+      })
+    );
+
+    this.polygonSeries = chart.series.push(
+      am5map.MapPolygonSeries.new(this.root, {
+        geoJSON: am5geodata_worldLow,
+        exclude: ["AQ"]
+      })
+    );
+
+    const tooltip = am5.Tooltip.new(this.root, {
+      labelText: "{name}",
+      pointerOrientation: "horizontal",
+      animationDuration: 160,
+      animationEasing: am5.ease.out(am5.ease.cubic),
     });
 
-    this.chartReady.set(true);
+    chart.events.on("pointerdown", () => {
+      tooltip.hide();
+      tooltip.set("forceHidden", true);
+    });
+
+    this.root.container.events.on("globalpointerup", () => {
+      tooltip.set("forceHidden", false);
+    });
+
+    chart.events.on("wheel", () => {
+      tooltip.hide();
+    });
+
+    tooltip.set("background", am5.RoundedRectangle.new(this.root, {
+      cornerRadiusTL: 8,
+      fillOpacity: 0.95,
+      stroke: am5.color("#B0B0B0"),
+      strokeWidth: 1,
+      strokeOpacity: 0.9,
+      shadowColor: am5.color(0x000000),
+      shadowBlur: 8,
+      shadowOffsetX: 0,
+      shadowOffsetY: 2,
+    }));
+
+    tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
+    tooltip.states.create("default", { opacity: 1, scale: 1 });
+
+    this.polygonSeries.mapPolygons.template.setAll({
+      tooltip,
+      tooltipText: "{name}",
+      interactive: true,
+      templateField: "polygonSettings",
+      stateAnimationDuration: 200,
+      stateAnimationEasing: am5.ease.out(am5.ease.cubic),
+    });
+
+    this.polygonSeries.mapPolygons.template.states.create("hover", {});
+    const initialTokens = this.colorService.tokens();
+    this.updateMapColors(initialTokens.primary, initialTokens.secondary);
+    this.polygonSeries.events.on("datavalidated", () => chart.goHome());
+  }
+
+
+  private updateMapColors(primary: string, secondary: string) {
+    if (!this.polygonSeries) return;
+
+    const primaryColor = am5.color(primary);
+    const secondaryColor = am5.color(secondary);
+    this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
+    const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
+
+    if (hoverTemplate) {
+      hoverTemplate.set("fill", secondaryColor);
+    }
+
+    this.polygonSeries.mapPolygons.each((polygon) => {
+      polygon.set("fill", primaryColor);
+      const hoverState = polygon.states.lookup("hover");
+
+      if (hoverState) {
+        hoverState.set("fill", secondaryColor);
+      }
+
+      const defaultState = polygon.states.lookup("default");
+
+      if (defaultState) {
+        defaultState.set("fill", primaryColor);
+      } else {
+        polygon.states.create("default", {
+          fill: primaryColor
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    this.zone.runOutsideAngular(() => {
-      this.themeEffect?.destroy();
-      this.themeEffect = undefined;
-
-      this.root?.dispose();
-      this.root = undefined;
-    });
-  }
-
-  private applyThemeToChart(primaryInt: number, secondaryInt: number) {
-    if (!this.worldSeries || !this.chart) return;
-
-    const primary = am5.color(primaryInt);
-    const secondary = am5.color(secondaryInt);
-
-    const { border, borderHover } = this.getBorderColors(primaryInt);
-
-    // Keep hover fill but improve border contrast on hover too
-    this.worldSeries.mapPolygons.template.states.lookup("hover")?.setAll({
-      fill: secondary,
-      stroke: borderHover,
-      strokeOpacity: 0.9,
-    });
-    this.countrySeries?.mapPolygons.template.states.lookup("hover")?.setAll({
-      fill: secondary,
-      stroke: borderHover,
-      strokeOpacity: 0.9,
-    });
-
-    // Base styles: darker borders + higher opacity for clear country separation
-    this.worldSeries.mapPolygons.template.setAll({
-      fill: primary,
-      stroke: border,
-      strokeOpacity: 0.75,
-    });
-    this.countrySeries?.mapPolygons.template.setAll({
-      fill: primary,
-      stroke: border,
-      strokeOpacity: 0.75,
-    });
-
-    // Re-apply individual country fills (unchanged concept, just via helper)
-    this.worldSeries.data.each((d: any) => {
-      d.polygonSettings = {
-        ...(d.polygonSettings ?? {}),
-        fill: this.countryFill(d.id, d.continent_code, primaryInt, secondaryInt),
-      };
-    });
-
-    if (this.backContainer) {
-      this.backContainer.get("background")?.setAll({
-        fill: primary,
-        fillOpacity: 0.8
-      });
-      // Das Label im Container weiß machen
-      this.backContainer.children.each(child => {
-        if (child instanceof am5.Label) child.set("fill", am5.color(0xffffff));
-        if (child instanceof am5.Graphics) child.set("fill", am5.color(0xffffff));
-      });
-    }
-
-    // Zoom Control & Home Button
-    // Zoom Control & Home Button
-    if (this.zoomControl) {
-      const buttons: Array<am5.Button | undefined> = [
-        this.zoomControl.plusButton,
-        this.zoomControl.minusButton,
-        this.homeButton,
-      ];
-
-      buttons.forEach((btn) => {
-        if (!btn) return;
-
-        const bg = btn.get("background");
-        bg?.setAll({
-          fill: primary,
-          fillOpacity: 1,
-          stroke: am5.color(0xffffff),
-          strokeOpacity: 1,
-          strokeWidth: 1.5,
-        });
-
-        btn.get("icon")?.setAll({ fill: am5.color(0xffffff) });
-      });
-    }
-
-    // Force refresh
-    const values = this.worldSeries.data.values;
-    this.worldSeries.data.setAll(values);
-
-    // Update border width based on current zoom for best legibility
-    this.updateBorderWidthForZoom(this.getZoomLevelSafe(this.chart));
-  }
-
-  private createChart(
-    container: HTMLDivElement,
-    tokens: { primaryInt: number; secondaryInt: number }
-  ): am5.Root {
-    const primary = am5.color(tokens.primaryInt);
-    const secondary = am5.color(tokens.secondaryInt);
-    const { border: borderColor, borderHover: borderHoverColor } = this.getBorderColors(tokens.primaryInt);
-
-    const root = am5.Root.new(container);
-    root.setThemes([am5themes_Animated.new(root)]);
-
-    const chart = root.container.children.push(
-      am5map.MapChart.new(root, {
-        panX: "rotateX",
-        projection: this.projection === "naturalEarth1" ? am5map.geoNaturalEarth1() : am5map.geoMercator(),
-        homeZoomLevel: 2,
-        homeGeoPoint: { latitude: 20, longitude: 0 },
-        minZoomLevel: 2,
-      })
-    );
-    this.chart = chart;
-
-    chart.on("zoomLevel", (zl) => {
-      this.updateBorderWidthForZoom(zl ?? 1);
-    });
-
-    const worldSeries = chart.series.push(
-      am5map.MapPolygonSeries.new(root, {
-        geoJSON: am5geodata_worldLow as any,
-        exclude: ["AQ"],
-      })
-    );
-    this.worldSeries = worldSeries;
-
-    worldSeries.mapPolygons.template.setAll({
-      tooltipText: "{name}",
-      interactive: true,
-      fill: primary,
-      templateField: "polygonSettings",
-
-      // CONTRAST FIX: darker borders + higher opacity + slightly thicker base
-      stroke: borderColor,
-      strokeOpacity: 0.75,
-      strokeWidth: 1.0,
-    });
-
-    worldSeries.mapPolygons.template.states.create("hover", {
-      fill: secondary,
-      stroke: borderHoverColor,
-      strokeOpacity: 0.9,
-    });
-
-    const countrySeries = chart.series.push(
-      am5map.MapPolygonSeries.new(root, {
-        visible: false,
-      })
-    );
-    this.countrySeries = countrySeries;
-
-    countrySeries.mapPolygons.template.setAll({
-      tooltipText: "{name}",
-      interactive: true,
-      fill: primary,
-      stroke: borderColor,
-      strokeOpacity: 0.75,
-      strokeWidth: 1.0,
-    });
-
-    countrySeries.mapPolygons.template.states.create("hover", {
-      fill: secondary,
-      stroke: borderHoverColor,
-      strokeOpacity: 0.9,
-    });
-
-    const data: Array<any> = [];
-    const countries2 = am5geodata_data_countries2 as unknown as Record<string, Countries2Entry>;
-
-    for (const id in countries2) {
-      if (!Object.prototype.hasOwnProperty.call(countries2, id)) continue;
-      const country = countries2[id];
-      if (!country?.maps?.length) continue;
-
-      data.push({
-        id,
-        map: country.maps[0],
-        continent_code: country.continent_code,
-        polygonSettings: {
-          fill: this.countryFill(id, country.continent_code, tokens.primaryInt, tokens.secondaryInt),
-        },
-      });
-    }
-
-    worldSeries.data.setAll(data);
-
-    worldSeries.events.once("datavalidated", () => {
-      chart.goHome();
-    });
-
-    const backContainer = chart.children.push(
-      am5.Container.new(root, {
-        x: am5.p100,
-        centerX: am5.p100,
-        dx: -10,
-        paddingTop: 5,
-        paddingRight: 10,
-        paddingBottom: 5,
-        y: 30,
-        interactiveChildren: false,
-        layout: root.horizontalLayout,
-        background: am5.RoundedRectangle.new(root, {
-          fill: primary, // Nutzt initiales primary
-          fillOpacity: 0.8,
-        }),
-        visible: false,
-      })
-    );
-    this.backContainer = backContainer;
-
-    backContainer.children.push(
-      am5.Label.new(root, {
-        text: "Back to world map",
-        centerY: am5.p50,
-      })
-    );
-
-    backContainer.children.push(
-      am5.Graphics.new(root, {
-        width: 32,
-        height: 32,
-        centerY: am5.p50,
-        fill: am5.color(0x555555),
-        svgPath: "M10 4 L6 8 L10 12 M6 8 L18 8",
-      })
-    );
-
-    worldSeries.mapPolygons.template.events.on("click", (ev) => {
-      const dataItem = ev.target.dataItem;
-      if (!dataItem) return;
-
-      const ctx = dataItem.dataContext as any;
-      if (!ctx?.map) return;
-
-      this.currentDataItem = dataItem as unknown as am5.DataItem<am5map.IMapPolygonSeriesDataItem>;
-
-      const zoomAnimation = worldSeries.zoomToDataItem(this.currentDataItem);
-
-      Promise.all([
-        zoomAnimation?.waitForStop() ?? Promise.resolve(),
-        am5.net.load(`https://cdn.amcharts.com/lib/5/geodata/json/${ctx.map}.json`, chart),
-      ]).then((results) => {
-        const geodata = am5.JSONParser.parse((results[1] as any).response);
-
-        countrySeries.setAll({ geoJSON: geodata });
-
-        // Preserve per-country fill when zoomed into a country map,
-        // but keep high-contrast strokes
-        countrySeries.mapPolygons.template.setAll({
-          fill: ctx.polygonSettings?.fill || primary,
-          stroke: borderColor,
-          strokeOpacity: 0.75,
-        });
-
-        countrySeries.show();
-        worldSeries.hide(100);
-        backContainer.show();
-        chart.set("minZoomLevel", this.getZoomLevelSafe(chart));
-
-        this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
-      });
-    });
-
-    backContainer.events.on("click", () => {
-      chart.set("minZoomLevel", 1);
-      chart.goHome();
-      worldSeries.show();
-      countrySeries.hide();
-      backContainer.hide();
-      this.currentDataItem = undefined;
-
-      this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
-    });
-
-    const zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
-    this.zoomControl = zoomControl;
-
-    zoomControl.plusButton.setAll({
-      background: am5.RoundedRectangle.new(root, {
-        fill: primary,
-        fillOpacity: 1
-      })
-    });
-
-    zoomControl.minusButton.setAll({
-      background: am5.RoundedRectangle.new(root, {
-        fill: primary,
-        fillOpacity: 1
-      })
-    });
-
-    const homeButton = am5.Button.new(root, {
-      paddingTop: 10,
-      paddingBottom: 10,
-      // Hintergrund direkt hier setzen
-      background: am5.RoundedRectangle.new(root, {
-        fill: primary,
-        fillOpacity: 1
-      }),
-      icon: am5.Graphics.new(root, {
-        svgPath: "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z",
-        fill: am5.color(0xffffff),
-      }),
-    });
-    this.homeButton = homeButton;
-    zoomControl.children.moveValue(homeButton, 0);
-
-    // ---------- Cursor handling (WICHTIG: nur hier, nicht im Theme) ----------
-    const setCursor = (c: string) => {
-      root.dom.style.cursor = c; // "" = CSS default
-    };
-
-    const wirePointerCursor = (btn?: am5.Button) => {
-      if (!btn) return;
-
-      btn.events.on("pointerover", () => setCursor("pointer"));
-      btn.events.on("pointerout", () => setCursor(""));
-
-      // Absicherung für Touch / Drag / Lost pointerout
-      btn.events.on("pointerdown", () => setCursor("pointer"));
-      btn.events.on("pointerup", () => setCursor(""));
-      btn.events.on("click", () => setCursor(""));
-    };
-
-    // Chart komplett verlassen → Cursor reset
-    root.dom.addEventListener("mouseleave", () => setCursor(""));
-    root.dom.addEventListener("pointerleave", () => setCursor(""));
-
-    // Buttons anschließen
-    wirePointerCursor(zoomControl.plusButton);
-    wirePointerCursor(zoomControl.minusButton);
-    wirePointerCursor(homeButton);
-    // ------------------------------------------------------------------------
-
-
-    homeButton.events.on("click", () => {
-      if (this.currentDataItem) {
-        countrySeries.zoomToDataItem(this.currentDataItem);
-      } else {
-        chart.goHome();
-      }
-    });
-
-    const makePointer = (btn?: am5.Button) => {
-      if (!btn) return;
-
-      // Button selbst
-      btn.setAll({
-        interactive: true,
-      });
-
-      // Background (oft das eigentliche Hover-Ziel)
-      btn.get("background")?.setAll({
-        interactive: true,
-      });
-
-      // Icon (optional, je nach Hit-Test)
-      btn.get("icon")?.setAll({
-        interactive: true,
-      });
-    };
-
-    makePointer(zoomControl.plusButton);
-    makePointer(zoomControl.minusButton);
-    makePointer(homeButton);
-
-    this.updateBorderWidthForZoom(this.getZoomLevelSafe(chart));
-
-    return root;
+    this.root?.dispose();
   }
 }
