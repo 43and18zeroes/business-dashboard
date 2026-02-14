@@ -1,8 +1,7 @@
 app-world-map-component {
     display: flex;
     flex-direction: column;
-
-
+    height: 100%;
 }
 
 ::ng-deep {
@@ -10,44 +9,5 @@ app-world-map-component {
         flex: 1;
         display: flex;
         flex-direction: column;
-        position: relative;
-        padding: clamp(12px, 2vw, 20px);
-        border-radius: 12px;
-        overflow: hidden;
-
-        background: color-mix(in srgb,
-                light-dark(#ffffff, #1f2328) 88%,
-                transparent);
-
-        border: 1px solid color-mix(in srgb,
-                light-dark(#0d0f12, #ffffff) 12%,
-                transparent);
-
-        box-shadow:
-            0 10px 30px color-mix(in srgb, #000 18%, transparent),
-            0 2px 8px color-mix(in srgb, #000 10%, transparent);
-
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-
-            background:
-                radial-gradient(900px 500px at 20% 10%,
-                    color-mix(in srgb, light-dark(#777777, #b6b6b6) 18%, transparent),
-                    transparent 60%),
-                radial-gradient(700px 400px at 85% 90%,
-                    color-mix(in srgb, light-dark(#000000, #0d6efd) 10%, transparent),
-                    transparent 55%);
-
-            opacity: light-dark(0.8, 0.35);
-        }
-    }
-
-    .table-scroll {
-        .mat-mdc-table {
-            background: transparent;
-        }
     }
 }
