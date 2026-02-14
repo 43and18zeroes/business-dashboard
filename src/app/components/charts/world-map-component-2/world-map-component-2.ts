@@ -28,7 +28,7 @@ export class WorldMapComponent2 {
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
         projection: am5map.geoMercator(),
-        panX: "rotateX",
+        panX: "translateX",
         panY: "translateY",
         wheelY: "zoom",
         pinchZoom: true,
