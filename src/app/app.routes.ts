@@ -23,6 +23,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/transactions-page/transactions-page').then((m) => m.TransactionsPage),
   },
   {
+    path: 'world-map',
+    title: 'World Map - Business Dashboard',
+    loadComponent: () => import('./pages/world-map-page/world-map-page').then((m) => m.WorldMapPage),
+  },
+  {
     path: 'info',
     title: 'Info - Business Dashboard',
     loadComponent: () => import('./pages/info-page/info-page').then((m) => m.InfoPage),
