@@ -56,6 +56,19 @@ export class WorldMapComponent2 {
       animationEasing: am5.ease.out(am5.ease.cubic),
     });
 
+    chart.events.on("pointerdown", () => {
+      tooltip.hide();
+      tooltip.set("forceHidden", true);
+    });
+
+    this.root.container.events.on("globalpointerup", () => {
+      tooltip.set("forceHidden", false);
+    });
+
+    chart.events.on("wheel", () => {
+      tooltip.hide();
+    });
+
     tooltip.set("background", am5.RoundedRectangle.new(this.root, {
       cornerRadiusTL: 8,
       fillOpacity: 0.95,
