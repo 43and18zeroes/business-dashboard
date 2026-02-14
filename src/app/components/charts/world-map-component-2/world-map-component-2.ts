@@ -30,6 +30,7 @@ export class WorldMapComponent2 {
         projection: am5map.geoMercator(),
         panX: "translateX",
         panY: "translateY",
+        maxPanOut: 0.25,
         wheelY: "zoom",
         pinchZoom: true,
         homeZoomLevel: 2,
