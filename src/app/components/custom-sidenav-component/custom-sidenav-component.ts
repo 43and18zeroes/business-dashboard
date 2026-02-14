@@ -29,6 +29,7 @@ menuItems = signal<MenuItem[]>([
   { icon: 'insert_chart', label: 'Monthy Sales', route: '/monthly-sales' },
   { icon: 'stacked_line_chart', label: 'New Customers', route: '/new-customers' },
   { icon: 'account_balance', label: 'Transactions', route: '/transactions' },
+  { icon: 'explore', label: 'World Map', route: '/world-map' },
   { icon: 'info', label: 'Info', route: '/info' },
 ]);
 }
