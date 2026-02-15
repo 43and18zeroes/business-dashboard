@@ -67,6 +67,7 @@ export class WorldMapComponent {
     );
 
     const tooltip = am5.Tooltip.new(this.root, {
+      getFillFromSprite: false,
       labelText: "{name}",
       pointerOrientation: "horizontal",
       animationDuration: 160,
@@ -88,6 +89,7 @@ export class WorldMapComponent {
 
     tooltip.set("background", am5.RoundedRectangle.new(this.root, {
       cornerRadiusTL: 8,
+      fill: am5.color("#ff0000"),
       fillOpacity: 0.95,
       stroke: am5.color("#B0B0B0"),
       strokeWidth: 1,
