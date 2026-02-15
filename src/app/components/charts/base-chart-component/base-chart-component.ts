@@ -80,7 +80,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   protected buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<TType> {
-    const { textColor, gridColor, axisColor } = this.getThemeColors(isDark);
+    const { textColor, gridColor, axisColor } = this.getTheme(isDark);
 
     const base: ChartOptions = {
       responsive: true,
@@ -108,7 +108,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     return base as ChartOptions<TType>;
   }
 
-  protected getThemeColors(isDark: boolean) {
+  protected getTheme(isDark: boolean) {
     return {
       textColor: isDark ? '#e0e2ec' : '#44474e',
       axisColor: isDark ? '#8e9099' : '#74777f',
