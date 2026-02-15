@@ -16,6 +16,7 @@ export class WorldMapComponent {
   private readonly themeService = inject(ThemeService);
   private root!: am5.Root;
   private polygonSeries!: am5map.MapPolygonSeries;
+  private tooltip!: am5.Tooltip;
 
   private getCSSVariable(name: string): string {
     const dummy = document.createElement('div');
@@ -66,8 +67,8 @@ export class WorldMapComponent {
       })
     );
 
-    const tooltip = am5.Tooltip.new(this.root, {
-      getFillFromSprite: false,
+    this.tooltip = am5.Tooltip.new(this.root, {
+      getFillFromSprite: false, // Wichtig, damit manuelles 'fill' Priorität hat
       labelText: "{name}",
       pointerOrientation: "horizontal",
       animationDuration: 160,
@@ -75,21 +76,20 @@ export class WorldMapComponent {
     });
 
     chart.events.on("pointerdown", () => {
-      tooltip.hide();
-      tooltip.set("forceHidden", true);
+      this.tooltip.hide();
+      this.tooltip.set("forceHidden", true);
     });
 
     this.root.container.events.on("globalpointerup", () => {
-      tooltip.set("forceHidden", false);
+      this.tooltip.set("forceHidden", false);
     });
 
     chart.events.on("wheel", () => {
-      tooltip.hide();
+      this.tooltip.hide();
     });
 
-    tooltip.set("background", am5.RoundedRectangle.new(this.root, {
+    this.tooltip.set("background", am5.RoundedRectangle.new(this.root, {
       cornerRadiusTL: 8,
-      fill: am5.color("#ff0000"),
       fillOpacity: 0.95,
       stroke: am5.color("#B0B0B0"),
       strokeWidth: 1,
@@ -100,11 +100,11 @@ export class WorldMapComponent {
       shadowOffsetY: 2,
     }));
 
-    tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
-    tooltip.states.create("default", { opacity: 1, scale: 1 });
+    this.tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
+    this.tooltip.states.create("default", { opacity: 1, scale: 1 });
 
     this.polygonSeries.mapPolygons.template.setAll({
-      tooltip,
+      tooltip: this.tooltip,
       tooltipText: "{name}",
       interactive: true,
       templateField: "polygonSettings",
@@ -120,7 +120,7 @@ export class WorldMapComponent {
   }
 
   private updateMapColors(primary: string, secondary: string, strokeColor: string) {
-    if (!this.polygonSeries) return;
+    if (!this.polygonSeries || !this.tooltip) return;
 
     const primaryColor = am5.color(primary);
     const secondaryColor = am5.color(secondary);
@@ -128,6 +128,8 @@ export class WorldMapComponent {
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
+
+    this.tooltip.get("background")?.set("fill", primaryColor);
 
     if (hoverTemplate) {
       hoverTemplate.set("fill", secondaryColor);
