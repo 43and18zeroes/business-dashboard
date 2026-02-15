@@ -92,6 +92,7 @@ export class WorldMapComponent {
       templateField: "polygonSettings",
       stateAnimationDuration: 200,
       stateAnimationEasing: am5.ease.out(am5.ease.cubic),
+      stroke: am5.color("#000000"),
     });
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
