@@ -3,6 +3,7 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
 import { ColorService } from '../../../services/color-service';
+import { ThemeService } from '../../../services/theme-service';
 
 @Component({
   selector: 'app-world-map-component',
@@ -12,13 +13,18 @@ import { ColorService } from '../../../services/color-service';
 })
 export class WorldMapComponent {
   private readonly colorService = inject(ColorService);
+  private readonly themeService = inject(ThemeService);
   private root!: am5.Root;
   private polygonSeries!: am5map.MapPolygonSeries;
 
   constructor() {
     effect(() => {
       const tokens = this.colorService.tokens();
-      this.updateMapColors(tokens.primary, tokens.secondary);
+      const isDark = this.themeService.darkMode();
+
+      const strokeColor = isDark ? "#343a40" : "#f8f9fa";
+
+      this.updateMapColors(tokens.primary, tokens.secondary, strokeColor);
     });
   }
 
@@ -92,22 +98,24 @@ export class WorldMapComponent {
       templateField: "polygonSettings",
       stateAnimationDuration: 200,
       stateAnimationEasing: am5.ease.out(am5.ease.cubic),
-      stroke: am5.color("#000000"),
     });
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
     const initialTokens = this.colorService.tokens();
-    this.updateMapColors(initialTokens.primary, initialTokens.secondary);
+    const isDark = this.themeService.darkMode();
+    this.updateMapColors(initialTokens.primary, initialTokens.secondary, isDark ? "#343a40" : "#f8f9fa");
     this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
 
 
-  private updateMapColors(primary: string, secondary: string) {
+  private updateMapColors(primary: string, secondary: string, strokeColor: string) {
     if (!this.polygonSeries) return;
 
     const primaryColor = am5.color(primary);
     const secondaryColor = am5.color(secondary);
+    const am5Stroke = am5.color(strokeColor);
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
+    this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
 
     if (hoverTemplate) {
@@ -116,6 +124,7 @@ export class WorldMapComponent {
 
     this.polygonSeries.mapPolygons.each((polygon) => {
       polygon.set("fill", primaryColor);
+      polygon.set("stroke", am5Stroke);
       const hoverState = polygon.states.lookup("hover");
 
       if (hoverState) {
@@ -126,6 +135,7 @@ export class WorldMapComponent {
 
       if (defaultState) {
         defaultState.set("fill", primaryColor);
+        polygon.set("stroke", am5Stroke);
       } else {
         polygon.states.create("default", {
           fill: primaryColor
