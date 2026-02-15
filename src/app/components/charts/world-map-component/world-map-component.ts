@@ -17,13 +17,23 @@ export class WorldMapComponent {
   private root!: am5.Root;
   private polygonSeries!: am5map.MapPolygonSeries;
 
+  private getCSSVariable(name: string): string {
+    const dummy = document.createElement('div');
+    dummy.style.color = `var(${name})`;
+    dummy.style.display = 'none';
+    document.body.appendChild(dummy);
+
+    const computedColor = getComputedStyle(dummy).color;
+
+    document.body.removeChild(dummy);
+    return computedColor;
+  }
+
   constructor() {
     effect(() => {
       const tokens = this.colorService.tokens();
-      const isDark = this.themeService.darkMode();
-
-      const strokeColor = isDark ? "#343a40" : "#f8f9fa";
-
+      this.themeService.darkMode();
+      const strokeColor = this.getCSSVariable('--bg-color');
       this.updateMapColors(tokens.primary, tokens.secondary, strokeColor);
     });
   }
@@ -102,11 +112,10 @@ export class WorldMapComponent {
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
     const initialTokens = this.colorService.tokens();
-    const isDark = this.themeService.darkMode();
-    this.updateMapColors(initialTokens.primary, initialTokens.secondary, isDark ? "#343a40" : "#f8f9fa");
+    const strokeColor = this.getCSSVariable('--bg-color');
+    this.updateMapColors(initialTokens.primary, initialTokens.secondary, strokeColor);
     this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
-
 
   private updateMapColors(primary: string, secondary: string, strokeColor: string) {
     if (!this.polygonSeries) return;
