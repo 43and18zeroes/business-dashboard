@@ -116,7 +116,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   private getColorSet(color: string, position: number) {
     const textColor = this.getCssVar(color);
 
-    const hexRegex = /#[a-fA-F0-9]{3,6}/g;
+    const hexRegex = /#[a-fA-F0-9]{3,}/g;
     const matches = textColor.match(hexRegex);
 
     return matches?.[position];
@@ -136,12 +136,24 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
 
     console.log("this.getColorSet('--elements-text-color', 0)", this.getColorSet('--elements-text-color', 0));
     console.log("this.getColorSet('--elements-text-color', 1)", this.getColorSet('--elements-text-color', 1));
+    console.log("this.getColorSet('--elements-axis-color', 0)", this.getColorSet('--elements-axis-color', 0));
+    console.log("this.getColorSet('--elements-axis-color', 1)", this.getColorSet('--elements-axis-color', 1));
+    console.log("this.getColorSet('--elements-grid-color', 0)", this.getColorSet('--elements-grid-color', 0));
+    console.log("this.getColorSet('--elements-grid-color', 1)", this.getColorSet('--elements-grid-color', 1));
+    console.log("this.getColorSet('--elements-tooltip-bg', 0)", this.getColorSet('--elements-tooltip-bg', 0));
+    console.log("this.getColorSet('--elements-tooltip-bg', 1)", this.getColorSet('--elements-tooltip-bg', 1));
 
     return {
       textColor: isDark ? this.getColorSet('--elements-text-color', 0) : this.getColorSet('--elements-text-color', 1),
       axisColor: isDark ? this.getColorSet('--elements-axis-color', 0) : this.getColorSet('--elements-axis-color', 1),
       gridColor: isDark ? this.getColorSet('--elements-grid-color', 0) : this.getColorSet('--elements-grid-color', 1),
       tooltipBg: isDark ? this.getColorSet('--elements-tooltip-bg', 0) : this.getColorSet('--elements-tooltip-bg', 1)
+    };
+    return {
+      textColor: isDark ? '#e0e2ec' : '#44474e',
+      axisColor: isDark ? '#8e9099' : '#74777f',
+      gridColor: isDark ? '#8e90994D' : '#74777f4D',
+      tooltipBg: isDark ? '#292a2c' : '#e9e7eb'
     };
   }
 
