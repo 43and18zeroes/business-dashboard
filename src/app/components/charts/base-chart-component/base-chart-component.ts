@@ -113,47 +113,25 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     return getComputedStyle(el).getPropertyValue(name).trim();
   }
 
-  private getColorSet(color: string, position: number) {
-    const textColor = this.getCssVar(color);
+  private pickFromCssVar(cssVar: string, isDark: boolean): string | undefined {
+    const raw = this.getCssVar(cssVar);
+    if (!raw) return undefined;
 
     const hexRegex = /#[a-fA-F0-9]{3,}/g;
-    const matches = textColor.match(hexRegex);
+    const matches = raw.match(hexRegex);
 
-    return matches?.[position];
-    // if (matches && matches.length >= 2) {
-    //   const [lightColor, darkColor] = matches;
+    if (!matches || matches.length === 0) return undefined;
 
-    //   console.log("Light Mode:", lightColor);
-    //   console.log("Dark Mode:", darkColor);
-    // } else {
-    //   console.error("Hex-Werte konnten nicht extrahiert werden.");
-    // }
+    const idx = isDark ? 0 : 1;
+    return matches[idx];
   }
 
   protected getTheme(isDark: boolean) {
-    const textColorSet = this.getColorSet('--elements-text-color', 0)
-    console.log('textColorSet', textColorSet);
-
-    console.log("this.getColorSet('--elements-text-color', 0)", this.getColorSet('--elements-text-color', 0));
-    console.log("this.getColorSet('--elements-text-color', 1)", this.getColorSet('--elements-text-color', 1));
-    console.log("this.getColorSet('--elements-axis-color', 0)", this.getColorSet('--elements-axis-color', 0));
-    console.log("this.getColorSet('--elements-axis-color', 1)", this.getColorSet('--elements-axis-color', 1));
-    console.log("this.getColorSet('--elements-grid-color', 0)", this.getColorSet('--elements-grid-color', 0));
-    console.log("this.getColorSet('--elements-grid-color', 1)", this.getColorSet('--elements-grid-color', 1));
-    console.log("this.getColorSet('--elements-tooltip-bg', 0)", this.getColorSet('--elements-tooltip-bg', 0));
-    console.log("this.getColorSet('--elements-tooltip-bg', 1)", this.getColorSet('--elements-tooltip-bg', 1));
-
     return {
-      textColor: isDark ? this.getColorSet('--elements-text-color', 0) : this.getColorSet('--elements-text-color', 1),
-      axisColor: isDark ? this.getColorSet('--elements-axis-color', 0) : this.getColorSet('--elements-axis-color', 1),
-      gridColor: isDark ? this.getColorSet('--elements-grid-color', 0) : this.getColorSet('--elements-grid-color', 1),
-      tooltipBg: isDark ? this.getColorSet('--elements-tooltip-bg', 0) : this.getColorSet('--elements-tooltip-bg', 1)
-    };
-    return {
-      textColor: isDark ? '#e0e2ec' : '#44474e',
-      axisColor: isDark ? '#8e9099' : '#74777f',
-      gridColor: isDark ? '#8e90994D' : '#74777f4D',
-      tooltipBg: isDark ? '#292a2c' : '#e9e7eb'
+      textColor: this.pickFromCssVar('--elements-text-color', isDark),
+      axisColor: this.pickFromCssVar('--elements-axis-color', isDark),
+      gridColor: this.pickFromCssVar('--elements-grid-color', isDark),
+      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark),
     };
   }
 
