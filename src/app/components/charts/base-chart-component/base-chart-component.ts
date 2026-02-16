@@ -108,12 +108,40 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     return base as ChartOptions<TType>;
   }
 
+  private getCssVar(name: string): string {
+    const el = this.root?.nativeElement ?? document.documentElement;
+    return getComputedStyle(el).getPropertyValue(name).trim();
+  }
+
+  private getColorSet(color: string, position: number) {
+    const textColor = this.getCssVar(color);
+
+    const hexRegex = /#[a-fA-F0-9]{3,6}/g;
+    const matches = textColor.match(hexRegex);
+
+    return matches?.[position];
+    // if (matches && matches.length >= 2) {
+    //   const [lightColor, darkColor] = matches;
+
+    //   console.log("Light Mode:", lightColor);
+    //   console.log("Dark Mode:", darkColor);
+    // } else {
+    //   console.error("Hex-Werte konnten nicht extrahiert werden.");
+    // }
+  }
+
   protected getTheme(isDark: boolean) {
+    const textColorSet = this.getColorSet('--elements-text-color', 0)
+    console.log('textColorSet', textColorSet);
+
+    console.log("this.getColorSet('--elements-text-color', 0)", this.getColorSet('--elements-text-color', 0));
+    console.log("this.getColorSet('--elements-text-color', 1)", this.getColorSet('--elements-text-color', 1));
+
     return {
-      textColor: isDark ? '#e0e2ec' : '#44474e',
-      axisColor: isDark ? '#8e9099' : '#74777f',
-      gridColor: isDark ? '#8e90994D' : '#74777f4D',
-      tooltipBg: isDark ? '#292a2c' : '#e9e7eb'
+      textColor: isDark ? this.getColorSet('--elements-text-color', 0) : this.getColorSet('--elements-text-color', 1),
+      axisColor: isDark ? this.getColorSet('--elements-axis-color', 0) : this.getColorSet('--elements-axis-color', 1),
+      gridColor: isDark ? this.getColorSet('--elements-grid-color', 0) : this.getColorSet('--elements-grid-color', 1),
+      tooltipBg: isDark ? this.getColorSet('--elements-tooltip-bg', 0) : this.getColorSet('--elements-tooltip-bg', 1)
     };
   }
 
