@@ -4,6 +4,13 @@ style.scss
 
 @use "@angular/material" as mat;
 
+:root {
+  --elements-text-color: light-dark(#e0e2ec, #44474e);
+  --elements-axis-color: light-dark(#8e9099, #74777f);
+  --elements-grid-color: light-dark(#8e90994D, #74777f4D);
+  --elements-tooltip-bg: light-dark(#292a2c, #e9e7eb);
+}
+
 html {
   color-scheme: light dark;
   @include mat.theme((color: mat.$azure-palette,
