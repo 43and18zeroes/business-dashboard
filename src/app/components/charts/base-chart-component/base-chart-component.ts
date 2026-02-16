@@ -122,7 +122,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
 
     if (!matches || matches.length === 0) return undefined;
 
-    const idx = isDark ? 0 : 1;
+    const idx = !isDark ? 0 : 1;
     return matches[idx];
   }
 
