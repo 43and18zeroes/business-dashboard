@@ -36,6 +36,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
 
   private resizeTimeout: number | null = null;
 
+  private static legendPatched = false;
+
   private scheduleSoftResize(): void {
     if (this.resizeTimeout !== null) window.clearTimeout(this.resizeTimeout);
     this.resizeTimeout = window.setTimeout(() => {
@@ -174,9 +176,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
-    const textColor = isDark ? '#e0e2ec' : '#44474e';
-    const axisColor = isDark ? '#8e9099' : '#74777f';
-    const gridColor = isDark ? '#8e90994D' : '#74777f4D';
+    const rootEl = this.root?.nativeElement;
+
+    const { textColor, axisColor, gridColor, tooltipBg } =
+      this.themeTokens.getTheme(isDark, rootEl);
 
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
@@ -186,7 +189,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       ticks: { color: textColor },
     });
 
-    const tooltipBg = isDark ? '#292a2c' : '#e9e7eb';
     Chart.defaults.set('plugins.tooltip', {
       backgroundColor: tooltipBg,
       titleColor: textColor,
@@ -195,14 +197,19 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       cornerRadius: 8,
     });
 
-    const defaultGenerate = Chart.defaults.plugins.legend.labels.generateLabels;
-    Chart.defaults.plugins.legend.labels.generateLabels = (chart) => {
-      const items = defaultGenerate(chart);
-      for (const item of items) {
-        item.lineWidth = 0;
-        item.strokeStyle = 'transparent';
-      }
-      return items;
-    };
+    // Wichtig: Patch nur einmal setzen, sonst wrapst du generateLabels bei jedem Effekt erneut
+    if (!BaseChartComponent.legendPatched) {
+      BaseChartComponent.legendPatched = true;
+
+      const defaultGenerate = Chart.defaults.plugins.legend.labels.generateLabels;
+      Chart.defaults.plugins.legend.labels.generateLabels = (chart) => {
+        const items = defaultGenerate(chart);
+        for (const item of items) {
+          item.lineWidth = 0;
+          item.strokeStyle = 'transparent';
+        }
+        return items;
+      };
+    }
   }
 }

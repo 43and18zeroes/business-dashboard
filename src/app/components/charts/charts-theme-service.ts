@@ -1,24 +1,37 @@
 import { DOCUMENT, inject, Injectable } from '@angular/core';
 
 export type ThemeTokens = {
-  textColor?: string;
-  axisColor?: string;
-  gridColor?: string;
-  tooltipBg?: string;
+  textColor: string;
+  axisColor: string;
+  gridColor: string;
+  tooltipBg: string;
 };
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ChartsThemeService {
   private readonly doc = inject(DOCUMENT);
 
+  private readonly fallbackLight: ThemeTokens = {
+    textColor: '#44474e',
+    axisColor: '#74777f',
+    gridColor: '#74777f4D',
+    tooltipBg: '#e9e7eb',
+  };
+
+  private readonly fallbackDark: ThemeTokens = {
+    textColor: '#e0e2ec',
+    axisColor: '#8e9099',
+    gridColor: '#8e90994D',
+    tooltipBg: '#292a2c',
+  };
+
   getTheme(isDark: boolean, rootEl?: HTMLElement): ThemeTokens {
+    const fallback = isDark ? this.fallbackDark : this.fallbackLight;
+
     return {
-      textColor: this.pickFromCssVar('--elements-text-color', isDark, rootEl),
-      axisColor: this.pickFromCssVar('--elements-axis-color', isDark, rootEl),
-      gridColor: this.pickFromCssVar('--elements-grid-color', isDark, rootEl),
-      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark, rootEl),
+      textColor: this.pickFromCssVar('--elements-text-color', isDark, rootEl) ?? fallback.textColor,
+      axisColor: this.pickFromCssVar('--elements-axis-color', isDark, rootEl) ?? fallback.axisColor,
+      gridColor: this.pickFromCssVar('--elements-grid-color', isDark, rootEl) ?? fallback.gridColor,
+      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark, rootEl) ?? fallback.tooltipBg,
     };
   }
 
@@ -36,6 +49,6 @@ export class ChartsThemeService {
     if (!matches?.length) return undefined;
 
     const idx = isDark ? 1 : 0;
-    return matches[idx];
+    return matches[idx] ?? matches[0];
   }
 }
