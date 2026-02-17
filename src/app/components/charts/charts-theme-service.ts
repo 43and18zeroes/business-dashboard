@@ -1,6 +1,6 @@
 import { DOCUMENT, inject, Injectable } from '@angular/core';
 
-export type ThemeTokens = {
+export type ChartThemeTokens = {
   textColor: string;
   axisColor: string;
   gridColor: string;
@@ -10,21 +10,21 @@ export type ThemeTokens = {
 export class ChartsThemeService {
   private readonly doc = inject(DOCUMENT);
 
-  private readonly fallbackLight: ThemeTokens = {
+  private readonly fallbackLight: ChartThemeTokens = {
     textColor: '#44474e',
     axisColor: '#74777f',
     gridColor: '#74777f4D',
     tooltipBg: '#e9e7eb',
   };
 
-  private readonly fallbackDark: ThemeTokens = {
+  private readonly fallbackDark: ChartThemeTokens = {
     textColor: '#e0e2ec',
     axisColor: '#8e9099',
     gridColor: '#8e90994D',
     tooltipBg: '#292a2c',
   };
 
-  getTheme(isDark: boolean, rootEl?: HTMLElement): ThemeTokens {
+  getTheme(isDark: boolean, rootEl?: HTMLElement): ChartThemeTokens {
     const fallback = isDark ? this.fallbackDark : this.fallbackLight;
 
     return {

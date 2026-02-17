@@ -23,7 +23,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   implements AfterViewInit {
   private readonly themeService = inject(ThemeService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly themeTokens = inject(ChartsThemeService);
+  private readonly ChartThemeTokens = inject(ChartsThemeService);
 
   private readonly containerReady = signal(false);
   private didFirstResizeAfterRender = false;
@@ -179,7 +179,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     const rootEl = this.root?.nativeElement;
 
     const { textColor, axisColor, gridColor, tooltipBg } =
-      this.themeTokens.getTheme(isDark, rootEl);
+      this.ChartThemeTokens.getTheme(isDark, rootEl);
 
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
