@@ -12,6 +12,7 @@ import {
 import { Chart, ChartDataset, ChartOptions, ChartType } from 'chart.js';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { ThemeService } from '../../../services/theme-service';
+import { ChartsThemeService } from '../charts-theme-service';
 
 @Component({
   selector: 'app-base-chart-component',
@@ -22,6 +23,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   implements AfterViewInit {
   private readonly themeService = inject(ThemeService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly themeTokens = inject(ChartsThemeService);
 
   private readonly containerReady = signal(false);
   private didFirstResizeAfterRender = false;
@@ -80,7 +82,10 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   protected buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<TType> {
-    const { textColor, gridColor, axisColor } = this.getTheme(isDark);
+    const { textColor, gridColor, axisColor } = this.themeTokens.getTheme(
+      isDark,
+      this.root?.nativeElement
+    );
 
     const base: ChartOptions = {
       responsive: true,
@@ -106,33 +111,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     };
 
     return base as ChartOptions<TType>;
-  }
-
-  private getCssVar(name: string): string {
-    const el = this.root?.nativeElement ?? document.documentElement;
-    return getComputedStyle(el).getPropertyValue(name).trim();
-  }
-
-  private pickFromCssVar(cssVar: string, isDark: boolean): string | undefined {
-    const raw = this.getCssVar(cssVar);
-    if (!raw) return undefined;
-
-    const hexRegex = /#[a-fA-F0-9]{3,}/g;
-    const matches = raw.match(hexRegex);
-
-    if (!matches || matches.length === 0) return undefined;
-
-    const idx = isDark ? 1 : 0;
-    return matches[idx];
-  }
-
-  protected getTheme(isDark: boolean) {
-    return {
-      textColor: this.pickFromCssVar('--elements-text-color', isDark),
-      axisColor: this.pickFromCssVar('--elements-axis-color', isDark),
-      gridColor: this.pickFromCssVar('--elements-grid-color', isDark),
-      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark),
-    };
   }
 
   constructor() {
