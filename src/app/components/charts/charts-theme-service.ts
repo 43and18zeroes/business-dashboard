@@ -14,7 +14,7 @@ export class ChartsThemeService {
     textColor: '#44474e',
     axisColor: '#74777f',
     gridColor: '#74777f4D',
-    tooltipBg: '#e9e7eb',
+    tooltipBg: '#f8f9fa',
   };
 
   private readonly fallbackDark: ChartThemeTokens = {

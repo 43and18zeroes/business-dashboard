@@ -193,11 +193,14 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       backgroundColor: tooltipBg,
       titleColor: textColor,
       bodyColor: textColor,
+
+      borderColor: axisColor,   // oder gridColor / textColor / eigener Wert
+      borderWidth: 1,
+
       padding: 12,
-      cornerRadius: 8,
+      cornerRadius: 4,
     });
 
-    // Wichtig: Patch nur einmal setzen, sonst wrapst du generateLabels bei jedem Effekt erneut
     if (!BaseChartComponent.legendPatched) {
       BaseChartComponent.legendPatched = true;
 
