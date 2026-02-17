@@ -4,13 +4,6 @@ style.scss
 
 @use "@angular/material" as mat;
 
-:root {
-  --elements-text-color: light-dark(#44474e, #e0e2ec);
-  --elements-axis-color: light-dark(#74777f, #8e9099);
-  --elements-grid-color: light-dark(#74777f4D, #8e90994D);
-  --elements-tooltip-bg: light-dark(#e9e7eb, #292a2c);
-}
-
 html {
   color-scheme: light dark;
   @include mat.theme((color: mat.$azure-palette,
@@ -48,6 +41,11 @@ body {
   --mat-sidenav-container-background-color: var(--bg-color);
   --mat-toolbar-container-background-color: var(--bg-color);
   --frame-color: light-dark(#b4b6bb, #62656d);
+
+  --elements-text-color: light-dark(#44474e, #e0e2ec);
+  --elements-axis-color: light-dark(#74777f, #8e9099);
+  --elements-grid-color: light-dark(#74777f4D, #8e90994D);
+  --elements-tooltip-bg: light-dark(#e9e7eb, #292a2c);
 }
 
 h1 {
