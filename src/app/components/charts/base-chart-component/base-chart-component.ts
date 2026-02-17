@@ -193,10 +193,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       backgroundColor: tooltipBg,
       titleColor: textColor,
       bodyColor: textColor,
-
-      borderColor: axisColor,   // oder gridColor / textColor / eigener Wert
+      borderColor: axisColor,
       borderWidth: 1,
-
       padding: 12,
       cornerRadius: 4,
     });
