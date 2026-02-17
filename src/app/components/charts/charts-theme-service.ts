@@ -31,7 +31,6 @@ export class ChartsThemeService {
     const raw = this.getCssVar(cssVar, rootEl);
     if (!raw) return undefined;
 
-    // erwartet z.B. "#111 #eee" in einer CSS-Var
     const hexRegex = /#[a-fA-F0-9]{3,}/g;
     const matches = raw.match(hexRegex);
     if (!matches?.length) return undefined;

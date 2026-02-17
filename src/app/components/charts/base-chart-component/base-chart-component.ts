@@ -82,30 +82,14 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   protected buildOptions(config: ChartConfiguration, isDark: boolean): ChartOptions<TType> {
-    const { textColor, gridColor, axisColor } = this.themeTokens.getTheme(
-      isDark,
-      this.root?.nativeElement
-    );
-
     const base: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       resizeDelay: 1,
       animation: { duration: 700 },
-      scales: {
-        x: {
-          ticks: { color: textColor },
-          grid: { color: gridColor }
-        },
-        y: {
-          ticks: { color: textColor },
-          grid: { color: gridColor }
-        }
-      },
       plugins: {
         legend: {
           display: config.showLegend,
-          labels: { color: textColor }
         }
       },
     };
