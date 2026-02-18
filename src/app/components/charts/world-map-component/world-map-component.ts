@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, DOCUMENT, effect, ElementRef, inject } from '@angular/core';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
@@ -15,8 +15,10 @@ export class WorldMapComponent {
   private readonly colorService = inject(ColorService);
   private readonly themeService = inject(ThemeService);
   private root!: am5.Root;
+  rootHTML!: ElementRef<HTMLElement>;
   private polygonSeries!: am5map.MapPolygonSeries;
   private tooltip!: am5.Tooltip;
+  private readonly doc = inject(DOCUMENT);
 
   private getCSSVariable(name: string): string {
     const dummy = document.createElement('div');
@@ -34,10 +36,33 @@ export class WorldMapComponent {
     effect(() => {
       const tokens = this.colorService.tokens();
       this.themeService.darkMode();
-      const strokeColor = this.getCSSVariable('--bg-color');
-      this.updateMapColors(tokens.primary, tokens.secondary, strokeColor);
+
+      this.updateMapColors(tokens.primary, tokens.secondary);
     });
   }
+
+  getTheme(isDark: boolean, rootEl?: HTMLElement) {
+    const fallback = isDark ? '#292a2c' : '#f8f9fa';
+    return this.pickFromCssVar('--elements-text-color', isDark, rootEl) ?? fallback;
+  }
+
+  private pickFromCssVar(cssVar: string, isDark: boolean, rootEl?: HTMLElement): string | undefined {
+    const raw = this.getCssVar(cssVar, rootEl);
+    if (!raw) return undefined;
+
+    const hexRegex = /#[a-fA-F0-9]{3,}/g;
+    const matches = raw.match(hexRegex);
+    if (!matches?.length) return undefined;
+
+    const idx = isDark ? 1 : 0;
+    return matches[idx] ?? matches[0];
+  }
+
+  private getCssVar(name: string, rootEl?: HTMLElement): string {
+    const el = rootEl ?? this.doc.documentElement;
+    return getComputedStyle(el).getPropertyValue(name).trim();
+  }
+
 
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
@@ -114,16 +139,20 @@ export class WorldMapComponent {
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
     const initialTokens = this.colorService.tokens();
-    const strokeColor = this.getCSSVariable('--bg-color');
-    this.updateMapColors(initialTokens.primary, initialTokens.secondary, strokeColor);
+    this.updateMapColors(initialTokens.primary, initialTokens.secondary);
     this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
 
-  private updateMapColors(primary: string, secondary: string, strokeColor: string) {
+  private updateMapColors(primary: string, secondary: string) {
     if (!this.polygonSeries || !this.tooltip) return;
 
     const primaryColor = am5.color(primary);
     const secondaryColor = am5.color(secondary);
+
+    const isDark = this.themeService.darkMode();
+    const rootEl = this.rootHTML?.nativeElement;
+    const strokeColor = this.getTheme(isDark, rootEl);
+
     const am5Stroke = am5.color(strokeColor);
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);

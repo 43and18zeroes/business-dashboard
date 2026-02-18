@@ -26,7 +26,6 @@ export class ChartsThemeService {
 
   getTheme(isDark: boolean, rootEl?: HTMLElement): ChartThemeTokens {
     const fallback = isDark ? this.fallbackDark : this.fallbackLight;
-    console.log('sdlkfj', this.pickFromCssVar('--elements-text-color', isDark, rootEl));
 
     return {
       textColor: this.pickFromCssVar('--elements-text-color', isDark, rootEl) ?? fallback.textColor,
