@@ -24,28 +24,26 @@ export class ChartsThemeService {
     tooltipBg: '#292a2c',
   };
 
-  getTheme(isDark: boolean, rootEl?: HTMLElement): ChartThemeTokens {
+  getTheme(isDark: boolean): ChartThemeTokens {
     const fallback = isDark ? this.fallbackDark : this.fallbackLight;
 
     return {
-      textColor: this.pickFromCssVar('--elements-text-color', isDark, rootEl) ?? fallback.textColor,
-      axisColor: this.pickFromCssVar('--elements-axis-color', isDark, rootEl) ?? fallback.axisColor,
-      gridColor: this.pickFromCssVar('--elements-grid-color', isDark, rootEl) ?? fallback.gridColor,
-      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark, rootEl) ?? fallback.tooltipBg,
+      textColor: this.pickFromCssVar('--elements-text-color', isDark) ?? fallback.textColor,
+      axisColor: this.pickFromCssVar('--elements-axis-color', isDark) ?? fallback.axisColor,
+      gridColor: this.pickFromCssVar('--elements-grid-color', isDark) ?? fallback.gridColor,
+      tooltipBg: this.pickFromCssVar('--elements-tooltip-bg', isDark) ?? fallback.tooltipBg,
     };
   }
 
-  private getCssVar(name: string, rootEl?: HTMLElement): string {
-    const el = rootEl ?? this.doc.documentElement;
-    return getComputedStyle(el).getPropertyValue(name).trim();
+  private getCssVar(name: string): string {
+    return getComputedStyle(this.doc.documentElement).getPropertyValue(name).trim();
   }
 
-  private pickFromCssVar(cssVar: string, isDark: boolean, rootEl?: HTMLElement): string | undefined {
-    const raw = this.getCssVar(cssVar, rootEl);
+  private pickFromCssVar(cssVar: string, isDark: boolean): string | undefined {
+    const raw = this.getCssVar(cssVar);
     if (!raw) return undefined;
 
-    const hexRegex = /#[a-fA-F0-9]{3,}/g;
-    const matches = raw.match(hexRegex);
+    const matches = raw.match(/#[a-fA-F0-9]{3,}/g);
     if (!matches?.length) return undefined;
 
     const idx = isDark ? 1 : 0;

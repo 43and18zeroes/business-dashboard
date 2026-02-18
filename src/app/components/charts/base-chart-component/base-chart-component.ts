@@ -176,10 +176,8 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   private updateGlobalChartDefaults(isDark: boolean): void {
-    const rootEl = this.root?.nativeElement;
-
     const { textColor, axisColor, gridColor, tooltipBg } =
-      this.ChartThemeTokens.getTheme(isDark, rootEl);
+      this.ChartThemeTokens.getTheme(isDark);
 
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
