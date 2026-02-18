@@ -20,18 +20,6 @@ export class WorldMapComponent {
   private tooltip!: am5.Tooltip;
   private readonly doc = inject(DOCUMENT);
 
-  private getCSSVariable(name: string): string {
-    const dummy = document.createElement('div');
-    dummy.style.color = `var(${name})`;
-    dummy.style.display = 'none';
-    document.body.appendChild(dummy);
-
-    const computedColor = getComputedStyle(dummy).color;
-
-    document.body.removeChild(dummy);
-    return computedColor;
-  }
-
   constructor() {
     effect(() => {
       const tokens = this.colorService.tokens();
@@ -41,28 +29,25 @@ export class WorldMapComponent {
     });
   }
 
-  getTheme(isDark: boolean, rootEl?: HTMLElement) {
+  getTheme(isDark: boolean): string {
     const fallback = isDark ? '#292a2c' : '#f8f9fa';
-    return this.pickFromCssVar('--elements-text-color', isDark, rootEl) ?? fallback;
+    return this.pickFromCssVar('--elements-text-color', isDark) ?? fallback;
   }
 
-  private pickFromCssVar(cssVar: string, isDark: boolean, rootEl?: HTMLElement): string | undefined {
-    const raw = this.getCssVar(cssVar, rootEl);
+  private pickFromCssVar(cssVar: string, isDark: boolean): string | undefined {
+    const raw = this.getCssVar(cssVar);
     if (!raw) return undefined;
 
-    const hexRegex = /#[a-fA-F0-9]{3,}/g;
-    const matches = raw.match(hexRegex);
+    const matches = raw.match(/#[a-fA-F0-9]{3,}/g);
     if (!matches?.length) return undefined;
 
     const idx = isDark ? 1 : 0;
     return matches[idx] ?? matches[0];
   }
 
-  private getCssVar(name: string, rootEl?: HTMLElement): string {
-    const el = rootEl ?? this.doc.documentElement;
-    return getComputedStyle(el).getPropertyValue(name).trim();
+  private getCssVar(name: string): string {
+    return getComputedStyle(this.doc.documentElement).getPropertyValue(name).trim();
   }
-
 
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
@@ -150,10 +135,9 @@ export class WorldMapComponent {
     const secondaryColor = am5.color(secondary);
 
     const isDark = this.themeService.darkMode();
-    const rootEl = this.rootHTML?.nativeElement;
-    const strokeColor = this.getTheme(isDark, rootEl);
-
+    const strokeColor = this.getTheme(isDark);
     const am5Stroke = am5.color(strokeColor);
+    
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
