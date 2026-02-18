@@ -4,6 +4,7 @@ import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
 import { ColorService } from '../../../services/color-service';
 import { ThemeService } from '../../../services/theme-service';
+import { ChartsThemeService } from '../charts-theme-service';
 
 @Component({
   selector: 'app-world-map-component',
@@ -14,6 +15,7 @@ import { ThemeService } from '../../../services/theme-service';
 export class WorldMapComponent {
   private readonly colorService = inject(ColorService);
   private readonly themeService = inject(ThemeService);
+  private readonly chartsTheme = inject(ChartsThemeService);
   private root!: am5.Root;
   rootHTML!: ElementRef<HTMLElement>;
   private polygonSeries!: am5map.MapPolygonSeries;
@@ -27,26 +29,6 @@ export class WorldMapComponent {
 
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
-  }
-
-  getTheme(isDark: boolean): string {
-    const fallback = isDark ? '#292a2c' : '#f8f9fa';
-    return this.pickFromCssVar('--elements-text-color', isDark) ?? fallback;
-  }
-
-  private pickFromCssVar(cssVar: string, isDark: boolean): string | undefined {
-    const raw = this.getCssVar(cssVar);
-    if (!raw) return undefined;
-
-    const matches = raw.match(/#[a-fA-F0-9]{3,}/g);
-    if (!matches?.length) return undefined;
-
-    const idx = isDark ? 1 : 0;
-    return matches[idx] ?? matches[0];
-  }
-
-  private getCssVar(name: string): string {
-    return getComputedStyle(this.doc.documentElement).getPropertyValue(name).trim();
   }
 
   ngAfterViewInit(): void {
@@ -135,9 +117,16 @@ export class WorldMapComponent {
     const secondaryColor = am5.color(secondary);
 
     const isDark = this.themeService.darkMode();
-    const strokeColor = this.getTheme(isDark);
+    const fallbackStroke = isDark ? '#292a2c' : '#f8f9fa';
+
+    const strokeColor = this.chartsTheme.getColorFromCssVar(
+      '--elements-text-color',
+      isDark,
+      fallbackStroke
+    );
+
     const am5Stroke = am5.color(strokeColor);
-    
+
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");

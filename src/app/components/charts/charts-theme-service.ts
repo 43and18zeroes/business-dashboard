@@ -35,6 +35,10 @@ export class ChartsThemeService {
     };
   }
 
+  getColorFromCssVar(cssVar: string, isDark: boolean, fallback: string): string {
+    return this.pickFromCssVar(cssVar, isDark) ?? fallback;
+  }
+
   private getCssVar(name: string): string {
     return getComputedStyle(this.doc.documentElement).getPropertyValue(name).trim();
   }
