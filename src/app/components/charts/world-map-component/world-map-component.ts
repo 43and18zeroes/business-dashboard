@@ -15,7 +15,7 @@ import { ChartsThemeService } from '../charts-theme-service';
 export class WorldMapComponent {
   private readonly colorService = inject(ColorService);
   private readonly themeService = inject(ThemeService);
-  private readonly chartsTheme = inject(ChartsThemeService);
+  private readonly chartsThemeService = inject(ChartsThemeService);
   private root!: am5.Root;
   rootHTML!: ElementRef<HTMLElement>;
   private polygonSeries!: am5map.MapPolygonSeries;
@@ -33,6 +33,9 @@ export class WorldMapComponent {
 
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
+
+    const { ttBorderWidth, ttPadding, ttCornerRadius } =
+      this.chartsThemeService.getTooltipsSpec();
 
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
@@ -81,7 +84,10 @@ export class WorldMapComponent {
     });
 
     this.tooltip.set("background", am5.RoundedRectangle.new(this.root, {
-      cornerRadiusTL: 8,
+      cornerRadiusTL: ttCornerRadius,
+      cornerRadiusTR: ttCornerRadius,
+      cornerRadiusBL: ttCornerRadius,
+      cornerRadiusBR: ttCornerRadius,
       fillOpacity: 0.95,
       stroke: am5.color("#B0B0B0"),
       strokeWidth: 1,
@@ -119,7 +125,7 @@ export class WorldMapComponent {
     const isDark = this.themeService.darkMode();
     const fallbackStroke = isDark ? '#292a2c' : '#f8f9fa';
 
-    const strokeColor = this.chartsTheme.getColorFromCssVar(
+    const strokeColor = this.chartsThemeService.getColorFromCssVar(
       '--elements-text-color',
       isDark,
       fallbackStroke
