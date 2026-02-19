@@ -28,6 +28,12 @@ export class ChartsThemeService {
     borderWidth: 1,
     padding: 12,
     cornerRadius: 4,
+    titleFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    titleSize: 13,
+    titleWeight: 600,
+    bodyFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+    bodySize: 12,
+    bodyWeight: 500,
   }
 
   getTooltipsSpec() {
@@ -35,6 +41,12 @@ export class ChartsThemeService {
       ttBorderWidth: this.tooltipSpecs.borderWidth,
       ttPadding: this.tooltipSpecs.padding,
       ttCornerRadius: this.tooltipSpecs.cornerRadius,
+      ttTitleFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+      ttTitleSize: 13,
+      ttTitleWeight: 600,
+      ttBodyFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+      ttBodySize: 12,
+      ttBodyWeight: 500,
     }
   }
 

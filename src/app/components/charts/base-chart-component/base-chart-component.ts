@@ -179,7 +179,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     const { textColor, axisColor, gridColor, tooltipBg } =
       this.chartsThemeService.getTheme(isDark);
 
-    const { ttBorderWidth, ttPadding, ttCornerRadius } =
+    const { ttBorderWidth, ttPadding, ttCornerRadius, ttTitleFont, ttTitleSize, ttTitleWeight, ttBodyFont, ttBodySize, ttBodyWeight } =
       this.chartsThemeService.getTooltipsSpec();
 
     Chart.defaults.color = textColor;
@@ -191,15 +191,15 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     });
 
     Chart.defaults.plugins.tooltip.titleFont = {
-      family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-      size: 13,
-      weight: 600,
+      family: ttTitleFont,
+      size: ttTitleSize,
+      weight: ttTitleWeight,
     };
 
     Chart.defaults.plugins.tooltip.bodyFont = {
-      family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-      size: 12,
-      weight: 500,
+      family: ttBodyFont,
+      size: ttBodySize,
+      weight: ttBodyWeight,
     };
 
     Chart.defaults.set('plugins.tooltip', {
