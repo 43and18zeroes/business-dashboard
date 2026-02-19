@@ -60,7 +60,7 @@ export class WorldMapComponent {
     );
 
     this.tooltip = am5.Tooltip.new(this.root, {
-      getFillFromSprite: false, // Wichtig, damit manuelles 'fill' Priorität hat
+      getFillFromSprite: false,
       labelText: "{name}",
       pointerOrientation: "horizontal",
       animationDuration: 160,

@@ -24,6 +24,16 @@ export class ChartsThemeService {
     tooltipBg: '#292a2c',
   };
 
+  private readonly tooltipSpecs = {
+    borderWidth: 1,
+  }
+
+  getTooltipsSpec() {
+    return {
+      borderWidth: this.tooltipSpecs.borderWidth,
+    }
+  }
+
   getTheme(isDark: boolean): ChartThemeTokens {
     const fallback = isDark ? this.fallbackDark : this.fallbackLight;
 

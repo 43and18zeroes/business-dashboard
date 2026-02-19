@@ -179,6 +179,9 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
     const { textColor, axisColor, gridColor, tooltipBg } =
       this.chartsThemeService.getTheme(isDark);
 
+    const { borderWidth } =
+      this.chartsThemeService.getTooltipsSpec();
+
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
 
@@ -192,7 +195,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       titleColor: textColor,
       bodyColor: textColor,
       borderColor: axisColor,
-      borderWidth: 1,
+      borderWidth,
       padding: 12,
       cornerRadius: 4,
     });
