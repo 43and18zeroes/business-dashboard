@@ -41,12 +41,12 @@ export class ChartsThemeService {
       ttBorderWidth: this.tooltipSpecs.borderWidth,
       ttPadding: this.tooltipSpecs.padding,
       ttCornerRadius: this.tooltipSpecs.cornerRadius,
-      ttTitleFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-      ttTitleSize: 13,
-      ttTitleWeight: 600,
-      ttBodyFont: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-      ttBodySize: 12,
-      ttBodyWeight: 500,
+      ttTitleFont: this.tooltipSpecs.titleFont,
+      ttTitleSize: this.tooltipSpecs.titleSize,
+      ttTitleWeight: this.tooltipSpecs.titleWeight,
+      ttBodyFont: this.tooltipSpecs.bodyFont,
+      ttBodySize: this.tooltipSpecs.bodySize,
+      ttBodyWeight: this.tooltipSpecs.bodyWeight,
     }
   }
 

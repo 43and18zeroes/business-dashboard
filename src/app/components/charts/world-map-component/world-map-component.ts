@@ -34,7 +34,7 @@ export class WorldMapComponent {
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
 
-    const { ttBorderWidth, ttPadding, ttCornerRadius } =
+    const { ttBorderWidth, ttPadding, ttCornerRadius, ttTitleFont, ttTitleSize, ttTitleWeight } =
       this.chartsThemeService.getTooltipsSpec();
 
     const chart = this.root.container.children.push(
@@ -103,6 +103,12 @@ export class WorldMapComponent {
       shadowOffsetX: 0,
       shadowOffsetY: 2,
     }));
+
+    this.tooltip.label.setAll({
+      fontFamily: ttTitleFont,
+      fontSize: ttTitleSize,
+      fontWeight: ttTitleWeight as any,
+    });
 
     this.tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
     this.tooltip.states.create("default", { opacity: 1, scale: 1 });
