@@ -26,11 +26,15 @@ export class ChartsThemeService {
 
   private readonly tooltipSpecs = {
     borderWidth: 1,
+    padding: 12,
+    cornerRadius: 4,
   }
 
   getTooltipsSpec() {
     return {
-      borderWidth: this.tooltipSpecs.borderWidth,
+      ttBorderWidth: this.tooltipSpecs.borderWidth,
+      ttPadding: this.tooltipSpecs.padding,
+      ttCornerRadius: this.tooltipSpecs.cornerRadius,
     }
   }
 
