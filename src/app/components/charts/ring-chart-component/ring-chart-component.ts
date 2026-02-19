@@ -76,8 +76,9 @@ export class RingChartComponent extends BaseChartComponent<'doughnut'> {
         tooltip: {
           ...baseOptions.plugins?.tooltip,
           callbacks: {
-            label: (ctx) => ctx.label ?? '',
-          },
+          title: () => '',
+          label: (ctx) => ctx.label ?? '',
+        },
         },
       },
     };
