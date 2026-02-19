@@ -83,14 +83,20 @@ export class WorldMapComponent {
       this.tooltip.hide();
     });
 
+    this.tooltip.setAll({
+      paddingTop: ttPadding,
+      paddingRight: ttPadding,
+      paddingBottom: ttPadding,
+      paddingLeft: ttPadding
+    });
+
     this.tooltip.set("background", am5.RoundedRectangle.new(this.root, {
       cornerRadiusTL: ttCornerRadius,
       cornerRadiusTR: ttCornerRadius,
       cornerRadiusBL: ttCornerRadius,
       cornerRadiusBR: ttCornerRadius,
-      fillOpacity: 0.95,
       stroke: am5.color("#B0B0B0"),
-      strokeWidth: 1,
+      strokeWidth: ttBorderWidth,
       strokeOpacity: 0.9,
       shadowColor: am5.color(0x000000),
       shadowBlur: 8,
