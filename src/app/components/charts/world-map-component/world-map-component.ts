@@ -149,7 +149,14 @@ export class WorldMapComponent {
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
 
-    this.tooltip.get("background")?.set("fill", primaryColor);
+    const ttBg = this.chartsThemeService.getColorFromCssVar(
+      '--elements-tooltip-bg',
+      isDark,
+      fallbackStroke
+    );
+    const ttBgColor = am5.color(ttBg);
+
+    this.tooltip.get("background")?.set("fill", ttBgColor);
 
     if (hoverTemplate) {
       hoverTemplate.set("fill", secondaryColor);
