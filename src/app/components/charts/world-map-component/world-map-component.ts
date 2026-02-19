@@ -135,10 +135,10 @@ export class WorldMapComponent {
     const secondaryColor = am5.color(secondary);
 
     const isDark = this.themeService.darkMode();
-    const fallbackStroke = isDark ? '#292a2c' : '#f8f9fa';
+    const fallbackStroke = isDark ? '#343a40' : '#f8f9fa';
 
     const strokeColor = this.chartsThemeService.getColorFromCssVar(
-      '--elements-text-color',
+      '--bg-color',
       isDark,
       fallbackStroke
     );
