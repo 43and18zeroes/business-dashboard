@@ -190,6 +190,18 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
       ticks: { color: textColor },
     });
 
+    Chart.defaults.plugins.tooltip.titleFont = {
+      family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+      size: 13,
+      weight: 600,
+    };
+
+    Chart.defaults.plugins.tooltip.bodyFont = {
+      family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+      size: 12,
+      weight: 500,
+    };
+
     Chart.defaults.set('plugins.tooltip', {
       backgroundColor: tooltipBg,
       titleColor: textColor,
