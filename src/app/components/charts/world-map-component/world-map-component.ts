@@ -5,6 +5,7 @@ import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
 import { ColorService } from '../../../services/color-service';
 import { ThemeService } from '../../../services/theme-service';
 import { ChartsThemeService } from '../charts-theme-service';
+import { ColorTokens } from '../../../services/color.tokens';
 
 @Component({
   selector: 'app-world-map-component',
@@ -32,7 +33,7 @@ export class WorldMapComponent {
   ttTitleSize: number = 0;
   ttTitleWeight: string = '';
 
-  initialTokens: any;
+  initialTokens!: ColorTokens;
 
   constructor() {
     effect(() => {
@@ -145,7 +146,6 @@ export class WorldMapComponent {
     });
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
-    const initialTokens = this.colorService.tokens();
     this.updateMapColors(this.initialTokens.primary, this.initialTokens.secondary);
     this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
