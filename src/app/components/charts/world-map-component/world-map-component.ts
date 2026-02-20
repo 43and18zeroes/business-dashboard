@@ -32,6 +32,8 @@ export class WorldMapComponent {
   ttTitleSize: number = 0;
   ttTitleWeight: string = '';
 
+  initialTokens: any;
+
   constructor() {
     effect(() => {
       this.themeService.darkMode();
@@ -54,6 +56,8 @@ export class WorldMapComponent {
     this.ttTitleFont = ttTitleFont;
     this.ttTitleSize = ttTitleSize;
     this.ttTitleWeight = ttTitleWeight.toString();
+
+    this.initialTokens = this.colorService.tokens();
   }
 
   ngAfterViewInit(): void {
@@ -142,7 +146,7 @@ export class WorldMapComponent {
 
     this.polygonSeries.mapPolygons.template.states.create("hover", {});
     const initialTokens = this.colorService.tokens();
-    this.updateMapColors(initialTokens.primary, initialTokens.secondary);
+    this.updateMapColors(this.initialTokens.primary, this.initialTokens.secondary);
     this.polygonSeries.events.on("datavalidated", () => chart.goHome());
   }
 
