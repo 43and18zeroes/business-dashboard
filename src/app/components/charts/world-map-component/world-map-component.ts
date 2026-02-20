@@ -37,20 +37,42 @@ export class WorldMapComponent {
 
   constructor() {
     effect(() => {
-      this.themeService.darkMode();
-      const tokens = this.colorService.tokens();
+      const isDark = this.themeService.darkMode();     // <- dependency
+      const tokens = this.colorService.tokens();       // <- dependency
+
+      // 1) Theme jedes Mal neu ziehen
+      const theme = this.chartsThemeService.getTheme(isDark);
+      this.ttTextColor = theme.textColor;
+      this.ttAxisColor = theme.axisColor;
+      this.ttBackgroundColor = theme.tooltipBg;
+
+      // 2) Tooltip live updaten (wenn schon vorhanden)
+      this.applyTooltipTheme();
+
+      // 3) Map-Farben updaten
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
   }
 
-  getGlobalStyles() {
-    const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
-    this.ttTextColor = theme.textColor;
-    this.ttAxisColor = theme.axisColor;
-    this.ttBackgroundColor = theme.tooltipBg;
+  private applyTooltipTheme() {
+    if (!this.tooltip) return;
 
+    // Background fill + stroke aktualisieren
+    const bg = this.tooltip.get("background");
+    bg?.setAll({
+      fill: am5.color(this.ttBackgroundColor),
+      stroke: am5.color(this.ttAxisColor),
+    });
+
+    // Label-Farbe DIREKT setzen (statt Adapter)
+    this.tooltip.label.set("fill", am5.color(this.ttTextColor));
+  }
+
+  getGlobalStyles() {
+    // Tooltip Specs (können einmalig bleiben)
     const { ttBorderWidth, ttPadding, ttCornerRadius, ttTitleFont, ttTitleSize, ttTitleWeight } =
       this.chartsThemeService.getTooltipsSpec();
+
     this.ttBorderWidth = ttBorderWidth;
     this.ttPadding = ttPadding;
     this.ttCornerRadius = ttCornerRadius;
@@ -132,7 +154,7 @@ export class WorldMapComponent {
       fontWeight: this.ttTitleWeight as any,
     });
 
-    this.tooltip.label.adapters.add("fill", () => am5.color(this.ttTextColor));
+    this.applyTooltipTheme();
 
     this.tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
     this.tooltip.states.create("default", { opacity: 1, scale: 1 });
@@ -170,15 +192,10 @@ export class WorldMapComponent {
 
     this.polygonSeries.mapPolygons.template.set("fill", primaryColor);
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
+
+    this.tooltip.get("background")?.set("fill", am5.color(this.ttBackgroundColor));
+
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
-
-    // const ttBg = this.chartsThemeService.getColorFromCssVar(
-    //   '--elements-tooltip-bg',
-    //   isDark,
-    //   fallbackStroke
-    // );
-    // const ttBgColor = am5.color(ttBg);
-
     this.tooltip.get("background")?.set("fill", am5.color(this.ttBackgroundColor));
 
     if (hoverTemplate) {
