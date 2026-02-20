@@ -29,15 +29,17 @@ export class WorldMapComponent {
   constructor() {
     effect(() => {
       const tokens = this.colorService.tokens();
-      this.themeService.darkMode();
-
-      const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
-      this.ttTextColor = theme.textColor;
-      this.ttAxisColor = theme.axisColor;
-      this.ttBackgroundColor = theme.tooltipBg;
-
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
+    this.getColors();
+  }
+
+  getColors() {
+    this.themeService.darkMode();
+    const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
+    this.ttTextColor = theme.textColor;
+    this.ttAxisColor = theme.axisColor;
+    this.ttBackgroundColor = theme.tooltipBg;
   }
 
   ngAfterViewInit(): void {
