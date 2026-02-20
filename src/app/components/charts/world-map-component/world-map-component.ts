@@ -28,6 +28,7 @@ export class WorldMapComponent {
 
   constructor() {
     effect(() => {
+      this.themeService.darkMode();
       const tokens = this.colorService.tokens();
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
@@ -35,7 +36,6 @@ export class WorldMapComponent {
   }
 
   getColors() {
-    this.themeService.darkMode();
     const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
     this.ttTextColor = theme.textColor;
     this.ttAxisColor = theme.axisColor;
