@@ -25,6 +25,12 @@ export class WorldMapComponent {
   ttTextColor: string = '';
   ttAxisColor: string = '';
   ttBackgroundColor: string = '';
+  ttBorderWidth: number = 0;
+  ttPadding: number = 0;
+  ttCornerRadius: number = 0;
+  ttTitleFont: string = '';
+  ttTitleSize: number = 0;
+  ttTitleWeight: string = '';
 
   constructor() {
     effect(() => {
@@ -32,21 +38,27 @@ export class WorldMapComponent {
       const tokens = this.colorService.tokens();
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
-    this.getColors();
   }
 
-  getColors() {
+  getGlobalStyles() {
     const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
     this.ttTextColor = theme.textColor;
     this.ttAxisColor = theme.axisColor;
     this.ttBackgroundColor = theme.tooltipBg;
-  }
-
-  ngAfterViewInit(): void {
-    this.root = am5.Root.new("chartdiv");
 
     const { ttBorderWidth, ttPadding, ttCornerRadius, ttTitleFont, ttTitleSize, ttTitleWeight } =
       this.chartsThemeService.getTooltipsSpec();
+    this.ttBorderWidth = ttBorderWidth;
+    this.ttPadding = ttPadding;
+    this.ttCornerRadius = ttCornerRadius;
+    this.ttTitleFont = ttTitleFont;
+    this.ttTitleSize = ttTitleSize;
+    this.ttTitleWeight = ttTitleWeight.toString();
+  }
+
+  ngAfterViewInit(): void {
+    this.getGlobalStyles();
+    this.root = am5.Root.new("chartdiv");
 
     const chart = this.root.container.children.push(
       am5map.MapChart.new(this.root, {
@@ -95,25 +107,25 @@ export class WorldMapComponent {
     });
 
     this.tooltip.setAll({
-      paddingTop: ttPadding,
-      paddingRight: ttPadding,
-      paddingBottom: ttPadding,
-      paddingLeft: ttPadding
+      paddingTop: this.ttPadding,
+      paddingRight: this.ttPadding,
+      paddingBottom: this.ttPadding,
+      paddingLeft: this.ttPadding
     });
 
     this.tooltip.set("background", am5.RoundedRectangle.new(this.root, {
-      cornerRadiusTL: ttCornerRadius,
-      cornerRadiusTR: ttCornerRadius,
-      cornerRadiusBL: ttCornerRadius,
-      cornerRadiusBR: ttCornerRadius,
+      cornerRadiusTL: this.ttCornerRadius,
+      cornerRadiusTR: this.ttCornerRadius,
+      cornerRadiusBL: this.ttCornerRadius,
+      cornerRadiusBR: this.ttCornerRadius,
       stroke: am5.color(this.ttAxisColor),
-      strokeWidth: ttBorderWidth,
+      strokeWidth: this.ttBorderWidth,
     }));
 
     this.tooltip.label.setAll({
-      fontFamily: ttTitleFont,
-      fontSize: ttTitleSize,
-      fontWeight: ttTitleWeight as any,
+      fontFamily: this.ttTitleFont,
+      fontSize: this.ttTitleSize,
+      fontWeight: this.ttTitleWeight as any,
     });
 
     this.tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
