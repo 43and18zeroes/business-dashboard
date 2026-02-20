@@ -22,10 +22,19 @@ export class WorldMapComponent {
   private tooltip!: am5.Tooltip;
   private readonly doc = inject(DOCUMENT);
 
+  ttTextColor: string = '';
+  ttAxisColor: string = '';
+  ttBackgroundColor: string = '';
+
   constructor() {
     effect(() => {
       const tokens = this.colorService.tokens();
       this.themeService.darkMode();
+
+      const theme = this.chartsThemeService.getTheme(this.themeService.darkMode());
+      this.ttTextColor = theme.textColor;
+      this.ttAxisColor = theme.axisColor;
+      this.ttBackgroundColor = theme.tooltipBg;
 
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
@@ -95,13 +104,8 @@ export class WorldMapComponent {
       cornerRadiusTR: ttCornerRadius,
       cornerRadiusBL: ttCornerRadius,
       cornerRadiusBR: ttCornerRadius,
-      stroke: am5.color("#B0B0B0"),
+      stroke: am5.color(this.ttAxisColor),
       strokeWidth: ttBorderWidth,
-      strokeOpacity: 0.9,
-      shadowColor: am5.color(0x000000),
-      shadowBlur: 8,
-      shadowOffsetX: 0,
-      shadowOffsetY: 2,
     }));
 
     this.tooltip.label.setAll({
