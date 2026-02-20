@@ -92,7 +92,6 @@ export class WorldMapComponent {
 
     this.tooltip = am5.Tooltip.new(this.root, {
       getFillFromSprite: false,
-      labelText: "{name}",
       pointerOrientation: "horizontal",
       animationDuration: 160,
       animationEasing: am5.ease.out(am5.ease.cubic),
@@ -133,6 +132,8 @@ export class WorldMapComponent {
       fontWeight: this.ttTitleWeight as any,
     });
 
+    this.tooltip.label.adapters.add("fill", () => am5.color(this.ttTextColor));
+
     this.tooltip.states.create("hidden", { opacity: 0, scale: 0.92 });
     this.tooltip.states.create("default", { opacity: 1, scale: 1 });
 
@@ -171,14 +172,14 @@ export class WorldMapComponent {
     this.polygonSeries.mapPolygons.template.set("stroke", am5Stroke);
     const hoverTemplate = this.polygonSeries.mapPolygons.template.states.lookup("hover");
 
-    const ttBg = this.chartsThemeService.getColorFromCssVar(
-      '--elements-tooltip-bg',
-      isDark,
-      fallbackStroke
-    );
-    const ttBgColor = am5.color(ttBg);
+    // const ttBg = this.chartsThemeService.getColorFromCssVar(
+    //   '--elements-tooltip-bg',
+    //   isDark,
+    //   fallbackStroke
+    // );
+    // const ttBgColor = am5.color(ttBg);
 
-    this.tooltip.get("background")?.set("fill", ttBgColor);
+    this.tooltip.get("background")?.set("fill", am5.color(this.ttBackgroundColor));
 
     if (hoverTemplate) {
       hoverTemplate.set("fill", secondaryColor);
