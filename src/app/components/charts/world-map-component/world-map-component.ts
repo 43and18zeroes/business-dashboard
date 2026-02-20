@@ -37,19 +37,15 @@ export class WorldMapComponent {
 
   constructor() {
     effect(() => {
-      const isDark = this.themeService.darkMode();     // <- dependency
-      const tokens = this.colorService.tokens();       // <- dependency
+      const isDark = this.themeService.darkMode();
+      const tokens = this.colorService.tokens();
 
-      // 1) Theme jedes Mal neu ziehen
       const theme = this.chartsThemeService.getTheme(isDark);
       this.ttTextColor = theme.textColor;
       this.ttAxisColor = theme.axisColor;
       this.ttBackgroundColor = theme.tooltipBg;
 
-      // 2) Tooltip live updaten (wenn schon vorhanden)
       this.applyTooltipTheme();
-
-      // 3) Map-Farben updaten
       this.updateMapColors(tokens.primary, tokens.secondary);
     });
   }
@@ -57,19 +53,18 @@ export class WorldMapComponent {
   private applyTooltipTheme() {
     if (!this.tooltip) return;
 
-    // Background fill + stroke aktualisieren
+    const wasVisible = this.tooltip.get("visible");
+    if (wasVisible) this.tooltip.hide(0);
+
     const bg = this.tooltip.get("background");
     bg?.setAll({
       fill: am5.color(this.ttBackgroundColor),
       stroke: am5.color(this.ttAxisColor),
     });
 
-    // Label-Farbe DIREKT setzen (statt Adapter)
-    this.tooltip.label.set("fill", am5.color(this.ttTextColor));
+    this.tooltip.label.markDirty();
   }
-
   getGlobalStyles() {
-    // Tooltip Specs (können einmalig bleiben)
     const { ttBorderWidth, ttPadding, ttCornerRadius, ttTitleFont, ttTitleSize, ttTitleWeight } =
       this.chartsThemeService.getTooltipsSpec();
 
@@ -153,6 +148,8 @@ export class WorldMapComponent {
       fontSize: this.ttTitleSize,
       fontWeight: this.ttTitleWeight as any,
     });
+
+    this.tooltip.label.adapters.add("fill", () => am5.color(this.ttTextColor));
 
     this.applyTooltipTheme();
 
