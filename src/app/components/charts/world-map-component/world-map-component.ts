@@ -140,7 +140,8 @@ export class WorldMapComponent {
       cornerRadiusBL: this.ttCornerRadius,
       cornerRadiusBR: this.ttCornerRadius,
       stroke: am5.color(this.ttAxisColor),
-      strokeWidth: this.ttBorderWidth,
+      // strokeWidth: this.ttBorderWidth,
+      strokeWidth: 1.5,
     }));
 
     this.tooltip.label.setAll({
@@ -177,7 +178,7 @@ export class WorldMapComponent {
     const secondaryColor = am5.color(secondary);
 
     const isDark = this.themeService.darkMode();
-    const fallbackStroke = isDark ? '#343a40' : '#f8f9fa';
+    const fallbackStroke = isDark ? '#343a40' : '#f2f3f4';
 
     const strokeColor = this.chartsThemeService.getColorFromCssVar(
       '--bg-color',
