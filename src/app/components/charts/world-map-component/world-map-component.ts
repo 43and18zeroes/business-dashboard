@@ -43,7 +43,7 @@ export class WorldMapComponent {
       const theme = this.chartsThemeService.getTheme(isDark);
       this.ttTextColor = theme.textColor;
       this.ttAxisColor = theme.axisColor;
-      this.ttBackgroundColor = theme.tooltipBg;
+      this.ttBackgroundColor = isDark ? "#37383a" : "#f3f4f5";
 
       this.applyTooltipTheme();
       this.updateMapColors(tokens.primary, tokens.secondary);
