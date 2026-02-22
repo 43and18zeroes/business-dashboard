@@ -7,6 +7,12 @@ calendar-component.scss
   display: block;
 }
 
+:host ::ng-deep .cal-month-view,
+:host ::ng-deep .cal-week-view,
+:host ::ng-deep .cal-day-view {
+  background: rgba(0, 0, 0, 0);
+}
+
 .cal-toolbar {
   display: flex;
   align-items: center;
