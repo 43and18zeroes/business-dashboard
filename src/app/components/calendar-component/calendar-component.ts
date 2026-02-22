@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   CalendarView,
   CalendarEvent,
@@ -14,8 +14,8 @@ import {
 @Component({
   selector: 'app-calendar-component',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush, // <-- WICHTIG für Signal-Performance
   imports: [
-    // Nur die spezifischen Kalender-Module, kein CommonModule nötig
     CalendarTodayDirective,
     CalendarNextViewDirective,
     CalendarPreviousViewDirective,
@@ -28,27 +28,28 @@ import {
   styleUrl: './calendar-component.scss',
 })
 export class CalendarComponent {
-  // Wir machen den Enum im Template verfügbar
   protected readonly CalendarView = CalendarView;
+  protected readonly locale = 'de';
 
-  // State-Management via Signals
   readonly view = signal<CalendarView>(CalendarView.Month);
   readonly viewDate = signal<Date>(new Date());
   readonly events = signal<CalendarEvent[]>([
     { start: new Date(), title: 'Test-Event' },
   ]);
 
-  // Beispiel für ein Computed Signal (falls du Logik basierend auf dem Datum brauchst)
-  // Das CalendarDatePipe im Template ist aber meistens ausreichend.
-
   addEvent(date: Date): void {
     this.events.update(prev => [
       ...prev,
-      { title: 'Neues Event', start: date }
+      { 
+        title: 'Neues Event', 
+        start: date, 
+        allDay: true 
+      }
     ]);
   }
 
-  setView(view: CalendarView): void {
-    this.view.set(view);
+  // Methode für explizite Updates des Datums (aus dem Template gerufen)
+  updateDate(newDate: Date): void {
+    this.viewDate.set(newDate);
   }
 }
