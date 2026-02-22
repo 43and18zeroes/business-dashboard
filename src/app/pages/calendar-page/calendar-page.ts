@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { CalendarComponent } from "../../components/calendar-component/calendar-component";
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [CalendarComponent],
+  imports: [],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.scss',
 })
