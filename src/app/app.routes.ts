@@ -28,6 +28,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/world-map-page/world-map-page').then((m) => m.WorldMapPage),
   },
   {
+    path: 'calendar',
+    title: 'Calendar - Business Dashboard',
+    loadComponent: () => import('./pages/calendar-page/calendar-page').then((m) => m.CalendarPage),
+  },
+  {
     path: 'info',
     title: 'Info - Business Dashboard',
     loadComponent: () => import('./pages/info-page/info-page').then((m) => m.InfoPage),
