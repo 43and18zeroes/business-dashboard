@@ -1,0 +1,16 @@
+<section class="widget">
+  <h3>Heute</h3>
+
+  <ng-container *ngIf="todayEvents.length; else empty">
+    <ul class="list">
+      <li class="item" *ngFor="let e of todayEvents">
+        <div class="time">{{ formatTime(e.start) }}</div>
+        <div class="title">{{ e.title }}</div>
+      </li>
+    </ul>
+  </ng-container>
+
+  <ng-template #empty>
+    <p class="muted">Keine Termine für heute.</p>
+  </ng-template>
+</section>
