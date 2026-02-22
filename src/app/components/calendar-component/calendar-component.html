@@ -1,79 +1,58 @@
 <div class="cal-toolbar">
   <div class="nav-group">
-    <button 
-      mwlCalendarPreviousView 
-      [view]="view()" 
-      [viewDate]="viewDate()" 
-      (viewDateChange)="updateDate($event)">
+    <button mwlCalendarPreviousView [view]="view()"
+      [viewDate]="viewDate()"
+      (viewDateChange)="viewDate.set($event)">
       Zurück
     </button>
-    
-    <button 
-      mwlCalendarToday 
-      [viewDate]="viewDate()" 
-      (viewDateChange)="updateDate($event)">
+
+    <button mwlCalendarToday [viewDate]="viewDate()"
+      (viewDateChange)="viewDate.set($event)">
       Heute
     </button>
-    
-    <button 
-      mwlCalendarNextView 
-      [view]="view()" 
-      [viewDate]="viewDate()" 
-      (viewDateChange)="updateDate($event)">
+
+    <button mwlCalendarNextView [view]="view()"
+      [viewDate]="viewDate()"
+      (viewDateChange)="viewDate.set($event)">
       Weiter
     </button>
   </div>
 
   <strong class="cal-title">
-    {{ viewDate() | calendarDate:(view() + 'ViewTitle'):locale }}
+    {{ viewDate() | calendarDate:titleFormat():locale() }}
   </strong>
 
   <span class="spacer"></span>
 
   <div class="btn-group">
-    <button 
-      (click)="view.set(CalendarView.Month)" 
-      [class.active]="view() === CalendarView.Month">
-      Monat
+    @for (btn of viewButtons(); track btn.view) {
+    <button type="button" (click)="view.set(btn.view)"
+      [class.active]="view() === btn.view">
+      {{ btn.label }}
     </button>
-    <button 
-      (click)="view.set(CalendarView.Week)" 
-      [class.active]="view() === CalendarView.Week">
-      Woche
-    </button>
-    <button 
-      (click)="view.set(CalendarView.Day)" 
-      [class.active]="view() === CalendarView.Day">
-      Tag
-    </button>
+    }
   </div>
 </div>
 
 <div class="calendar-container">
   @switch (view()) {
-    @case (CalendarView.Month) {
-      <mwl-calendar-month-view
-        [viewDate]="viewDate()"
-        [events]="events()"
-        [locale]="locale"
-        (dayClicked)="addEvent($event.day.date)">
-      </mwl-calendar-month-view>
-    }
-  
-    @case (CalendarView.Week) {
-      <mwl-calendar-week-view
-        [viewDate]="viewDate()"
-        [events]="events()"
-        [locale]="locale">
-      </mwl-calendar-week-view>
-    }
-  
-    @case (CalendarView.Day) {
-      <mwl-calendar-day-view
-        [viewDate]="viewDate()"
-        [events]="events()"
-        [locale]="locale">
-      </mwl-calendar-day-view>
-    }
+  @case (CalendarView.Month) {
+  <mwl-calendar-month-view [viewDate]="viewDate()"
+    [events]="events()" [locale]="locale()"
+    (dayClicked)="addEvent($event.day.date)">
+  </mwl-calendar-month-view>
+  }
+
+  @case (CalendarView.Week) {
+  <mwl-calendar-week-view [viewDate]="viewDate()"
+    [events]="events()" [locale]="locale()">
+  </mwl-calendar-week-view>
+  }
+
+  @case (CalendarView.Day) {
+  <mwl-calendar-day-view [viewDate]="viewDate()"
+    [events]="events()" [locale]="locale()">
+  </mwl-calendar-day-view>
+  }
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   CalendarView,
   CalendarEvent,
@@ -14,7 +14,7 @@ import {
 @Component({
   selector: 'app-calendar-component',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush, // <-- WICHTIG für Signal-Performance
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CalendarTodayDirective,
     CalendarNextViewDirective,
@@ -29,27 +29,38 @@ import {
 })
 export class CalendarComponent {
   protected readonly CalendarView = CalendarView;
-  protected readonly locale = 'de';
+
+  // Wenn du später mal Locale umschalten willst: als Signal statt const.
+  readonly locale = signal<'de' | 'en'>('de');
 
   readonly view = signal<CalendarView>(CalendarView.Month);
-  readonly viewDate = signal<Date>(new Date());
+  readonly viewDate = signal(new Date());
+
   readonly events = signal<CalendarEvent[]>([
     { start: new Date(), title: 'Test-Event' },
   ]);
 
-  addEvent(date: Date): void {
-    this.events.update(prev => [
-      ...prev,
-      { 
-        title: 'Neues Event', 
-        start: date, 
-        allDay: true 
-      }
-    ]);
-  }
+  // Keine Duplikate im Template
+  readonly viewButtons = computed(() => ([
+    { view: CalendarView.Month, label: 'Monat' },
+    { view: CalendarView.Week, label: 'Woche' },
+    { view: CalendarView.Day, label: 'Tag' },
+  ]));
 
-  // Methode für explizite Updates des Datums (aus dem Template gerufen)
-  updateDate(newDate: Date): void {
-    this.viewDate.set(newDate);
+  // Titel sauber als computed – ohne (view() + 'ViewTitle') String-Bastelei
+  readonly titleFormat = computed(() => {
+    switch (this.view()) {
+      case CalendarView.Month: return 'monthViewTitle';
+      case CalendarView.Week: return 'weekViewTitle';
+      case CalendarView.Day: return 'dayViewTitle';
+      default: return 'monthViewTitle';
+    }
+  });
+
+  addEvent(date: Date): void {
+    this.events.update(prev => ([
+      ...prev,
+      { title: 'Neues Event', start: date, allDay: true },
+    ]));
   }
 }
