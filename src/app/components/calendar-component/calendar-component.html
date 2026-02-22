@@ -1,36 +1,39 @@
-<div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+<div class="cal-toolbar">
   <button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">Zurück</button>
   <button mwlCalendarToday [(viewDate)]="viewDate">Heute</button>
   <button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">Weiter</button>
 
-  <strong style="margin-left:12px;">
+  <strong class="cal-title">
     {{ viewDate | calendarDate:(view + 'ViewTitle'):'de' }}
   </strong>
 
-  <span style="flex:1"></span>
+  <span class="spacer"></span>
 
   <button (click)="view = CalendarView.Month">Monat</button>
   <button (click)="view = CalendarView.Week">Woche</button>
   <button (click)="view = CalendarView.Day">Tag</button>
 </div>
 
-<ng-container [ngSwitch]="view">
-  <mwl-calendar-month-view
-    *ngSwitchCase="CalendarView.Month"
-    [viewDate]="viewDate"
-    [events]="events"
-    (dayClicked)="addEvent($event.day.date)">
-  </mwl-calendar-month-view>
+@switch (view) {
+  @case (CalendarView.Month) {
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      (dayClicked)="addEvent($event.day.date)">
+    </mwl-calendar-month-view>
+  }
 
-  <mwl-calendar-week-view
-    *ngSwitchCase="CalendarView.Week"
-    [viewDate]="viewDate"
-    [events]="events">
-  </mwl-calendar-week-view>
+  @case (CalendarView.Week) {
+    <mwl-calendar-week-view
+      [viewDate]="viewDate"
+      [events]="events">
+    </mwl-calendar-week-view>
+  }
 
-  <mwl-calendar-day-view
-    *ngSwitchCase="CalendarView.Day"
-    [viewDate]="viewDate"
-    [events]="events">
-  </mwl-calendar-day-view>
-</ng-container>
+  @case (CalendarView.Day) {
+    <mwl-calendar-day-view
+      [viewDate]="viewDate"
+      [events]="events">
+    </mwl-calendar-day-view>
+  }
+}
