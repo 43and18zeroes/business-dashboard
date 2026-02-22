@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import {
   CalendarView,
   CalendarEvent,
@@ -30,7 +30,6 @@ import {
 export class CalendarComponent {
   protected readonly CalendarView = CalendarView;
 
-  // Wenn du später mal Locale umschalten willst: als Signal statt const.
   readonly locale = signal<'de' | 'en'>('de');
 
   readonly view = signal<CalendarView>(CalendarView.Month);
@@ -40,14 +39,12 @@ export class CalendarComponent {
     { start: new Date(), title: 'Test-Event' },
   ]);
 
-  // Keine Duplikate im Template
   readonly viewButtons = computed(() => ([
     { view: CalendarView.Month, label: 'Monat' },
     { view: CalendarView.Week, label: 'Woche' },
     { view: CalendarView.Day, label: 'Tag' },
   ]));
 
-  // Titel sauber als computed – ohne (view() + 'ViewTitle') String-Bastelei
   readonly titleFormat = computed(() => {
     switch (this.view()) {
       case CalendarView.Month: return 'monthViewTitle';
