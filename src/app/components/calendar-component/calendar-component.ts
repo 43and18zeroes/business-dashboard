@@ -15,7 +15,7 @@ import {
 } from 'angular-calendar';
 
 @Component({
-  selector: 'app-calender-component',
+  selector: 'app-calendar-component',
   imports: [
     CommonModule,
 
@@ -28,10 +28,10 @@ import {
     CalendarWeekViewComponent,
     CalendarDayViewComponent,
   ],
-  templateUrl: './calender-component.html',
-  styleUrl: './calender-component.scss',
+  templateUrl: './calendar-component.html',
+  styleUrl: './calendar-component.scss',
 })
-export class CalenderComponent {
+export class CalendarComponent {
   CalendarView = CalendarView;
 
   view: CalendarView = CalendarView.Month;
