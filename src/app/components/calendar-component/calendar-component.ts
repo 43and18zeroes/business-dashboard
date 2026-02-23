@@ -21,15 +21,9 @@ export class CalendarComponent {
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-    },
-    selectable: true,
+    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' },
     editable: true,
-    dateClick: (info) => console.log('dateClick', info.dateStr),
-    eventClick: (info) => console.log('eventClick', info.event.title),
+    selectable: true,
     events: [],
   };
 
@@ -37,7 +31,7 @@ export class CalendarComponent {
     if (changes['events']) {
       this.calendarOptions = {
         ...this.calendarOptions,
-        events: (this.events ?? []).map(e => ({
+        events: this.events.map(e => ({
           id: e.id,
           title: e.title,
           start: e.start,

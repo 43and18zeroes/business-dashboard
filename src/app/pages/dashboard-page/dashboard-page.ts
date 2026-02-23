@@ -7,16 +7,27 @@ import { DragableTableComponent, ReorderEvent } from "../../components/dragable-
 import { TRANSACTIONS } from '../../services/mock-data.constant';
 import { TRANSACTION_TABLE_UTILS } from '../../shared/table-utils';
 import { WorldMapComponent } from "../../components/charts/world-map-component/world-map-component";
+import { CalendarEventsService } from '../../services/calendar-events-service';
+import { TodayEventsWidget } from "../../components/calendar-component/today-events-widget/today-events-widget";
+import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { AppCalendarEvent } from '../../models/calendar-event';
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, WorldMapComponent],
+  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, WorldMapComponent, TodayEventsWidget, AsyncPipe],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
 export class DashboardPage {
+  readonly events$: Observable<AppCalendarEvent[]>;
+
+  constructor(private calendarEventsService: CalendarEventsService) {
+    this.events$ = this.calendarEventsService.events$;
+  }
+
   protected chartService = inject(MockDataService);
 
   transactionColumns = ['txId', 'cost'] as const;

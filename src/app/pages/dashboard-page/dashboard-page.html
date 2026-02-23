@@ -4,6 +4,8 @@ dashboard-page.html
 
 <h1>Dashboard</h1>
 <div class="grid-container">
+    <app-today-events-widget
+        [events]="(events$ | async) ?? []"></app-today-events-widget>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
         class="dashboard__chart item-large" [data]="data">

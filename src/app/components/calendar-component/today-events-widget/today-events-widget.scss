@@ -1,0 +1,30 @@
+.widget {
+    padding: 12px;
+    border: 1px solid var(--frame-color);
+    border-radius: 12px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.time {
+    font-variant-numeric: tabular-nums;
+    opacity: .8;
+}
+
+.muted {
+    opacity: .7;
+    margin: 0;
+}
