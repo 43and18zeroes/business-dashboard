@@ -8,24 +8,24 @@ dashboard-page.html
         [events]="(events$ | async) ?? []"></app-today-events-widget>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
-        class="dashboard__chart item-large" [data]="data">
+        class="dashboard__chart item-wide" [data]="data">
     </app-line-chart-component>
     }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component
-        class="dashboard__chart item-small" [data]="data">
+        class="dashboard__chart item-narrow" [data]="data">
     </app-ring-chart-component>
     }
     @if (chartService.salesChartData(); as data) {
     <app-bar-chart-component
-        class="dashboard__chart item-small" [data]="data">
+        class="dashboard__chart item-narrow" [data]="data">
     </app-bar-chart-component>
     }
     <app-world-map-component
-        class="dashboard__chart item-small" />
+        class="dashboard__chart item-narrow" />
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component
-        class="dashboard__chart item-small" [data]="data"
+        class="dashboard__chart item-narrow" [data]="data"
         [displayedColumns]="transactionColumns"
         [cellFormatter]="cellFormatter" idKey="txId"
         (reorder)="onTransactionsReorder($event)" />

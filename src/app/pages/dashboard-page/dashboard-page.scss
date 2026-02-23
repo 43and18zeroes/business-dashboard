@@ -8,14 +8,14 @@ dashboard-page.scss
   grid-auto-rows: 1fr;
   gap: 16px;
 
-  .item-large,
-  .item-small {
+
+  >* {
     display: flex;
     flex-direction: column;
     height: 300px;
   }
 
-  .item-large {
+  .item-wide {
     grid-column: span 12;
 
     @media (width >=922px) {
@@ -23,9 +23,10 @@ dashboard-page.scss
     }
   }
 
-  .item-small {
+  .item-narrow {
     grid-column: span 12;
-        @media (width >=922px) {
+
+    @media (width >=922px) {
       grid-column: span 4;
     }
   }

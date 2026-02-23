@@ -4,7 +4,7 @@
 
 @if (chartService.transactions(); as data) {
 <app-dragable-table-component
-    class="dashboard__chart item-small" [data]="data"
+    [data]="data"
     [displayedColumns]="transactionColumns"
     [cellFormatter]="cellFormatter" idKey="txId"
     (reorder)="onTransactionsReorder($event)" />
