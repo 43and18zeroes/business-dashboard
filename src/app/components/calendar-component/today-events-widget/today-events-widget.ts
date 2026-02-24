@@ -11,6 +11,19 @@ import { CommonModule } from '@angular/common';
 export class TodayEventsWidget {
   @Input() events: AppCalendarEvent[] = [];
 
+  get todayWeekday(): string {
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+    });
+  }
+
+  get todayUsDateWithoutYear(): string {
+    return new Date().toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
   get todayEvents(): AppCalendarEvent[] {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);

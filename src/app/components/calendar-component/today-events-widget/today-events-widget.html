@@ -3,7 +3,12 @@ today-events-widget.html
 ========================= -->
 
 <div class="chart__root widget">
-  <h3>Heute</h3>
+  <h3 class="today-heading">
+    <span class="today-heading__weekday">{{ todayWeekday
+      }}</span>
+    <span class="today-heading__date">, {{
+      todayUsDateWithoutYear }}</span>
+  </h3>
   <ul>
     @for (todayEvent of todayEvents; track todayEvents) {
     <li> <span class="event-time">{{
