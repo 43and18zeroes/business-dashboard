@@ -4,10 +4,10 @@ dashboard-page.html
 
 <h1>Dashboard</h1>
 <div class="grid-container">
-    <app-today-events-widget class="item-narrow"
+    <app-today-events-widget class="dashboard__chart item-narrow"
         [events]="(events$ | async) ?? []"></app-today-events-widget>
-        <div class="item-narrow">PLACERHOLDER</div>
-        <div class="item-narrow">PLACERHOLDER</div>
+        <div class="dashboard__chart item-narrow">PLACERHOLDER</div>
+        <div class="dashboard__chart item-narrow">PLACERHOLDER</div>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
         class="dashboard__chart item-wide item-high" [data]="data">
