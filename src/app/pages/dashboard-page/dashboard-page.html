@@ -10,24 +10,24 @@ dashboard-page.html
         <div class="item-narrow">PLACERHOLDER</div>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
-        class="dashboard__chart item-wide" [data]="data">
+        class="dashboard__chart item-wide item-high" [data]="data">
     </app-line-chart-component>
     }
     @if (chartService.projectsChartData(); as data) {
     <app-ring-chart-component
-        class="dashboard__chart item-narrow" [data]="data">
+        class="dashboard__chart item-narrow item-high" [data]="data">
     </app-ring-chart-component>
     }
     @if (chartService.salesChartData(); as data) {
     <app-bar-chart-component
-        class="dashboard__chart item-narrow" [data]="data">
+        class="dashboard__chart item-narrow item-high" [data]="data">
     </app-bar-chart-component>
     }
     <app-world-map-component
-        class="dashboard__chart item-narrow" />
+        class="dashboard__chart item-narrow item-high" />
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component
-        class="dashboard__chart item-narrow" [data]="data"
+        class="dashboard__chart item-narrow item-high" [data]="data"
         [displayedColumns]="transactionColumns"
         [cellFormatter]="cellFormatter" idKey="txId"
         (reorder)="onTransactionsReorder($event)" />

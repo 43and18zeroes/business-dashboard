@@ -7,8 +7,16 @@ dashboard-page.scss
   grid-template-columns: repeat(12, 1fr);
   gap: 16px;
 
-  >* {
+  // >* {
+  //   height: 300px;
+  // }
+
+  .item-high {
     height: 300px;
+  }
+
+  .item-short {
+    height: 100px;
   }
 
   .item-wide {
