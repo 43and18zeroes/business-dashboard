@@ -6,8 +6,11 @@ today-events-widget.html
   <h3>Heute</h3>
   <ul>
     @for (todayEvent of todayEvents; track todayEvents) {
-    <li>{{ formatTime(todayEvent.start) }} {{
-      todayEvent.title }}</li>
+    <li> <span class="event-time">{{
+        formatTime(todayEvent.start) }}</span>
+      <span class="event-title">{{ todayEvent.title
+        }}</span>
+    </li>
     } @empty {
     <li>No events today</li>
     }
