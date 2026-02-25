@@ -10,13 +10,26 @@ calendar-page.scss
 
         .fc {
 
-            .fc-button-primary {
-                background-color: rgba(0 0 0 / 0);
+            .fc-button {
+                color: var(--elements-text-color);
                 border-color: var(--color-primary);
+                background-color: rgba(0 0 0 / 0);
 
                 &:hover {
+                    color: #fff;
                     background-color: var(--color-primary);
+                    border: inherit;
+                    text-shadow: none;
                 }
+
+                &:focus {
+                    box-shadow: none !important;
+                }
+            }
+
+            .fc-button-active {
+                background: var(--color-primary) !important;
+                border-color: var(--color-primary) !important;
             }
         }
     }
