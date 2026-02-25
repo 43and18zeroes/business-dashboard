@@ -14,8 +14,8 @@ export class CalendarEventsService {
     const events: AppCalendarEvent[] = [];
     const now = new Date();
     
-    const startDay = -14; 
-    const endDay = 28;
+    const startDay = -31; 
+    const endDay = 31;
 
 const titles = [
       'Project Sync: Redesign', 
