@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CalendarComponent } from "../../components/calendar-component/calendar-component";
 import { CalendarEventsService } from '../../services/calendar-events-service';
 import { AsyncPipe } from '@angular/common';
