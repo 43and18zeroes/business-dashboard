@@ -55,7 +55,8 @@ calendar-page.scss
             }
 
             .fc-highlight {
-                background-color: color-mix(in srgb, var(--color-primary), transparent 85%) !important;;
+                background-color: color-mix(in srgb, var(--color-primary), transparent 85%) !important;
+                ;
             }
 
             .fc-daygrid-event-dot,
