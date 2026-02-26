@@ -66,6 +66,25 @@ calendar-page.scss
             .fc-timegrid-event {
                 background-color: var(--color-primary) !important;
             }
+
+            .fc-list-day {
+                th {
+                    background-color: color-mix(in srgb, var(--color-primary), transparent 85%) !important;
+
+                    .fc-list-day-cushion,
+                    .fc-list-day-text,
+                    .fc-list-day-side-text {
+                        color: var(--mat-sys-on-surface-variant) !important;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .fc-list-event {
+                .fc-list-event-dot {
+                    border-color: var(--color-primary) !important;
+                }
+            }
         }
     }
 }
