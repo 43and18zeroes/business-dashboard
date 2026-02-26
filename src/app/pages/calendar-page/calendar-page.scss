@@ -11,13 +11,12 @@ calendar-page.scss
         .fc {
             .fc-button {
                 color: var(--elements-text-color);
-                border-color: var(--color-primary);
+                border: 1px solid var(--color-primary) !important;
                 background-color: rgba(0 0 0 / 0);
 
                 &:hover {
                     color: #fff;
                     background-color: var(--color-primary);
-                    border: inherit;
                     text-shadow: none;
                 }
 
