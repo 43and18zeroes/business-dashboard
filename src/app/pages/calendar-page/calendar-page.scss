@@ -9,7 +9,6 @@ calendar-page.scss
     ::ng-deep {
 
         .fc {
-
             .fc-button {
                 color: var(--elements-text-color);
                 border-color: var(--color-primary);
@@ -30,6 +29,16 @@ calendar-page.scss
             .fc-button-active {
                 background: var(--color-primary) !important;
                 border-color: var(--color-primary) !important;
+            }
+
+            .fc-col-header-cell-cushion {
+                color: var(--mat-sys-on-surface-variant);
+                font-weight: 500;
+            }
+
+            .fc-daygrid-day-number {
+                color: var(--mat-sys-on-surface-variant) !important;
+                font-weight: 500;
             }
         }
     }
