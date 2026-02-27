@@ -3,12 +3,32 @@ calendar-page.scss
 ========================= */
 
 :host {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px) !important;
+    box-sizing: border-box;
     padding: 20px;
+    overflow: hidden;
 
     ::ng-deep {
+        app-calendar-component {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
 
         .fc {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100% !important;
+
+            .fc-view-harness {
+                flex-grow: 1;
+                height: 100% !important;
+            }
+
             .fc-button {
                 color: var(--elements-text-color);
                 border: 1px solid var(--color-primary) !important;
@@ -55,7 +75,6 @@ calendar-page.scss
 
             .fc-highlight {
                 background-color: color-mix(in srgb, var(--color-primary), transparent 85%) !important;
-                ;
             }
 
             .fc-daygrid-event-dot,
