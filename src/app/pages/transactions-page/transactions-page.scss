@@ -2,9 +2,11 @@
 
 app-dragable-table-component {
     height: calc(100% - 63px + 16px);
-    margin-left: -16px;
-    margin-right: -16px;
-    margin-bottom: -16px;
+    margin: -8px;
+
+    @media (width >=600px) {
+        margin-left: -16px 0 -16px -16px;
+    }
 }
 
 ::ng-deep {
