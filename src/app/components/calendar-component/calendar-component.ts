@@ -1,5 +1,5 @@
-import { Component, HostListener, Input, SimpleChanges } from '@angular/core';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { Component, HostListener, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -18,55 +18,60 @@ import { AppCalendarEvent } from '../../models/calendar-event';
 export class CalendarComponent {
   @Input() events: AppCalendarEvent[] = [];
 
+  @ViewChild('fullcalendar') fullcalendar!: FullCalendarComponent;
+
+  private isMobileView = window.innerWidth <= 600;
+
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
     initialView: this.getInitialView(),
-    headerToolbar: this.getHeaderToolbar(),
+    headerToolbar: this.getHeaderToolbar(this.isMobileView),
     editable: true,
     selectable: true,
     events: [],
     handleWindowResize: true,
-    height: 'auto',
+    height: '100%',
   };
+
+  ngAfterViewInit() {
+    this.updateLayout(window.innerWidth);
+  }
 
   private getInitialView() {
     return window.innerWidth <= 600 ? 'listWeek' : 'dayGridMonth';
   }
 
-  private getHeaderToolbar() {
-    if (window.innerWidth <= 600) {
-      return {
-        left: 'prev,next',
-        center: 'title',
-        right: 'listWeek,timeGridDay'
+  private getHeaderToolbar(isMobile: boolean) {
+    return isMobile
+      ? { left: 'prev,next', center: 'title', right: 'listWeek,timeGridDay' }
+      : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' };
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateLayout(event.target.innerWidth);
+  }
+
+  private updateLayout(width: number) {
+    const shouldBeMobile = width <= 600;
+
+    if (shouldBeMobile !== this.isMobileView) {
+      this.isMobileView = shouldBeMobile;
+
+      const calendarApi = this.fullcalendar.getApi();
+      const newView = shouldBeMobile ? 'listWeek' : 'dayGridMonth';
+
+      calendarApi.changeView(newView);
+
+      this.calendarOptions = {
+        ...this.calendarOptions,
+        headerToolbar: this.getHeaderToolbar(shouldBeMobile)
       };
     }
-    return {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-    };
-  }
-
-  @HostListener('window:resize')
-  onResize() {
-    this.updateCalendarOptions();
-  }
-
-  private updateCalendarOptions() {
-    const isMobile = window.innerWidth <= 600;
-
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      initialView: isMobile ? 'listWeek' : 'dayGridMonth',
-      headerToolbar: isMobile
-        ? { left: 'prev,next', center: 'title', right: 'listWeek,timeGridDay' }
-        : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' },
-    };
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['events']) {
+    if (changes['events'] && this.events) {
       this.calendarOptions = {
         ...this.calendarOptions,
         events: this.events.map(e => ({
