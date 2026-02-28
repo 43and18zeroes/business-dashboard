@@ -104,7 +104,7 @@ calendar-page.scss
                 }
             }
 
-            @media (max-width: 767px) {
+            @media (width <=600px) {
                 .fc-toolbar {
                     flex-direction: column;
                     gap: 10px;

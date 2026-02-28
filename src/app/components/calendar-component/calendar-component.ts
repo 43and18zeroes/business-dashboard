@@ -30,11 +30,11 @@ export class CalendarComponent {
   };
 
   private getInitialView() {
-    return window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth';
+    return window.innerWidth <= 600 ? 'listWeek' : 'dayGridMonth';
   }
 
   private getHeaderToolbar() {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth <= 600) {
       return {
         left: 'prev,next',
         center: 'title',
@@ -54,7 +54,7 @@ export class CalendarComponent {
   }
 
   private updateCalendarOptions() {
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth <= 600;
 
     this.calendarOptions = {
       ...this.calendarOptions,
