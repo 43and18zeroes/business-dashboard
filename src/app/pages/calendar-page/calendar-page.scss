@@ -87,6 +87,7 @@ calendar-page.scss
 
             .fc-list-day {
                 th {
+                    position: static !important;
                     background-color: color-mix(in srgb, var(--color-primary), transparent 85%) !important;
 
                     .fc-list-day-cushion,
