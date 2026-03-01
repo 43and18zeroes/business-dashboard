@@ -1,12 +1,7 @@
-<div class="ticker-container">
-    <div class="ticker-track">
-        @for (item of news(); track item.title) {
-        <a [href]="item.link" target="_blank"
-            class="ticker-item">
-            <span class="source">[{{ item.source_id |
-                uppercase }}]</span>
-            {{ item.title }}
-        </a>
-        }
-    </div>
-</div>
+@for (item of news(); track item.title) {
+<a [href]="item.link" target="_blank" class="ticker-item">
+    <span class="source">[{{ item.source_id |
+        uppercase }}]</span>
+    {{ item.title }}
+</a>
+}
