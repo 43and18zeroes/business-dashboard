@@ -12,12 +12,13 @@ import { TodayEventsWidget } from "../../components/calendar-component/today-eve
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { AppCalendarEvent } from '../../models/calendar-event';
+import { NewsTickerWidget } from "../../components/news-ticker-widget/news-ticker-widget";
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, WorldMapComponent, TodayEventsWidget, AsyncPipe],
+  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, WorldMapComponent, TodayEventsWidget, AsyncPipe, NewsTickerWidget],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
