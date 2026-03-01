@@ -1,0 +1,27 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+
+export interface NewsArticle {
+  title: string;
+  link: string;
+  source_id: string;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class NewsTickerService {
+  private http = inject(HttpClient);
+  private apiKey = '';
+
+  articles = signal<NewsArticle[]>([]);
+
+  fetchFinanceNews() {
+    const url = `https://newsdata.io/api/1/news?apikey=${this.apiKey}&country=us&category=business&language=en`;
+
+    this.http.get<{ results: NewsArticle[] }>(url).subscribe({
+      next: (res) => this.articles.set(res.results),
+      error: (err) => console.error('News loading error:', err)
+    });
+  }
+}
