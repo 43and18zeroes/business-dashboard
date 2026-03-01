@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 export interface NewsArticle {
   title: string;
@@ -12,7 +13,7 @@ export interface NewsArticle {
 })
 export class NewsTickerService {
   private http = inject(HttpClient);
-  private apiKey = '';
+  private apiKey = environment.newsApiKey;
 
   articles = signal<NewsArticle[]>([]);
 
