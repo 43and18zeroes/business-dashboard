@@ -18,7 +18,7 @@ export class NewsTickerService {
   articles = signal<NewsArticle[]>([]);
 
   fetchFinanceNews() {
-    const url = `https://newsdata.io/api/1/news?apikey=${this.apiKey}&country=us&category=business&language=en`;
+    const url = `https://newsdata.io/api/1/news?apikey=${this.apiKey}&q=finance&country=us`;
 
     this.http.get<{ results: NewsArticle[] }>(url).subscribe({
       next: (res) => this.articles.set(res.results),
