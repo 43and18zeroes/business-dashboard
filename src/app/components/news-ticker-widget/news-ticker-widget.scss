@@ -1,0 +1,44 @@
+.ticker-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 2.5rem; // an deine Zeilenhöhe anpassen
+    display: flex;
+    align-items: center;
+}
+
+.ticker-item {
+    position: absolute;
+    right: 0;
+    white-space: nowrap;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateX(30px);
+    pointer-events: none;
+    transition:
+        opacity 800ms ease,
+        transform 800ms ease;
+}
+
+.ticker-item.entering {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.ticker-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.ticker-item.leaving {
+    opacity: 0;
+    transform: translateX(-30px);
+    pointer-events: none;
+}
+
+.source {
+    font-weight: 700;
+    margin-right: 0.4rem;
+}

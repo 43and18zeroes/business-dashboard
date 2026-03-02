@@ -1,7 +1,13 @@
-@for (item of news(); track item.title) {
-<a [href]="item.link" target="_blank" class="ticker-item">
-    <span class="source">[{{ item.source_id |
-        uppercase }}]</span>
-    {{ item.title }}
-</a>
-}
+<div class="ticker-wrapper">
+    @if (currentItem(); as item) {
+    <a [href]="item.link" target="_blank"
+        rel="noopener noreferrer" class="ticker-item"
+        [class.entering]="phase() === 'entering'"
+        [class.visible]="phase() === 'visible'"
+        [class.leaving]="phase() === 'leaving'">
+        <span class="source">[{{ item.source_id | uppercase
+            }}]</span>
+        {{ item.title }}
+    </a>
+    }
+</div>
