@@ -6,7 +6,7 @@ dashboard-page.html
 <div class="grid-container">
     <app-today-events-widget class="dashboard__chart item-narrow"
         [events]="(events$ | async) ?? []"></app-today-events-widget>
-        <app-news-ticker-widget></app-news-ticker-widget>
+        <app-news-ticker-widget class="dashboard__chart item-narrow"></app-news-ticker-widget>
         <div class="dashboard__chart item-narrow">PLACERHOLDER</div>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
