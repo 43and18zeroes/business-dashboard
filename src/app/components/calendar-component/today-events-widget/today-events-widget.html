@@ -3,11 +3,9 @@ today-events-widget.html
 ========================= -->
 
 <div class="card__root widget">
-  <h3 class="today-heading">
-    <span class="today-heading__weekday">{{ todayWeekday
-      }}</span>
-    <span class="today-heading__date">, {{
-      todayUsDateWithoutYear }}</span>
+  <h3>{{ todayWeekday
+    }}, {{
+    todayUsDateWithoutYear }}
   </h3>
   <ul>
     @for (todayEvent of todayEvents; track todayEvents) {
