@@ -6,6 +6,7 @@ export interface NewsArticle {
   title: string;
   link: string;
   source_id: string;
+  source_name: string;
 }
 
 @Injectable({

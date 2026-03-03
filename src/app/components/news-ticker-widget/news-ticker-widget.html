@@ -4,7 +4,10 @@
         rel="noopener noreferrer" class="ticker-item"
         [class.entering]="phase() === 'entering'"
         [class.visible]="phase() === 'visible'"
-        [class.leaving]="phase() === 'leaving'">{{
+        [class.leaving]="phase() === 'leaving'"><span
+            class="source-name">{{
+            item.source_name }}</span>:<br />
+        {{
         item.title }}
     </a>
     }
