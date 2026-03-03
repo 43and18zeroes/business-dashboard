@@ -1,12 +1,11 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { NewsArticle, NewsTickerService } from './news-ticker-service';
-import { UpperCasePipe } from '@angular/common';
 
 type TickerPhase = 'entering' | 'visible' | 'leaving';
 
 @Component({
   selector: 'app-news-ticker-widget',
-  imports: [UpperCasePipe],
+  imports: [],
   templateUrl: './news-ticker-widget.html',
   styleUrl: './news-ticker-widget.scss',
 })
