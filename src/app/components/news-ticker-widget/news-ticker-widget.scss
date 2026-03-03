@@ -32,10 +32,8 @@
     pointer-events: none;
 }
 
-.source-name {
-    color: var(--color-primary);
-}
-
-.source {
-    margin-right: 0.4rem;
+.ticker-headline {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
