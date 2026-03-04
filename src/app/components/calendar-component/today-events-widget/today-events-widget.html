@@ -9,8 +9,8 @@ today-events-widget.html
   </h3>
   <ul>
     @for (todayEvent of todayEvents; track todayEvents) {
-    <li> <span class="event-time">{{
-        formatTime(todayEvent.start) }}</span>
+    <li>{{
+      formatTime(todayEvent.start) }}
       <span class="event-title">{{ todayEvent.title
         }}</span>
     </li>
