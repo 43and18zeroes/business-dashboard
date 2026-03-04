@@ -4,7 +4,7 @@ dashboard-page.html
 
 <h1>Dashboard</h1>
 <div class="grid-container">
-    <app-today-events-widget class="dashboard__chart item-narrow item-high"
+    <app-today-events-widget class="dashboard__chart item-narrow item-short"
         [events]="(events$ | async) ?? []"></app-today-events-widget>
         <app-news-ticker-widget class="dashboard__chart item-narrow item-short"></app-news-ticker-widget>
         <div class="dashboard__chart item-narrow item-short">PLACERHOLDER</div>
