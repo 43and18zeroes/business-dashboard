@@ -1,3 +1,7 @@
+<!-- ========================
+news-ticker-widget.html
+========================= -->
+
 <div class="card__root ticker-wrapper">
     @if (currentItem(); as item) {
     <a [href]="item.link" target="_blank"
@@ -7,8 +11,8 @@
         [class.leaving]="phase() === 'leaving'">
         <h3>{{
             item.source_name }}:</h3>
-        <span class="headline">{{
-        item.title }}</span>
+        <span class="ticker-headline">{{
+            item.title }}</span>
     </a>
     }
 </div>
