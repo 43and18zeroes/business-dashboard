@@ -12,7 +12,11 @@ dashboard-page.scss
   }
 
   .item-short {
-    height: 111px;
+    height: 95px;
+
+    @media (width >=922px) {
+      height: 111px;
+    }
   }
 
   .item-wide {
