@@ -20,6 +20,11 @@ export class NewsTickerWidget {
   private started = false;
   private timers: number[] = [];
 
+  private readonly enterDuration = 650;
+  private readonly visibleDuration = 4200;
+  private readonly leaveDuration = 650;
+  private readonly gapDuration = 120;
+
   currentItem = (): NewsArticle | null => {
     const items = this.news();
     console.log('items', items);
@@ -54,18 +59,24 @@ export class NewsTickerWidget {
     const items = this.news();
     if (!items.length) return;
 
+    const totalDuration =
+      this.enterDuration +
+      this.visibleDuration +
+      this.leaveDuration +
+      this.gapDuration;
+
     this.phase.set('entering');
 
     this.timers.push(
       window.setTimeout(() => {
         this.phase.set('visible');
-      }, 800)
+      }, this.enterDuration)
     );
 
     this.timers.push(
       window.setTimeout(() => {
         this.phase.set('leaving');
-      }, 5800)
+      }, this.enterDuration + this.visibleDuration)
     );
 
     this.timers.push(
@@ -73,7 +84,7 @@ export class NewsTickerWidget {
         const next = (this.currentIndex() + 1) % items.length;
         this.currentIndex.set(next);
         this.runCycle();
-      }, 6600)
+      }, totalDuration)
     );
   }
 
