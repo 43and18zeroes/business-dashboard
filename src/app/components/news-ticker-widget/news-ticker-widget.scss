@@ -51,11 +51,6 @@ news-ticker-widget.scss
   transition: opacity 300ms ease;
 }
 
-/* Optional: subtile Veredelung im sichtbaren Zustand */
-.ticker-item.visible .ticker-headline {
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.08);
-}
-
 .ticker-headline {
   display: -webkit-box;
   -webkit-box-orient: vertical;
