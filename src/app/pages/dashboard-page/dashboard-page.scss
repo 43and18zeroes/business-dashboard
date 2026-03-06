@@ -5,7 +5,11 @@ dashboard-page.scss
 .grid-container {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 16px;
+  gap: 8px;
+
+  @media (width >=600px) {
+    gap: 16px;
+  }
 
   .item-high {
     height: 300px;
