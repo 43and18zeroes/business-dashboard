@@ -1,0 +1,187 @@
+import { DatePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, computed, inject, signal } from '@angular/core';
+import { catchError, interval, of, Subscription } from 'rxjs';
+
+interface WeatherApiResponse {
+  current?: {
+    time: string;
+    temperature_2m: number;
+    weather_code: number;
+  };
+  timezone?: string;
+}
+
+interface WeatherState {
+  locationLabel: string;
+  temperature: number | null;
+  weatherCode: number | null;
+  weatherText: string;
+  weatherIcon: string;
+  time: Date;
+  loading: boolean;
+  error: string | null;
+}
+
+@Component({
+  selector: 'app-weather-widget',
+  imports: [DatePipe],
+  templateUrl: './weather-widget.html',
+  styleUrl: './weather-widget.scss',
+})
+export class WeatherWidget {
+  private http = inject(HttpClient);
+
+  private readonly defaultLocation = {
+    name: 'München',
+    latitude: 48.1374,
+    longitude: 11.5755,
+  };
+
+  private clockSub?: Subscription;
+  private weatherRefreshSub?: Subscription;
+
+  state = signal<WeatherState>({
+    locationLabel: this.defaultLocation.name,
+    temperature: null,
+    weatherCode: null,
+    weatherText: 'Loading weather...',
+    weatherIcon: '⏳',
+    time: new Date(),
+    loading: true,
+    error: null,
+  });
+
+  formattedTemperature = computed(() => {
+    const temp = this.state().temperature;
+    return temp === null ? '--' : `${Math.round(temp)}°C`;
+  });
+
+  ngOnInit(): void {
+    this.startClock();
+    this.loadWeather();
+    this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {
+      this.loadWeather();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.clockSub?.unsubscribe();
+    this.weatherRefreshSub?.unsubscribe();
+  }
+
+  private startClock(): void {
+    this.clockSub = interval(1000).subscribe(() => {
+      this.state.update((current) => ({
+        ...current,
+        time: new Date(),
+      }));
+    });
+  }
+
+  private loadWeather(): void {
+    this.state.update((current) => ({
+      ...current,
+      loading: true,
+      error: null,
+    }));
+
+    this.getCoordinates()
+      .then(({ latitude, longitude, label }) => {
+        this.fetchWeather(latitude, longitude, label);
+      })
+      .catch(() => {
+        this.fetchWeather(
+          this.defaultLocation.latitude,
+          this.defaultLocation.longitude,
+          this.defaultLocation.name
+        );
+      });
+  }
+
+  private getCoordinates(): Promise<{ latitude: number; longitude: number; label: string }> {
+    return new Promise((resolve, reject) => {
+      if (!('geolocation' in navigator)) {
+        reject(new Error('Geolocation is not supported.'));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            label: 'Current location',
+          });
+        },
+        () => {
+          reject(new Error('Location access denied or unavailable.'));
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 8000,
+          maximumAge: 10 * 60 * 1000,
+        }
+      );
+    });
+  }
+
+  private fetchWeather(latitude: number, longitude: number, label: string): void {
+    const url =
+      `https://api.open-meteo.com/v1/forecast` +
+      `?latitude=${latitude}` +
+      `&longitude=${longitude}` +
+      `&current=temperature_2m,weather_code` +
+      `&timezone=auto`;
+
+    this.http
+      .get<WeatherApiResponse>(url)
+      .pipe(
+        catchError((error) => {
+          console.error('Error loading weather data:', error);
+          this.state.update((current) => ({
+            ...current,
+            loading: false,
+            error: 'Weather data could not be loaded.',
+            weatherText: 'Unavailable',
+            weatherIcon: '⚠️',
+          }));
+          return of(null);
+        })
+      )
+      .subscribe((response) => {
+        if (!response?.current) {
+          return;
+        }
+
+        const weatherInfo = this.mapWeatherCode(response.current.weather_code);
+
+        this.state.set({
+          locationLabel: label,
+          temperature: response.current.temperature_2m,
+          weatherCode: response.current.weather_code,
+          weatherText: weatherInfo.text,
+          weatherIcon: weatherInfo.icon,
+          time: new Date(),
+          loading: false,
+          error: null,
+        });
+      });
+  }
+
+  private mapWeatherCode(code: number): { text: string; icon: string } {
+    if (code === 0) return { text: 'Sunny', icon: '☀️' };
+    if ([1, 2, 3].includes(code)) return { text: 'Cloudy', icon: '⛅' };
+    if ([45, 48].includes(code)) return { text: 'Foggy', icon: '🌫️' };
+    if ([51, 53, 55, 56, 57].includes(code)) return { text: 'Drizzle', icon: '🌦️' };
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { text: 'Rain', icon: '🌧️' };
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return { text: 'Snow', icon: '❄️' };
+    if ([95, 96, 99].includes(code)) return { text: 'Thunderstorm', icon: '⛈️' };
+
+    return { text: 'Unknown', icon: '🌍' };
+  }
+
+  refresh(): void {
+    this.loadWeather();
+  }
+}

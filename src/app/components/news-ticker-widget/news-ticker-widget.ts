@@ -27,7 +27,6 @@ export class NewsTickerWidget {
 
   currentItem = (): NewsArticle | null => {
     const items = this.news();
-    console.log('items', items);
     if (!items.length) return null;
     return items[this.currentIndex()];
   };
