@@ -2,55 +2,22 @@
 weather-widget.html
 ========================= -->
 
-<div class="weather-widget"
+<div class="card__root weather-widget"
     [class.loading]="state().loading">
-    <div class="weather-widget__header">
-        <div>
-            <p class="weather-widget__label">Wetter</p>
-            <h3 class="weather-widget__location">{{
-                state().locationLabel }}</h3>
-        </div>
-
-        <button type="button"
-            class="weather-widget__refresh"
-            (click)="refresh()"
-            aria-label="Wetter aktualisieren"
-            title="Wetter aktualisieren">
-            ↻
-        </button>
+    <div class="date-time">
+        <span>{{ state().time | date:'HH:mm'
+            }}</span>
+        <span>{{ state().time | date:'EEEE,
+            dd.MM.yyyy' }}</span>
+    </div>
+    <div class="weather-widget__icon" aria-hidden="true">
+        {{ state().weatherIcon }}
     </div>
 
-    <div class="weather-widget__content">
-        <div class="weather-widget__main">
-            <div class="weather-widget__icon"
-                aria-hidden="true">
-                {{ state().weatherIcon }}
-            </div>
+    <div class="weather-widget__temp">{{
+        formattedTemperature() }}</div>
 
-            <div class="weather-widget__info">
-                <div class="weather-widget__temp">{{
-                    formattedTemperature() }}</div>
-                <div class="weather-widget__condition">{{
-                    state().weatherText }}</div>
-            </div>
-        </div>
 
-        <div class="weather-widget__meta">
-            <div class="weather-widget__meta-item">
-                <span
-                    class="weather-widget__meta-label">Datum</span>
-                <span>{{ state().time | date:'EEEE,
-                    dd.MM.yyyy' }}</span>
-            </div>
-
-            <div class="weather-widget__meta-item">
-                <span
-                    class="weather-widget__meta-label">Uhrzeit</span>
-                <span>{{ state().time | date:'HH:mm:ss'
-                    }}</span>
-            </div>
-        </div>
-    </div>
 
     @if (state().error) {
     <p class="weather-widget__error">
