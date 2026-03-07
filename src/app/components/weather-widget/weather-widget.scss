@@ -2,15 +2,31 @@
 weather-widget.scss
 ========================= */
 
+
+
 .weather-widget {
     display: flex;
-    flex-direction: row !important;
-    align-items: center;
-}
-
-.date-time {
-    display: flex;
     flex-direction: column;
+
+    &__row1 {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 36px;
+
+        .weather-container {
+            .weather-icon {
+                padding-bottom: 10px;
+            }
+        }
+
+    }
+
+    &__row2 {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 // .weather-widget {
