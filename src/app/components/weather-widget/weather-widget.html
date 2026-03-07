@@ -7,21 +7,17 @@ weather-widget.html
     <div class="date-time">
         <span>{{ state().time | date:'HH:mm'
             }}</span>
-        <span>{{ state().time | date:'EEEE,
-            dd.MM.yyyy' }}</span>
     </div>
-    <div class="weather-widget__icon" aria-hidden="true">
+    <span>
         {{ state().weatherIcon }}
-    </div>
+    </span>
 
-    <div class="weather-widget__temp">{{
-        formattedTemperature() }}</div>
-
-
+    <span>{{
+        formattedTemperature() }}</span>
 
     @if (state().error) {
-    <p class="weather-widget__error">
+    <span>
         {{ state().error }}
-    </p>
+    </span>
     }
 </div>
