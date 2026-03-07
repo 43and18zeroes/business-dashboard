@@ -2,13 +2,10 @@
 weather-widget.html
 ========================= -->
 
-<div class="card__root weather-widget"
-    [class.loading]="state().loading">
-
-    <div class="weather-widget__row1">
+<div class="card__root weather-widget">
+    <div class="weather-row-1">
         <span>{{ state().time | date:'HH:mm'
             }}</span>
-
         <div class="weather-container">
             <span class="weather-icon">
                 {{ state().weatherIcon }}
@@ -17,11 +14,12 @@ weather-widget.html
             <span>{{
                 formattedTemperature() }}</span>
         </div>
-
     </div>
-    
-    <span class="weather-widget__row2">{{
-        state().locationLabel }}</span>
+    <div class="weather-row-2">
+        <span class="weather-widget__row2">{{
+            state().locationLabel }}</span>
+    </div>
+
 
     @if (state().error) {
     <span>
