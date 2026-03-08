@@ -58,16 +58,23 @@ news-ticker-widget.scss
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+
+/* Quelle: 1 Zeile, bricht Wörter sofort hart ab */
+.ticker-source {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   word-break: break-all;
   line-break: anywhere;
 }
 
-.ticker-source {
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-}
-
+/* Headline: 2 Zeilen, Wörter bleiben am Stück, 
+   Abschnitt erfolgt erst am Ende der 2. Zeile */
 .ticker-headline {
   -webkit-line-clamp: 2;
   line-clamp: 2;
+  word-break: break-word;
+  /* Verhindert das Zerreißen der Wörter über Zeilen hinweg */
+  hyphens: auto;
+  /* Optional: Erlaubt automatische Silbentrennung mit Bindestrich */
 }
