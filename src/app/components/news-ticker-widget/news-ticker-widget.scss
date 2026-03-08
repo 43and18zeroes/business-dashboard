@@ -15,7 +15,6 @@ news-ticker-widget.scss
   will-change: opacity, transform, filter;
   transform-origin: center left;
 
-  /* Ausgangszustand */
   transform: translate3d(0, 18px, 0) scale(0.985);
   filter: blur(8px);
 
@@ -60,7 +59,6 @@ news-ticker-widget.scss
   white-space: normal;
 }
 
-/* Quelle: 1 Zeile, bricht Wörter sofort hart ab */
 .ticker-source {
   -webkit-line-clamp: 1;
   line-clamp: 1;
@@ -68,13 +66,9 @@ news-ticker-widget.scss
   line-break: anywhere;
 }
 
-/* Headline: 2 Zeilen, Wörter bleiben am Stück, 
-   Abschnitt erfolgt erst am Ende der 2. Zeile */
 .ticker-headline {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   word-break: break-word;
-  /* Verhindert das Zerreißen der Wörter über Zeilen hinweg */
   hyphens: auto;
-  /* Optional: Erlaubt automatische Silbentrennung mit Bindestrich */
 }
