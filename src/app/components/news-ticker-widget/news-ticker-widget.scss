@@ -58,7 +58,8 @@ news-ticker-widget.scss
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
-  word-break: break-word;
+  word-break: break-all;
+  line-break: anywhere;
 }
 
 .ticker-source {

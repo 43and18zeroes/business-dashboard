@@ -28,7 +28,6 @@ export class NewsTickerWidget {
   currentItem = (): NewsArticle | null => {
     const items = this.news();
     if (!items.length) return null;
-    console.log(items[this.currentIndex()].source_name = "sdlkfjsdlkjflkew jrlkewrjlkewrjlkwerj");
     return items[this.currentIndex()];
   };
 
