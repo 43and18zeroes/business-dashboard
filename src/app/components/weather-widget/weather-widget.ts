@@ -127,45 +127,37 @@ export class WeatherWidget {
   }
 
   private fetchWeather(latitude: number, longitude: number, label: string): void {
-    const url =
-      `https://api.open-meteo.com/v1/forecast` +
-      `?latitude=${latitude}` +
-      `&longitude=${longitude}` +
-      `&current=temperature_2m,weather_code` +
-      `&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
 
     this.http
       .get<WeatherApiResponse>(url)
       .pipe(
         catchError((error) => {
-          console.error('Error loading weather data:', error);
-          this.state.update((current) => ({
-            ...current,
+          console.error('Weather API Error:', error);
+          this.state.update(s => ({
+            ...s,
             loading: false,
             error: 'Weather data could not be loaded.',
-            weatherText: 'Unavailable',
-            weatherIcon: '⚠️',
+            weatherIcon: '⚠️'
           }));
           return of(null);
         })
       )
       .subscribe((response) => {
-        if (!response?.current) {
-          return;
-        }
+        if (!response?.current) return;
 
         const weatherInfo = this.mapWeatherCode(response.current.weather_code);
 
-        this.state.set({
+        this.state.update((current) => ({
+          ...current,
           locationLabel: label,
-          temperature: response.current.temperature_2m,
-          weatherCode: response.current.weather_code,
+          temperature: response.current!.temperature_2m,
+          weatherCode: response.current!.weather_code,
           weatherText: weatherInfo.text,
           weatherIcon: weatherInfo.icon,
-          time: new Date(),
           loading: false,
           error: null,
-        });
+        }));
       });
   }
 
