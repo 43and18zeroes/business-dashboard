@@ -2,10 +2,9 @@ import { Component, DOCUMENT, effect, ElementRef, inject } from '@angular/core';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
-import { ColorService } from '../../../services/color-service';
+import { ColorService, ColorTokens } from '../../../services/color-service';
 import { ThemeService } from '../../../services/theme-service';
 import { ChartsThemeService } from '../charts-theme-service';
-import { ColorTokens } from '../../../services/color.tokens';
 
 @Component({
   selector: 'app-world-map-component',

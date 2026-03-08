@@ -7,8 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CustomSidenavComponent } from './components/custom-sidenav-component/custom-sidenav-component';
 import { ThemeService } from './services/theme-service';
 import { RouterOutlet } from '@angular/router';
-import { ColorService } from './services/color-service';
-import { AppColor } from './services/color.tokens';
+import { AppColor, ColorService } from './services/color-service';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
