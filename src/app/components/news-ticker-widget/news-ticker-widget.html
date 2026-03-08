@@ -9,7 +9,7 @@ news-ticker-widget.html
         [class.entering]="phase() === 'entering'"
         [class.visible]="phase() === 'visible'"
         [class.leaving]="phase() === 'leaving'">
-        <h3>{{
+        <h3 class="ticker-source">{{
             item.source_name }}:</h3>
         <span class="ticker-headline">{{
             item.title }}</span>
