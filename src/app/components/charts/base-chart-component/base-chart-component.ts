@@ -9,7 +9,7 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { Chart, ChartDataset, ChartOptions, ChartType } from 'chart.js';
+import { Chart, ChartDataset, ChartOptions, ChartType, registerables } from 'chart.js';
 import { ChartConfiguration, ChartData } from '../../../models/chart.model';
 import { ThemeService } from '../../../services/theme-service';
 import { ChartsThemeService } from '../charts-theme-service';
@@ -99,6 +99,7 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   constructor() {
+    Chart.register(...registerables);
     effect(() => {
       const isDark = this.themeService.darkMode();
       const data = this.data();
