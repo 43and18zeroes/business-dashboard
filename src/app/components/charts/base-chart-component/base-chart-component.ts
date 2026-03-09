@@ -10,7 +10,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Chart, ChartDataset, ChartOptions, ChartType, registerables } from 'chart.js';
-import { ChartConfiguration, ChartData } from '../../../models/chart.model';
+import { ChartConfiguration } from '../../../models/chart.model';
+import type { ChartData } from '../../../models/chart.model';
 import { ThemeService } from '../../../services/theme-service';
 import { ChartsThemeService } from '../charts-theme-service';
 
