@@ -7,7 +7,6 @@ import { ChartDataset, ChartOptions } from 'chart.js/auto';
   selector: 'app-bar-chart-component',
   imports: [],
   templateUrl: '../base-chart-component/base-chart-component.html',
-  styleUrl: './bar-chart-component.scss',
 })
 export class BarChartComponent extends BaseChartComponent<'bar'> {
   protected readonly chartType = 'bar' as const;

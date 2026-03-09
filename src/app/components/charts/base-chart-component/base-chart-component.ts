@@ -17,7 +17,6 @@ import { ChartsThemeService } from '../charts-theme-service';
 @Component({
   selector: 'app-base-chart-component',
   templateUrl: './base-chart-component.html',
-  styleUrl: './base-chart-component.scss',
 })
 export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   implements AfterViewInit {

@@ -7,7 +7,6 @@ import { ChartDataset, ChartOptions } from 'chart.js';
   selector: 'app-line-chart-component',
   imports: [],
   templateUrl: '../base-chart-component/base-chart-component.html',
-  styleUrl: './line-chart-component.scss',
 })
 export class LineChartComponent extends BaseChartComponent<'line'> {
   protected readonly chartType = 'line' as const;

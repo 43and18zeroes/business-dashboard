@@ -12,7 +12,6 @@ type ProjectProgress = {
   selector: 'app-ring-chart-component',
   imports: [],
   templateUrl: '../base-chart-component/base-chart-component.html',
-  styleUrl: './ring-chart-component.scss',
 })
 export class RingChartComponent extends BaseChartComponent<'doughnut'> {
   protected override readonly chartType = 'doughnut' as const;

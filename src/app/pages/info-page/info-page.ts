@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-info-page',
   imports: [],
   templateUrl: './info-page.html',
-  styleUrl: './info-page.scss'
 })
 export class InfoPage {
 

@@ -13,7 +13,6 @@ import { AppCalendarEvent } from '../../models/calendar-event';
   standalone: true,
   imports: [FullCalendarModule],
   templateUrl: './calendar-component.html',
-  styleUrl: './calendar-component.scss',
 })
 export class CalendarComponent {
   @Input() events: AppCalendarEvent[] = [];
