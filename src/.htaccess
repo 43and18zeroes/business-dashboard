@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # If the requested filename exists as a real file or directory, serve it
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Redirect all other requests to index.html in the current directory
+  # The "index.html" without a leading slash is the key for portability
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Ensure the server sends the correct MIME type for JavaScript modules
+AddType application/javascript .js
+AddType application/javascript .mjs
