@@ -21,6 +21,8 @@ weather-widget.scss
 }
 
 .weather-icon {
+    margin-top: 4px;
+    margin-right: 4px;
     font-size: 26px;
 
     @media (width >=922px) {
