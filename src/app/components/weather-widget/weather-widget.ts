@@ -107,16 +107,27 @@ export class WeatherWidget {
       }
 
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            label: 'Current location',
-          });
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await res.json();
+            const label =
+              data.address?.city ||
+              data.address?.town ||
+              data.address?.village ||
+              data.address?.county ||
+              'Current location';
+
+            resolve({ latitude, longitude, label });
+          } catch {
+            resolve({ latitude, longitude, label: 'Current location' });
+          }
         },
-        () => {
-          reject(new Error('Location access denied or unavailable.'));
-        },
+        () => reject(new Error('Location access denied or unavailable.')),
         {
           enableHighAccuracy: false,
           timeout: 8000,
