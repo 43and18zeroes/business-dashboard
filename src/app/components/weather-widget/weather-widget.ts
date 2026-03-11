@@ -33,7 +33,7 @@ export class WeatherWidget {
   private http = inject(HttpClient);
 
   private readonly defaultLocation = {
-    name: 'München',
+    name: 'Munich',
     latitude: 48.1374,
     longitude: 11.5755,
   };
@@ -112,7 +112,7 @@ export class WeatherWidget {
 
           try {
             const res = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
             );
             const data = await res.json();
             const label =
