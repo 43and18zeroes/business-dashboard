@@ -4,13 +4,13 @@ dashboard-page.html
 
 <h1>Dashboard</h1>
 <div class="grid-container">
+    <app-weather-widget
+        class="dashboard__chart item-narrow item-short"></app-weather-widget>
     <app-today-events-widget
         class="dashboard__chart item-narrow item-short"
         [events]="(events$ | async) ?? []"></app-today-events-widget>
     <app-news-ticker-widget
         class="dashboard__chart item-narrow item-short"></app-news-ticker-widget>
-    <app-weather-widget
-        class="dashboard__chart item-narrow item-short"></app-weather-widget>
     @if (chartService.newCustomersChartData(); as data) {
     <app-line-chart-component
         class="dashboard__chart item-wide item-high"
