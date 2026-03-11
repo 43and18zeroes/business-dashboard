@@ -6,13 +6,13 @@ weather-widget.html
     <div class="weather-row-1">
         <span>{{ state().time | date:'HH:mm'
             }}</span>
-        <div class="weather-container">
+        <div class="weather-container"
+            [class.weather-container--loading]="state().loading">
             <span class="weather-icon"
                 [class.weather-icon--mobile]="isMobile()">
                 {{ state().weatherIcon }}
             </span>
-
-            <span>{{
+            <span class="weather-temp">{{
                 formattedTemperature() }}</span>
         </div>
     </div>

@@ -38,3 +38,81 @@ weather-widget.scss
     display: flex;
     justify-content: center;
 }
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes shimmer-slow {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.weather-container {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+
+    &--loading {
+        pointer-events: none;
+        min-width: 120px;
+        min-height: 34px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: color-mix(in srgb, CanvasText 6%, transparent);
+
+        .weather-icon,
+        .weather-temp {
+            visibility: hidden;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg,
+                    transparent 30%,
+                    color-mix(in srgb, CanvasText 14%, transparent) 50%,
+                    transparent 70%);
+            animation: shimmer 1.6s ease-in-out infinite;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg,
+                    transparent 20%,
+                    color-mix(in srgb, CanvasText 7%, transparent) 50%,
+                    transparent 80%);
+            animation: shimmer 1.6s ease-in-out 0.4s infinite;
+        }
+    }
+}
+
+.weather-temp {
+    animation: fadeIn 0.4s ease;
+}
