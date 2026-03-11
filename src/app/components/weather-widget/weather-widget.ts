@@ -30,6 +30,8 @@ interface WeatherState {
   styleUrl: './weather-widget.scss',
 })
 export class WeatherWidget {
+  isMobile = signal(false);
+  
   private http = inject(HttpClient);
 
   private readonly defaultLocation = {
@@ -58,6 +60,8 @@ export class WeatherWidget {
   });
 
   ngOnInit(): void {
+    const ua = navigator.userAgent;
+    this.isMobile.set(/iPhone|iPad|iPod|Android/i.test(ua));
     this.startClock();
     this.loadWeather();
     this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {

@@ -7,7 +7,8 @@ weather-widget.html
         <span>{{ state().time | date:'HH:mm'
             }}</span>
         <div class="weather-container">
-            <span class="weather-icon">
+            <span class="weather-icon"
+                [class.weather-icon--mobile]="isMobile()">
                 {{ state().weatherIcon }}
             </span>
 
