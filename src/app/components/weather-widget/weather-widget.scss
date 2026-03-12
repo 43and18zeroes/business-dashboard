@@ -4,13 +4,25 @@ weather-widget.scss
 
 // ─── Animations ───────────────────────────────────────────
 @keyframes shimmer {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(2px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 // ─── Skeleton Mixin ───────────────────────────────────────
@@ -27,22 +39,18 @@ weather-widget.scss
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            105deg,
-            transparent 30%,
-            color-mix(in srgb, CanvasText 14%, transparent) 50%,
-            transparent 70%
-        );
+        background: linear-gradient(105deg,
+                transparent 30%,
+                color-mix(in srgb, CanvasText 14%, transparent) 50%,
+                transparent 70%);
         animation: shimmer 1.6s ease-in-out infinite;
     }
 
     &::after {
-        background: linear-gradient(
-            105deg,
-            transparent 20%,
-            color-mix(in srgb, CanvasText 7%, transparent) 50%,
-            transparent 80%
-        );
+        background: linear-gradient(105deg,
+                transparent 20%,
+                color-mix(in srgb, CanvasText 7%, transparent) 50%,
+                transparent 80%);
         animation-delay: 0.4s;
     }
 }
@@ -76,20 +84,23 @@ weather-widget.scss
         @include skeleton-wave(120px, 34px, 12px);
 
         .weather-icon,
-        .weather-temp { visibility: hidden; }
+        .weather-temp {
+            visibility: hidden;
+        }
     }
 }
 
 // ─── Weather Icon ─────────────────────────────────────────
 .weather-icon {
     font-size: 26px;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.20)) drop-shadow(0 0px 1px rgba(0, 0, 0, 0.12));
 
     &--mobile {
         margin-top: 4px;
         margin-right: 4px;
     }
 
-    @media (width >= 922px) {
+    @media (width >=922px) {
         margin-top: -6px;
         font-size: 34px;
     }
