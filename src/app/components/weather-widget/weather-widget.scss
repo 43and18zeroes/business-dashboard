@@ -93,7 +93,7 @@ weather-widget.scss
 // ─── Weather Icon ─────────────────────────────────────────
 .weather-icon {
     font-size: 26px;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.20)) drop-shadow(0 0px 1px rgba(0, 0, 0, 0.12));
+    filter: drop-shadow(0 1px 3px light-dark(rgba(0, 0, 0, 0.20), rgba(255, 255, 255, 0.45))) drop-shadow(0 0px 1px light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.15)));
 
     &--mobile {
         margin-top: 4px;
