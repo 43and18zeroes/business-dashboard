@@ -116,3 +116,40 @@ weather-widget.scss
 .weather-temp {
     animation: fadeIn 0.4s ease;
 }
+
+.location-label {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+
+    &--loading {
+        pointer-events: none;
+        min-width: 72px;
+        min-height: 1em;
+        display: inline-block;
+        background: color-mix(in srgb, CanvasText 6%, transparent);
+        color: transparent;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg,
+                    transparent 30%,
+                    color-mix(in srgb, CanvasText 14%, transparent) 50%,
+                    transparent 70%);
+            animation: shimmer 1.6s ease-in-out infinite;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg,
+                    transparent 20%,
+                    color-mix(in srgb, CanvasText 7%, transparent) 50%,
+                    transparent 80%);
+            animation: shimmer 1.6s ease-in-out 0.4s infinite;
+        }
+    }
+}

@@ -17,8 +17,10 @@ weather-widget.html
         </div>
     </div>
     <div class="weather-row-2">
-        <span class="weather-widget__row2">{{
-            state().locationLabel }}</span>
+        <span class="location-label"
+            [class.location-label--loading]="state().loading">
+            {{ state().locationLabel }}
+        </span>
     </div>
 
     @if (state().error) {
