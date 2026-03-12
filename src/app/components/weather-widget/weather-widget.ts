@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { catchError, interval, of, Subscription } from 'rxjs';
+import { DeviceService } from '../../services/device-service';
 
 interface WeatherApiResponse {
   current?: {
@@ -30,9 +31,9 @@ interface WeatherState {
   styleUrl: './weather-widget.scss',
 })
 export class WeatherWidget {
-  isMobile = signal(false);
-  
   private http = inject(HttpClient);
+  private deviceService = inject(DeviceService);
+  isMobile = this.deviceService.isMobile;
 
   private readonly defaultLocation = {
     name: 'Munich',
@@ -61,7 +62,6 @@ export class WeatherWidget {
 
   ngOnInit(): void {
     const ua = navigator.userAgent;
-    this.isMobile.set(/iPhone|iPad|iPod|Android/i.test(ua));
     this.startClock();
     this.loadWeather();
     this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {
