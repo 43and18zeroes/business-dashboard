@@ -2,6 +2,52 @@
 weather-widget.scss
 ========================= */
 
+// ─── Animations ───────────────────────────────────────────
+@keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(2px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Skeleton Mixin ───────────────────────────────────────
+@mixin skeleton-wave($min-width, $min-height, $border-radius: 8px) {
+    pointer-events: none;
+    min-width: $min-width;
+    min-height: $min-height;
+    border-radius: $border-radius;
+    overflow: hidden;
+    background: color-mix(in srgb, CanvasText 6%, transparent);
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            105deg,
+            transparent 30%,
+            color-mix(in srgb, CanvasText 14%, transparent) 50%,
+            transparent 70%
+        );
+        animation: shimmer 1.6s ease-in-out infinite;
+    }
+
+    &::after {
+        background: linear-gradient(
+            105deg,
+            transparent 20%,
+            color-mix(in srgb, CanvasText 7%, transparent) 50%,
+            transparent 80%
+        );
+        animation-delay: 0.4s;
+    }
+}
+
+// ─── Widget Layout ────────────────────────────────────────
 .weather-widget {
     display: flex;
     justify-content: space-between;
@@ -15,11 +61,26 @@ weather-widget.scss
     margin-top: -2px;
 }
 
+.weather-row-2 {
+    display: flex;
+    justify-content: center;
+}
+
+// ─── Weather Container ────────────────────────────────────
 .weather-container {
     display: flex;
     align-items: flex-start;
+    position: relative;
+
+    &--loading {
+        @include skeleton-wave(120px, 34px, 12px);
+
+        .weather-icon,
+        .weather-temp { visibility: hidden; }
+    }
 }
 
+// ─── Weather Icon ─────────────────────────────────────────
 .weather-icon {
     font-size: 26px;
 
@@ -28,128 +89,26 @@ weather-widget.scss
         margin-right: 4px;
     }
 
-    @media (width >=922px) {
+    @media (width >= 922px) {
         margin-top: -6px;
         font-size: 34px;
     }
 }
 
-.weather-row-2 {
-    display: flex;
-    justify-content: center;
-}
-
-@keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-@keyframes shimmer-slow {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(2px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.weather-container {
-    display: flex;
-    align-items: flex-start;
-    position: relative;
-
-    &--loading {
-        pointer-events: none;
-        min-width: 120px;
-        min-height: 34px;
-        border-radius: 12px;
-        overflow: hidden;
-        background: color-mix(in srgb, CanvasText 6%, transparent);
-
-        .weather-icon,
-        .weather-temp {
-            visibility: hidden;
-        }
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg,
-                    transparent 30%,
-                    color-mix(in srgb, CanvasText 14%, transparent) 50%,
-                    transparent 70%);
-            animation: shimmer 1.6s ease-in-out infinite;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg,
-                    transparent 20%,
-                    color-mix(in srgb, CanvasText 7%, transparent) 50%,
-                    transparent 80%);
-            animation: shimmer 1.6s ease-in-out 0.4s infinite;
-        }
-    }
-}
-
+// ─── Weather Temp ─────────────────────────────────────────
 .weather-temp {
     animation: fadeIn 0.4s ease;
 }
 
+// ─── Location Label ───────────────────────────────────────
 .location-label {
     position: relative;
     border-radius: 8px;
     overflow: hidden;
 
     &--loading {
-        pointer-events: none;
-        min-width: 72px;
-        min-height: 1em;
+        @include skeleton-wave(72px, 1em);
         display: inline-block;
-        background: color-mix(in srgb, CanvasText 6%, transparent);
         color: transparent;
-
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg,
-                    transparent 30%,
-                    color-mix(in srgb, CanvasText 14%, transparent) 50%,
-                    transparent 70%);
-            animation: shimmer 1.6s ease-in-out infinite;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg,
-                    transparent 20%,
-                    color-mix(in srgb, CanvasText 7%, transparent) 50%,
-                    transparent 80%);
-            animation: shimmer 1.6s ease-in-out 0.4s infinite;
-        }
     }
 }
