@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { AppCalendarEvent } from '../../models/calendar-event';
 import { NewsTickerWidget } from "../../components/news-ticker-widget/news-ticker-widget";
 import { WeatherWidget } from "../../components/weather-widget/weather-widget";
+import { DeviceService } from '../../services/device-service';
 
 type Transaction = (typeof TRANSACTIONS)[number];
 
@@ -24,6 +25,8 @@ type Transaction = (typeof TRANSACTIONS)[number];
   styleUrl: './dashboard-page.scss',
 })
 export class DashboardPage {
+  private deviceService = inject(DeviceService);
+  isMobile = this.deviceService.isMobile;
   readonly events$: Observable<AppCalendarEvent[]>;
 
   constructor(private calendarEventsService: CalendarEventsService) {

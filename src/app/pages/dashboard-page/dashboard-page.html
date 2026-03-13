@@ -34,6 +34,7 @@ dashboard-page.html
     @if (chartService.transactions(); as data) {
     <app-dragable-table-component
         class="dashboard__chart item-narrow item-high"
+        [class.table-mobile]="isMobile()"
         [data]="data"
         [displayedColumns]="transactionColumns"
         [cellFormatter]="cellFormatter" idKey="txId"
