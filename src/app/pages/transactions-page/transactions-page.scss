@@ -5,7 +5,10 @@ app-dragable-table-component {
     margin: -8px;
 
     @media (width >=600px) {
-        margin-left: -16px 0 -16px -16px;
+        margin-top: 0px;
+        margin-right: -16px;
+        margin-bottom: -16px;
+        margin-left: -16px;
     }
 }
 
