@@ -31,7 +31,7 @@ export class TransactionsPage {
 
   constructor() {
     this.breakpointObserver
-      .observe(['(min-width: 992px)'])
+      .observe(['(min-width: 700px)'])
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         this.transactionColumns = res.matches ? this.desktopColumns : this.mobileColumns;
