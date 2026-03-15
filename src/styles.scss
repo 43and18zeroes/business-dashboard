@@ -48,9 +48,9 @@ body {
   --elements-tooltip-bg: light-dark(#f8f9fa, #292a2c);
 
   --spacing-mobile: 8px;
-  --spacing-mobile-neg: calc(var(--layout-margin) * -1);
+  --spacing-mobile-neg: calc(var(--spacing-mobile) * -1);
   --spacing-desktop: 16px;
-  --spacing-desktop-neg: calc(var(--layout-margin) * -1);
+  --spacing-desktop-neg: calc(var(--spacing-desktop) * -1);
 }
 
 h1 {

@@ -1,20 +1,20 @@
 // transactions-page.scss
 
 app-dragable-table-component {
-    height: calc(100% - 63px + 16px);
-    margin: -8px;
+    height: calc(100% - 63px + var(--spacing-desktop));
+    margin: var(--spacing-mobile-neg);
 
     @media (width >=600px) {
-        margin: 0px -16px -16px -16px;
+        margin: 0px var(--spacing-desktop-neg) var(--spacing-desktop-neg) var(--spacing-desktop-neg);
     }
 }
 
 ::ng-deep {
     app-dragable-table-component {
         .table-scroll {
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-bottom: 16px;
+            padding-left: var(--spacing-desktop);
+            padding-right: var(--spacing-desktop);
+            padding-bottom: var(--spacing-desktop);
 
             .mat-mdc-table {
                 background-color: rgba($color: #000, $alpha: 0);
