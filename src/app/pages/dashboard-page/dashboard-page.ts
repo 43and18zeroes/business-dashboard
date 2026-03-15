@@ -20,23 +20,30 @@ type Transaction = (typeof TRANSACTIONS)[number];
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [BarChartComponent, LineChartComponent, RingChartComponent, DragableTableComponent, WorldMapComponent, TodayEventsWidget, AsyncPipe, NewsTickerWidget, WeatherWidget],
+  standalone: true,
+  imports: [
+    BarChartComponent,
+    LineChartComponent,
+    RingChartComponent,
+    DragableTableComponent,
+    WorldMapComponent,
+    TodayEventsWidget,
+    AsyncPipe,
+    NewsTickerWidget,
+    WeatherWidget
+  ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
 export class DashboardPage {
-  private deviceService = inject(DeviceService);
-  isMobile = this.deviceService.isMobile;
-  readonly events$: Observable<AppCalendarEvent[]>;
-
-  constructor(private calendarEventsService: CalendarEventsService) {
-    this.events$ = this.calendarEventsService.events$;
-  }
-
   protected chartService = inject(MockDataService);
+  private deviceService = inject(DeviceService);
+  private calendarEventsService = inject(CalendarEventsService);
+
+  isMobile = this.deviceService.isMobile;
+  readonly events$: Observable<AppCalendarEvent[]> = this.calendarEventsService.events$;
 
   transactionColumns = ['txId', 'cost'] as const;
-
   cellFormatter = TRANSACTION_TABLE_UTILS.cellFormatter;
 
   onTransactionsReorder(ev: ReorderEvent<Transaction>) {

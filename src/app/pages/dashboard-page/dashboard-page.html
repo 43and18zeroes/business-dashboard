@@ -5,39 +5,41 @@ dashboard-page.html
 <h1>Dashboard</h1>
 <div class="grid-container">
     <app-weather-widget
-        class="dashboard__chart item-narrow item-short"></app-weather-widget>
+        class="dashboard__chart item-narrow item-short">
+    </app-weather-widget>
+
     <app-today-events-widget
         class="dashboard__chart item-narrow item-short"
-        [events]="(events$ | async) ?? []"></app-today-events-widget>
+        [events]="(events$ | async) ?? []">
+    </app-today-events-widget>
+
     <app-news-ticker-widget
-        class="dashboard__chart item-narrow item-short"></app-news-ticker-widget>
-    @if (chartService.newCustomersChartData(); as data) {
+        class="dashboard__chart item-narrow item-short">
+    </app-news-ticker-widget>
+
     <app-line-chart-component
         class="dashboard__chart item-wide item-high"
-        [data]="data">
+        [data]="chartService.newCustomersChartData()">
     </app-line-chart-component>
-    }
-    @if (chartService.projectsChartData(); as data) {
+
     <app-ring-chart-component
         class="dashboard__chart item-narrow item-high"
-        [data]="data">
+        [data]="chartService.projectsChartData()">
     </app-ring-chart-component>
-    }
-    @if (chartService.salesChartData(); as data) {
+
     <app-bar-chart-component
         class="dashboard__chart item-narrow item-high"
-        [data]="data">
+        [data]="chartService.salesChartData()">
     </app-bar-chart-component>
-    }
+
     <app-world-map-component
         class="dashboard__chart item-narrow item-high" />
-    @if (chartService.transactions(); as data) {
+
     <app-dragable-table-component
         class="dashboard__chart item-narrow item-high"
         [class.table-mobile]="isMobile()"
-        [data]="data"
+        [data]="chartService.transactions()"
         [displayedColumns]="transactionColumns"
         [cellFormatter]="cellFormatter" idKey="txId"
         (reorder)="onTransactionsReorder($event)" />
-    }
 </div>
