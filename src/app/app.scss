@@ -94,11 +94,11 @@ mat-sidenav-container {
     main {
       flex: 1 1 auto;
       overflow: auto;
-      padding: 8px;
+      padding: var(--spacing-mobile);
       box-sizing: border-box;
 
       @media (width >=600px) {
-        padding: 16px;
+        padding: var(--spacing-desktop);
       }
     }
   }

@@ -46,6 +46,11 @@ body {
   --elements-axis-color: light-dark(#74777f, #8e9099);
   --elements-grid-color: light-dark(#74777f4D, #8e90994D);
   --elements-tooltip-bg: light-dark(#f8f9fa, #292a2c);
+
+  --spacing-mobile: 8px;
+  --spacing-mobile-neg: calc(var(--layout-margin) * -1);
+  --spacing-desktop: 16px;
+  --spacing-desktop-neg: calc(var(--layout-margin) * -1);
 }
 
 h1 {
