@@ -20,16 +20,19 @@ dashboard-page.html
     <app-line-chart-component
         class="dashboard__chart item-wide item-high"
         [data]="chartService.newCustomersChartData()">
+        <h3 chart-title>Sales Performance</h3>
     </app-line-chart-component>
 
     <app-ring-chart-component
         class="dashboard__chart item-narrow item-high"
         [data]="chartService.projectsChartData()">
+        <h3 chart-title>Project Status</h3>
     </app-ring-chart-component>
 
     <app-bar-chart-component
         class="dashboard__chart item-narrow item-high"
         [data]="chartService.salesChartData()">
+        <h3 chart-title>Revenue vs. Expenses</h3>
     </app-bar-chart-component>
 
     <app-world-map-component
