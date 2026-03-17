@@ -25,12 +25,12 @@ export class BarChartComponent extends BaseChartComponent<'bar'> {
 
     return [
       {
-        label: 'Sales',
+        label: 'Revenue',
         data: primaryValues,
         backgroundColor: primary,
       },
       {
-        label: 'Costs',
+        label: 'Expenses',
         data: secondaryValues,
         backgroundColor: secondary,
       },
