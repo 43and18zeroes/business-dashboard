@@ -43,3 +43,7 @@ Thumbs.db
 
 # API Keys
 src/environments
+
+# Environment
+.env
+.env.local
