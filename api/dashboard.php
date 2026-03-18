@@ -2,6 +2,7 @@
 
 require_once 'config.php';
 
+// CORS
 $allowedOrigins = [
     'http://localhost:4200',
     'https://business-dashboard.cw-coding.de',
@@ -49,6 +50,14 @@ try {
         FROM sales_stats
     ')->fetchAll();
 
+    $sales = array_map(function (array $row): array {
+        return [
+            'category' => $row['category'],
+            'sales'    => (int) $row['sales'],
+            'costs'    => (int) $row['costs'],
+        ];
+    }, $sales);
+
     $newCustomers = $pdo->query('
         SELECT category, current_year AS currentYear, last_year AS lastYear
         FROM customer_stats
@@ -61,14 +70,6 @@ try {
             'lastYear'    => (int) $row['lastYear'],
         ];
     }, $newCustomers);
-
-    $sales = array_map(function (array $row): array {
-        return [
-            'category' => $row['category'],
-            'sales'    => (int) $row['sales'],
-            'costs'    => (int) $row['costs'],
-        ];
-    }, $sales);
 
     $projects = $pdo->query('
         SELECT overall, completed

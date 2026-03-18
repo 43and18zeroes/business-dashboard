@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://business-dashboard.cw-coding.de",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
