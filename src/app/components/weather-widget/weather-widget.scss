@@ -118,7 +118,7 @@ weather-widget.scss
     overflow: hidden;
 
     &--loading {
-        @include skeleton-wave(72px, 1em);
+        @include skeleton-wave(200px, 1em);
         display: inline-block;
         color: transparent;
     }

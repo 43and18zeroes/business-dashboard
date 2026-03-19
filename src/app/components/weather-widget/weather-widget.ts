@@ -61,7 +61,6 @@ export class WeatherWidget {
   });
 
   ngOnInit(): void {
-    const ua = navigator.userAgent;
     this.startClock();
     this.loadWeather();
     this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {
@@ -98,7 +97,7 @@ export class WeatherWidget {
         this.fetchWeather(
           this.defaultLocation.latitude,
           this.defaultLocation.longitude,
-          this.defaultLocation.name
+          `${this.defaultLocation.name} · allow location?`,
         );
       });
   }
