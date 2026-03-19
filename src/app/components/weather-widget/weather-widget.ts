@@ -66,12 +66,20 @@ export class WeatherWidget {
     this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {
       this.loadWeather();
     });
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   ngOnDestroy(): void {
     this.clockSub?.unsubscribe();
     this.weatherRefreshSub?.unsubscribe();
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
+
+  private onVisibilityChange = (): void => {
+    if (document.visibilityState === 'visible') {
+      this.loadWeather();
+    }
+  };
 
   private startClock(): void {
     this.clockSub = interval(1000).subscribe(() => {
