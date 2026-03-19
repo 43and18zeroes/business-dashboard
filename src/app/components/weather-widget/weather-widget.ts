@@ -43,6 +43,7 @@ export class WeatherWidget {
 
   private clockSub?: Subscription;
   private weatherRefreshSub?: Subscription;
+  private permissionStatus?: PermissionStatus;
 
   state = signal<WeatherState>({
     locationLabel: this.defaultLocation.name,
@@ -67,13 +68,30 @@ export class WeatherWidget {
       this.loadWeather();
     });
     document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.watchLocationPermission();
   }
 
   ngOnDestroy(): void {
     this.clockSub?.unsubscribe();
     this.weatherRefreshSub?.unsubscribe();
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.permissionStatus?.removeEventListener('change', this.onPermissionChange);
   }
+
+  private watchLocationPermission(): void {
+    if (!navigator.permissions) return;
+
+    navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+      this.permissionStatus = status;
+      status.addEventListener('change', this.onPermissionChange);
+    });
+  }
+
+  private onPermissionChange = (): void => {
+    if (this.permissionStatus?.state === 'granted') {
+      this.loadWeather();
+    }
+  };
 
   private onVisibilityChange = (): void => {
     if (document.visibilityState === 'visible') {
