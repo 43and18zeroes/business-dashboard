@@ -1,5 +1,9 @@
 <?php
 
+/* ==========================
+dashboard.php
+========================== */
+
 require_once 'config.php';
 
 // CORS
@@ -95,7 +99,7 @@ try {
             'txId' => $row['txId'],
             'user' => $row['user'],
             'date' => $row['date'],
-            'cost' => (float) $row['cost'],
+            'cost' => round((float) $row['cost'], 2),
         ];
     }, $transactions);
 

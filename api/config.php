@@ -1,5 +1,9 @@
 <?php
 
+/* ==========================
+config.php
+========================== */
+
 function loadEnv(string $path): array {
     $config = [];
     if (!file_exists($path)) return $config;

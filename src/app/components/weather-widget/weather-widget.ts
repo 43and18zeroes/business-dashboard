@@ -110,8 +110,14 @@ export class WeatherWidget {
         return;
       }
 
+      const hardTimeout = setTimeout(
+        () => reject(new Error('Geolocation timed out.')),
+        9000
+      );
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
+          clearTimeout(hardTimeout);
           const { latitude, longitude } = position.coords;
 
           try {
@@ -131,7 +137,10 @@ export class WeatherWidget {
             resolve({ latitude, longitude, label: 'Current location' });
           }
         },
-        () => reject(new Error('Location access denied or unavailable.')),
+        (err) => {
+          clearTimeout(hardTimeout);
+          reject(err);
+        },
         {
           enableHighAccuracy: false,
           timeout: 8000,
@@ -153,13 +162,16 @@ export class WeatherWidget {
             ...s,
             loading: false,
             error: 'Weather data could not be loaded.',
-            weatherIcon: '⚠️'
+            weatherIcon: '⚠️',
           }));
           return of(null);
         })
       )
       .subscribe((response) => {
-        if (!response?.current) return;
+        if (!response?.current) {
+          this.state.update(s => ({ ...s, loading: false }));
+          return;
+        }
 
         const weatherInfo = this.mapWeatherCode(response.current.weather_code);
 
