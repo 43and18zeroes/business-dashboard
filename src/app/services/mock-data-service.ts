@@ -25,7 +25,7 @@ interface ProjectStat {
   completed: number;
 }
 
-interface Transaction {
+export interface Transaction {
   txId: string;
   user: string;
   date: string;

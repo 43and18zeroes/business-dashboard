@@ -1,12 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { DragableTableComponent, ReorderEvent } from "../../components/dragable-table-component/dragable-table-component";
-import { MockDataService } from '../../services/mock-data-service';
-import { TRANSACTIONS } from '../../services/mock-data.constant';
+import { MockDataService, Transaction } from '../../services/mock-data-service';
 import { TRANSACTION_TABLE_UTILS } from '../../shared/table-utils';
 import { Subject, takeUntil } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
-type Transaction = (typeof TRANSACTIONS)[number];
 type TransactionColumn = 'txId' | 'user' | 'date' | 'cost';
 
 @Component({
