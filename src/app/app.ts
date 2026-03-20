@@ -51,6 +51,11 @@ export class App {
     this.collapsed.set(true);
   }
 
+  @HostListener('window:keydown.escape')
+  onEscapeKey() {
+    this.collapsed.set(true);
+  }
+
   sidenavWidth = computed(() => (this.collapsed() ? '81px' : '250px'));
   contentMarginLeft = computed(() => {
     const width = this.viewportWidth();
