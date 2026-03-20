@@ -35,7 +35,7 @@ export class App {
   collapsed = signal(true);
   viewportWidth = signal(window.innerWidth);
 
-  constructor() {}
+  constructor() { }
 
   setColor(color: AppColor) {
     this.colorService.setColor(color);
@@ -54,10 +54,7 @@ export class App {
   sidenavWidth = computed(() => (this.collapsed() ? '81px' : '250px'));
   contentMarginLeft = computed(() => {
     const width = this.viewportWidth();
-    if (width < 600) {
-      return '81px';
-    }
-    return this.collapsed() ? '81px' : '250px';
+    return '81px';
   });
 
   collapseSidenav() {
