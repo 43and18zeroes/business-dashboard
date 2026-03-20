@@ -123,7 +123,7 @@ export class WeatherWidget {
         this.fetchWeather(
           this.defaultLocation.latitude,
           this.defaultLocation.longitude,
-          `${this.defaultLocation.name} · allow location?`,
+          `${this.defaultLocation.name} · default location`,
         );
       });
   }
