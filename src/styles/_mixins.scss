@@ -12,4 +12,10 @@
   .page-chart {
     display: block;
   }
+
+  ::ng-deep {
+    canvas {
+      height: 500px;
+    }
+  }
 }

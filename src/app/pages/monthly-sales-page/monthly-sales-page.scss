@@ -5,9 +5,3 @@
 :host {
   @include m.standard-chart-pages-layout;
 }
-
-::ng-deep {
-  canvas {
-    height: 500px;
-  }
-}
