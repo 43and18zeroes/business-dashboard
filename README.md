@@ -6,8 +6,10 @@
 [![SCSS](https://img.shields.io/badge/SCSS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)](https://sass-lang.com/)
 [![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-![App Screenshot](screenshots/screenshot-desktop.webp)
-![App Screenshot](screenshots/screenshot-mobile.webp)
+<div>
+    <img src="./screenshots/screenshot-desktop.webp" alt="App Screenshot" height="380">
+    <img src="./screenshots/screenshot-mobile.webp" alt="App Screenshot" height="380">
+</div>
 
 # Business Dashboard
 
