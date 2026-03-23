@@ -1,59 +1,100 @@
+[![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)](https://angular.dev/)
+[![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![SCSS](https://img.shields.io/badge/SCSS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)](https://sass-lang.com/)
+
+![App Screenshot](screenshots/screenshot-desktop.webp)
+![App Screenshot](screenshots/screenshot-mobile.webp)
+
 # Business Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+> **Developer Note:** This application was designed to demonstrate my proficiency in building modern, data-driven web interfaces using Angular. More than just a visual demo, this project reflects my approach to software development: creating clean, intuitive user experiences backed by robust, component-based architecture.
 
-## Development server
+This project is intentionally frontend-focused and uses static/mock data to highlight UI architecture, performance, and component composition. It features a responsive layout, clear data visualization, and a refined UI tailored for business use cases. As a developer, I focus on writing maintainable code and leveraging the full potential of the Angular ecosystem to solve complex problems.
 
-To start a local development server, run:
+Explore the app to see my work in action!
 
-```bash
-ng serve
+## 🛠 Technical Implementation
+
+This project leverages the cutting-edge features of **Angular 20** to deliver a high-performance, maintainable frontend architecture.
+
+### Core Architecture & State
+
+* **Zoneless Change Detection:** Implemented `provideZonelessChangeDetection()` for superior performance and smaller bundle sizes, moving away from traditional Zone.js overhead.
+* **Standalone Architecture:** Fully modular design using Angular's latest Standalone Components API.
+* **Advanced Routing:** Optimized with `PreloadAllModules` strategy to ensure seamless navigation while keeping initial load times minimal.
+
+### UI & UX Components
+
+* **Responsive Dashboard Layout:** Structured grid-based design for displaying KPIs, metrics, and business data at a glance.
+* **Data Visualization:** Interactive charts and metric cards for clear representation of business performance.
+* **Custom SCSS Theming:** A consistent, maintainable design system with reusable variables and mixins.
+
+### Engineering Practices
+
+* **Reactive Programming:** Extensive use of **RxJS** for handling asynchronous data streams and state updates.
+* **Type Safety:** Built with **TypeScript**, ensuring strict typing and robust code quality across all layers.
+* **Code Quality:** Clean code principles with a focus on reusability, separation of concerns, and readability.
+
+### Project Structure
+
+```
+src/
+├── app/
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Main view components (routed)
+│   ├── services/           # Data fetching & business logic
+│   └── app.routes.ts       # Central routing configuration
+├── public/                 # Static assets
+├── scripts/                # Utility & build scripts
+└── styles/                 # Global styling & SCSS variables
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## ⚙️ Environment Setup
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+This project connects to a PHP backend via a MySQL database. The backend requires a `.env` file in the **PHP backend root directory** (not tracked by Git).
 
-```bash
-ng generate component component-name
+Create a `.env` file and add the following variables:
+
+```dotenv
+DB_HOST=your_database_host
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASS=your_database_password
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+> **Note:** Never commit the `.env` file to version control. Make sure it is listed in your `.gitignore`.
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 🚀 Getting Started
 
-To build the project run:
+### Prerequisites
 
-```bash
-ng build
-```
+* **Node.js:** >= 20.x
+* **Angular CLI:** 20.1.x
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Installation
 
-## Running unit tests
+1. Clone the repository:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+   ```
+   git clone https://github.com/43and18zeroes/business-dashboard
+   cd business-dashboard
+   ```
+2. Install dependencies:
 
-```bash
-ng test
-```
+   ```
+   npm install
+   ```
+3. Run the application:
 
-## Running end-to-end tests
+   ```
+   npm start
+   ```
+4. Deploy:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+   ```
+   npm run build
+   ```
