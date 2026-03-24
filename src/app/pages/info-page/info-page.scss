@@ -1,0 +1,16 @@
+/* =========================
+info-page.scss
+========================= */
+
+.cta-wrapper {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.cta-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+}
