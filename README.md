@@ -26,6 +26,7 @@ This project leverages the cutting-edge features of **Angular 20** to deliver a 
 
 ### Core Architecture & State
 
+* **Object-Oriented Design:** The application follows object-oriented principles by organizing logic into reusable services, structured models, and clearly separated responsibilities.
 * **Zoneless Change Detection:** Implemented `provideZonelessChangeDetection()` for superior performance and smaller bundle sizes, moving away from traditional Zone.js overhead.
 * **Standalone Architecture:** Fully modular design using Angular's latest Standalone Components API.
 * **Advanced Routing:** Optimized with `PreloadAllModules` strategy to ensure seamless navigation while keeping initial load times minimal.
