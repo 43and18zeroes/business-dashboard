@@ -1,6 +1,6 @@
-import { Component, HostListener, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, SimpleChanges, ViewChild, OnInit } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, CalendarApi } from '@fullcalendar/core';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,79 +8,82 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { AppCalendarEvent } from '../../models/calendar-event';
 
+const MOBILE_BREAKPOINT_PX = 600;
+
 @Component({
   selector: 'app-calendar-component',
   standalone: true,
   imports: [FullCalendarModule],
   templateUrl: './calendar-component.html',
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit {
   @Input() events: AppCalendarEvent[] = [];
+  @ViewChild('fullcalendar') fullcalendar?: FullCalendarComponent;
 
-  @ViewChild('fullcalendar') fullcalendar!: FullCalendarComponent;
+  public calendarOptions: CalendarOptions = this.getDefaultConfig();
+  private isMobileView = false;
 
-  private isMobileView = window.innerWidth <= 600;
-
-  calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
-    initialView: this.getInitialView(),
-    headerToolbar: this.getHeaderToolbar(this.isMobileView),
-    editable: true,
-    selectable: true,
-    events: [],
-    handleWindowResize: true,
-    height: '100%',
-  };
-
-  ngAfterViewInit() {
-    this.updateLayout(window.innerWidth);
-  }
-
-  private getInitialView() {
-    return window.innerWidth <= 600 ? 'listWeek' : 'dayGridMonth';
-  }
-
-  private getHeaderToolbar(isMobile: boolean) {
-    return isMobile
-      ? { left: 'prev,next', center: 'title', right: 'listWeek,timeGridDay' }
-      : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' };
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.updateLayout(event.target.innerWidth);
-  }
-
-  private updateLayout(width: number) {
-    const shouldBeMobile = width <= 600;
-
-    if (shouldBeMobile !== this.isMobileView) {
-      this.isMobileView = shouldBeMobile;
-
-      const calendarApi = this.fullcalendar.getApi();
-      const newView = shouldBeMobile ? 'listWeek' : 'dayGridMonth';
-
-      calendarApi.changeView(newView);
-
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        headerToolbar: this.getHeaderToolbar(shouldBeMobile)
-      };
-    }
+  ngOnInit(): void {
+    this.checkScreenSize(window.innerWidth);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events'] && this.events) {
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: this.events.map(e => ({
-          id: e.id,
-          title: e.title,
-          start: e.start,
-          end: e.end,
-          allDay: e.allDay,
-        })),
-      };
+      this.updateCalendarEvents();
     }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkScreenSize(window.innerWidth);
+  }
+
+  private checkScreenSize(width: number): void {
+    const isMobile = width <= MOBILE_BREAKPOINT_PX;
+    
+    if (isMobile === this.isMobileView) return;
+
+    this.isMobileView = isMobile;
+    this.applyResponsiveLayout();
+  }
+
+  private applyResponsiveLayout(): void {
+    const calendarApi = this.getApi();
+    if (!calendarApi) return;
+    const newView = this.isMobileView ? 'listWeek' : 'dayGridMonth';
+    calendarApi.changeView(newView);
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      headerToolbar: this.getToolbarConfig()
+    };
+  }
+
+  private updateCalendarEvents(): void {
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      events: [...this.events]
+    };
+  }
+
+  private getDefaultConfig(): CalendarOptions {
+    return {
+      plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
+      initialView: window.innerWidth <= MOBILE_BREAKPOINT_PX ? 'listWeek' : 'dayGridMonth',
+      headerToolbar: this.getToolbarConfig(),
+      editable: true,
+      selectable: true,
+      handleWindowResize: true,
+      height: '100%',
+    };
+  }
+
+  private getToolbarConfig() {
+    return this.isMobileView
+      ? { left: 'prev,next', center: 'title', right: 'listWeek,timeGridDay' }
+      : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' };
+  }
+
+  private getApi(): CalendarApi | null {
+    return this.fullcalendar ? this.fullcalendar.getApi() : null;
   }
 }
