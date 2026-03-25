@@ -9,7 +9,37 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { Chart, ChartDataset, ChartOptions, ChartType, registerables } from 'chart.js';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+  LineController,
+  LineElement,
+  PointElement,
+  DoughnutController,
+  ArcElement,
+  Tooltip,
+  Legend,
+  type ChartType,
+  type ChartDataset,
+  type ChartOptions,
+} from 'chart.js';
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+  LineController,
+  LineElement,
+  PointElement,
+  DoughnutController,
+  ArcElement,
+  Tooltip,
+  Legend
+);
 import { ChartConfiguration } from '../../../models/chart.model';
 import type { ChartData } from '../../../models/chart.model';
 import { ThemeService } from '../../../services/theme-service';
@@ -100,7 +130,6 @@ export abstract class BaseChartComponent<TType extends ChartType = ChartType>
   }
 
   constructor() {
-    Chart.register(...registerables);
     effect(() => {
       const isDark = this.themeService.darkMode();
       const data = this.data();
