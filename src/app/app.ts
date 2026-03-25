@@ -2,7 +2,6 @@ import { Component, computed, HostListener, inject, signal } from '@angular/core
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CustomSidenavComponent } from './components/custom-sidenav-component/custom-sidenav-component';
 import { ThemeService } from './services/theme-service';
@@ -19,7 +18,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
     MatIconModule,
     MatSidenavModule,
     MatButtonModule,
-    MatSlideToggleModule,
     CdkScrollable,
     CustomSidenavComponent,
   ],

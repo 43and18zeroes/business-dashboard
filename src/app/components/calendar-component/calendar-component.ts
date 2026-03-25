@@ -5,6 +5,7 @@ import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 import { AppCalendarEvent } from '../../models/calendar-event';
 
 @Component({
@@ -21,7 +22,7 @@ export class CalendarComponent {
   private isMobileView = window.innerWidth <= 600;
 
   calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, listPlugin ],
+    plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
     initialView: this.getInitialView(),
     headerToolbar: this.getHeaderToolbar(this.isMobileView),
     editable: true,
