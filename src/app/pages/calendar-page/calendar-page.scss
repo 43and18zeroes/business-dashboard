@@ -117,6 +117,10 @@ calendar-page.scss
                 }
             }
 
+            .fc-toolbar-title {
+                margin: 0 12px !important;
+            }
+
             @media (width <=600px) {
                 .fc-toolbar {
                     flex-direction: column;
