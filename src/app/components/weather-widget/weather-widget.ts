@@ -24,6 +24,28 @@ interface WeatherState {
   error: string | null;
 }
 
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+  label: string;
+}
+
+interface LocationDefinition {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface WeatherPresentation {
+  text: string;
+  icon: string;
+}
+
+interface WeatherCodeGroup {
+  codes: number[];
+  presentation: WeatherPresentation;
+}
+
 @Component({
   selector: 'app-weather-widget',
   imports: [DatePipe],
@@ -31,201 +53,257 @@ interface WeatherState {
   styleUrl: './weather-widget.scss',
 })
 export class WeatherWidget {
-  private http = inject(HttpClient);
-  private deviceService = inject(DeviceService);
-  isMobile = this.deviceService.isMobile;
+  private readonly httpClient = inject(HttpClient);
+  private readonly deviceService = inject(DeviceService);
 
-  private readonly defaultLocation = {
+  readonly isMobile = this.deviceService.isMobile;
+
+  private readonly refreshIntervalInMilliseconds = 15 * 60 * 1000;
+  private readonly clockIntervalInMilliseconds = 1000;
+  private readonly geolocationTimeoutInMilliseconds = 8000;
+  private readonly geolocationHardTimeoutInMilliseconds = 9000;
+  private readonly geolocationMaximumAgeInMilliseconds = 10 * 60 * 1000;
+
+  private readonly defaultLocation: LocationDefinition = {
     name: 'Munich',
     latitude: 48.1374,
     longitude: 11.5755,
   };
 
-  private clockSub?: Subscription;
-  private weatherRefreshSub?: Subscription;
+  private readonly defaultWeatherPresentation: WeatherPresentation = {
+    text: 'Loading weather...',
+    icon: '⏳',
+  };
+
+  private readonly fallbackWeatherPresentation: WeatherPresentation = {
+    text: 'Unknown',
+    icon: '🌍',
+  };
+
+  private readonly weatherCodeGroups: WeatherCodeGroup[] = [
+    { codes: [0], presentation: { text: 'Sunny', icon: '☀️' } },
+    { codes: [1, 2, 3], presentation: { text: 'Cloudy', icon: '⛅' } },
+    { codes: [45, 48], presentation: { text: 'Foggy', icon: '🌫️' } },
+    { codes: [51, 53, 55, 56, 57], presentation: { text: 'Drizzle', icon: '🌦️' } },
+    { codes: [61, 63, 65, 66, 67, 80, 81, 82], presentation: { text: 'Rain', icon: '🌧️' } },
+    { codes: [71, 73, 75, 77, 85, 86], presentation: { text: 'Snow', icon: '❄️' } },
+    { codes: [95, 96, 99], presentation: { text: 'Thunderstorm', icon: '⛈️' } },
+  ];
+
+  private clockSubscription?: Subscription;
+  private weatherRefreshSubscription?: Subscription;
   private permissionStatus?: PermissionStatus;
 
-  state = signal<WeatherState>({
+  readonly state = signal<WeatherState>({
     locationLabel: this.defaultLocation.name,
     temperature: null,
     weatherCode: null,
-    weatherText: 'Loading weather...',
-    weatherIcon: '⏳',
+    weatherText: this.defaultWeatherPresentation.text,
+    weatherIcon: this.defaultWeatherPresentation.icon,
     time: new Date(),
     loading: true,
     error: null,
   });
 
-  formattedTemperature = computed(() => {
-    const temp = this.state().temperature;
-    return temp === null ? '--' : `${Math.round(temp)}°C`;
+  readonly formattedTemperature = computed(() => {
+    const currentTemperature = this.state().temperature;
+    return currentTemperature === null ? '--' : `${Math.round(currentTemperature)}°C`;
   });
 
   ngOnInit(): void {
     this.startClock();
     this.loadWeather();
-    this.weatherRefreshSub = interval(15 * 60 * 1000).subscribe(() => {
-      this.loadWeather();
-    });
-    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.startWeatherRefresh();
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
     this.watchLocationPermission();
   }
 
   ngOnDestroy(): void {
-    this.clockSub?.unsubscribe();
-    this.weatherRefreshSub?.unsubscribe();
-    document.removeEventListener('visibilitychange', this.onVisibilityChange);
-    this.permissionStatus?.removeEventListener('change', this.onPermissionChange);
+    this.clockSubscription?.unsubscribe();
+    this.weatherRefreshSubscription?.unsubscribe();
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.permissionStatus?.removeEventListener('change', this.handlePermissionChange);
+  }
+
+  refresh(): void {
+    this.loadWeather();
+  }
+
+  private startClock(): void {
+    this.clockSubscription = interval(this.clockIntervalInMilliseconds).subscribe(() => {
+      this.updateState({ time: new Date() });
+    });
+  }
+
+  private startWeatherRefresh(): void {
+    this.weatherRefreshSubscription = interval(this.refreshIntervalInMilliseconds).subscribe(() => {
+      this.loadWeather();
+    });
   }
 
   private watchLocationPermission(): void {
-    if (!navigator.permissions) return;
+    if (!navigator.permissions) {
+      return;
+    }
 
-    navigator.permissions.query({ name: 'geolocation' }).then((status) => {
-      this.permissionStatus = status;
-      status.addEventListener('change', this.onPermissionChange);
+    navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
+      this.permissionStatus = permissionStatus;
+      permissionStatus.addEventListener('change', this.handlePermissionChange);
     });
   }
 
-  private onPermissionChange = (): void => {
-    if (this.permissionStatus?.state === 'granted') {
-      this.loadWeather();
+  private readonly handlePermissionChange = (): void => {
+    if (this.permissionStatus?.state !== 'granted') {
+      return;
     }
+
+    this.loadWeather();
   };
 
-  private onVisibilityChange = (): void => {
-    if (document.visibilityState === 'visible') {
-      this.loadWeather();
+  private readonly handleVisibilityChange = (): void => {
+    if (document.visibilityState !== 'visible') {
+      return;
     }
-  };
 
-  private startClock(): void {
-    this.clockSub = interval(1000).subscribe(() => {
-      this.state.update((current) => ({
-        ...current,
-        time: new Date(),
-      }));
-    });
-  }
+    this.loadWeather();
+  };
 
   private loadWeather(): void {
-    this.state.update((current) => ({
-      ...current,
-      loading: true,
-      error: null,
-    }));
+    this.setLoadingState();
 
-    this.getCoordinates()
-      .then(({ latitude, longitude, label }) => {
-        this.fetchWeather(latitude, longitude, label);
-      })
-      .catch(() => {
-        this.fetchWeather(
-          this.defaultLocation.latitude,
-          this.defaultLocation.longitude,
-          `${this.defaultLocation.name} · default location`,
-        );
-      });
+    this.resolveCoordinates()
+      .then((coordinates) => this.fetchWeather(coordinates))
+      .catch(() => this.fetchWeather(this.createDefaultCoordinates()));
   }
 
-  private getCoordinates(): Promise<{ latitude: number; longitude: number; label: string }> {
+  private setLoadingState(): void {
+    this.updateState({
+      loading: true,
+      error: null,
+    });
+  }
+
+  private createDefaultCoordinates(): Coordinates {
+    return {
+      latitude: this.defaultLocation.latitude,
+      longitude: this.defaultLocation.longitude,
+      label: `${this.defaultLocation.name} · default location`,
+    };
+  }
+
+  private resolveCoordinates(): Promise<Coordinates> {
     return new Promise((resolve, reject) => {
       if (!('geolocation' in navigator)) {
         reject(new Error('Geolocation is not supported.'));
         return;
       }
 
-      const hardTimeout = setTimeout(
-        () => reject(new Error('Geolocation timed out.')),
-        9000
-      );
+      const timeoutId = setTimeout(() => {
+        reject(new Error('Geolocation timed out.'));
+      }, this.geolocationHardTimeoutInMilliseconds);
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          clearTimeout(hardTimeout);
-          const { latitude, longitude } = position.coords;
+          clearTimeout(timeoutId);
 
-          try {
-            const res = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
-            );
-            const data = await res.json();
-            const label =
-              data.address?.city ||
-              data.address?.town ||
-              data.address?.village ||
-              data.address?.county ||
-              'Current location';
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const locationLabel = await this.resolveLocationLabel(latitude, longitude);
 
-            resolve({ latitude, longitude, label });
-          } catch {
-            resolve({ latitude, longitude, label: 'Current location' });
-          }
+          resolve({
+            latitude,
+            longitude,
+            label: locationLabel,
+          });
         },
-        (err) => {
-          clearTimeout(hardTimeout);
-          reject(err);
+        (error) => {
+          clearTimeout(timeoutId);
+          reject(error);
         },
         {
           enableHighAccuracy: false,
-          timeout: 8000,
-          maximumAge: 10 * 60 * 1000,
+          timeout: this.geolocationTimeoutInMilliseconds,
+          maximumAge: this.geolocationMaximumAgeInMilliseconds,
         }
       );
     });
   }
 
-  private fetchWeather(latitude: number, longitude: number, label: string): void {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
+  private async resolveLocationLabel(latitude: number, longitude: number): Promise<string> {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
+      );
+      const data = await response.json();
 
-    this.http
+      return (
+        data.address?.city ??
+        data.address?.town ??
+        data.address?.village ??
+        data.address?.county ??
+        'Current location'
+      );
+    } catch {
+      return 'Current location';
+    }
+  }
+
+  private fetchWeather(coordinates: Coordinates): void {
+    const url = this.buildWeatherUrl(coordinates.latitude, coordinates.longitude);
+
+    this.httpClient
       .get<WeatherApiResponse>(url)
       .pipe(
-        catchError((error) => {
-          console.error('Weather API Error:', error);
-          this.state.update(s => ({
-            ...s,
-            loading: false,
-            error: 'Weather data could not be loaded.',
-            weatherIcon: '⚠️',
-          }));
+        catchError(() => {
+          this.setWeatherErrorState();
           return of(null);
         })
       )
       .subscribe((response) => {
         if (!response?.current) {
-          this.state.update(s => ({ ...s, loading: false }));
+          this.updateState({ loading: false });
           return;
         }
 
-        const weatherInfo = this.mapWeatherCode(response.current.weather_code);
-
-        this.state.update((current) => ({
-          ...current,
-          locationLabel: label,
-          temperature: response.current!.temperature_2m,
-          weatherCode: response.current!.weather_code,
-          weatherText: weatherInfo.text,
-          weatherIcon: weatherInfo.icon,
-          loading: false,
-          error: null,
-        }));
+        this.applyWeatherData(response.current.temperature_2m, response.current.weather_code, coordinates.label);
       });
   }
 
-  private mapWeatherCode(code: number): { text: string; icon: string } {
-    if (code === 0) return { text: 'Sunny', icon: '☀️' };
-    if ([1, 2, 3].includes(code)) return { text: 'Cloudy', icon: '⛅' };
-    if ([45, 48].includes(code)) return { text: 'Foggy', icon: '🌫️' };
-    if ([51, 53, 55, 56, 57].includes(code)) return { text: 'Drizzle', icon: '🌦️' };
-    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { text: 'Rain', icon: '🌧️' };
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return { text: 'Snow', icon: '❄️' };
-    if ([95, 96, 99].includes(code)) return { text: 'Thunderstorm', icon: '⛈️' };
-
-    return { text: 'Unknown', icon: '🌍' };
+  private buildWeatherUrl(latitude: number, longitude: number): string {
+    return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
   }
 
-  refresh(): void {
-    this.loadWeather();
+  private setWeatherErrorState(): void {
+    this.updateState({
+      loading: false,
+      error: 'Weather data could not be loaded.',
+      weatherIcon: '⚠️',
+    });
+  }
+
+  private applyWeatherData(temperature: number, weatherCode: number, locationLabel: string): void {
+    const weatherPresentation = this.mapWeatherCode(weatherCode);
+
+    this.updateState({
+      locationLabel,
+      temperature,
+      weatherCode,
+      weatherText: weatherPresentation.text,
+      weatherIcon: weatherPresentation.icon,
+      loading: false,
+      error: null,
+    });
+  }
+
+  private mapWeatherCode(weatherCode: number): WeatherPresentation {
+    const matchingGroup = this.weatherCodeGroups.find((group) => group.codes.includes(weatherCode));
+    return matchingGroup?.presentation ?? this.fallbackWeatherPresentation;
+  }
+
+  private updateState(patch: Partial<WeatherState>): void {
+    this.state.update((currentState) => ({
+      ...currentState,
+      ...patch,
+    }));
   }
 }
