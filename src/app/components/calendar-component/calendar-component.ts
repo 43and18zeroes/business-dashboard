@@ -79,7 +79,7 @@ export class CalendarComponent implements OnInit {
 
   private getToolbarConfig() {
     return this.isMobileView
-      ? { left: 'prev,next', center: 'title', right: 'listWeek,timeGridDay' }
+      ? { left: 'prev,next', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' }
       : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' };
   }
 
