@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject } from '@angular/core';
+import { Component, effect, ElementRef, inject, input } from '@angular/core';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
@@ -25,6 +25,8 @@ interface TooltipStyle {
   styleUrl: './world-map-component.scss',
 })
 export class WorldMapComponent {
+  homeZoomLevel = input(2);
+
   private readonly colorService = inject(ColorService);
   private readonly themeService = inject(ThemeService);
   private readonly chartsThemeService = inject(ChartsThemeService);
@@ -93,7 +95,7 @@ export class WorldMapComponent {
         maxPanOut: 0.25,
         wheelY: "zoom",
         pinchZoom: true,
-        homeZoomLevel: 2,
+        homeZoomLevel: this.homeZoomLevel(),
         minZoomLevel: 2,
         maxZoomLevel: 32,
         zoomStep: 2,
