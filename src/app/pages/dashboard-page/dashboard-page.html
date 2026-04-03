@@ -8,8 +8,8 @@ dashboard-page.html
         class="dashboard__card item-narrow item-short">
     </app-weather-widget>
 
-    <app-today-events-widget
-        class="dashboard__card item-narrow item-short"
+    <app-today-events-widget routerLink="/calendar"
+        class="dashboard__card item-narrow item-short linked-component"
         [events]="(events$ | async) ?? []">
     </app-today-events-widget>
 
@@ -17,8 +17,8 @@ dashboard-page.html
         class="dashboard__card item-narrow item-short">
     </app-news-ticker-widget>
 
-    <app-line-chart-component
-        class="dashboard__card item-wide item-high"
+    <app-line-chart-component routerLink="/new-customers"
+        class="dashboard__card item-wide item-high linked-component"
         [data]="chartService.newCustomersChartData()">
     </app-line-chart-component>
 
@@ -27,13 +27,13 @@ dashboard-page.html
         [data]="chartService.projectsChartData()">
     </app-ring-chart-component>
 
-    <app-bar-chart-component
-        class="dashboard__card item-narrow item-high"
+    <app-bar-chart-component routerLink="/monthly-sales"
+        class="dashboard__card item-narrow item-high linked-component"
         [data]="chartService.salesChartData()">
     </app-bar-chart-component>
 
-    <app-world-map-component
-        class="dashboard__card item-narrow item-high" />
+    <app-world-map-component routerLink="/world-map"
+        class="dashboard__card item-narrow item-high linked-component" />
 
     <app-dragable-table-component
         class="dashboard__card item-narrow item-high"

@@ -14,6 +14,7 @@ import { AppCalendarEvent } from '../../models/calendar-event';
 import { NewsTickerWidget } from "../../components/news-ticker-widget/news-ticker-widget";
 import { WeatherWidget } from "../../components/weather-widget/weather-widget";
 import { DeviceService } from '../../services/device-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -27,7 +28,8 @@ import { DeviceService } from '../../services/device-service';
     TodayEventsWidget,
     AsyncPipe,
     NewsTickerWidget,
-    WeatherWidget
+    WeatherWidget,
+    RouterLink
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
